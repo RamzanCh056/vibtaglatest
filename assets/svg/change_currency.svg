@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" id="svg9" width="682.66669" height="682.66669" viewBox="0 0 682.66669 682.66669">
+  <defs id="defs13">
+    <clipPath clipPathUnits="userSpaceOnUse" id="clipPath23">
+      <path d="M 0,512 H 512 V 0 H 0 Z" id="path21"/>
+    </clipPath>
+  </defs>
+  <mask id="custom"><rect id="bg" x="0" y="0" width="100%" height="100%" fill="white"/><g transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)"><path transform="matrix(1,0,0,1,77,335)" d="M 0,0 C 0,11.046 8.954,20 20,20 31.046,20 40,11.046 40,0 40,-11.046 31.046,-20 20,-20 8.954,-20 0,-11.046 0,0" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path39"/><path transform="matrix(1,0,0,1,397,335)" d="M 0,0 C 0,11.046 8.954,20 20,20 31.046,20 40,11.046 40,0 40,-11.046 31.046,-20 20,-20 8.954,-20 0,-11.046 0,0" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path43"/></g></mask><g mask="url(#custom)"><g id="g15" transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)">
+    <g id="g17">
+      <g id="g19" clip-path="url(#clipPath23)">
+        <g id="g25" transform="translate(332,212)">
+          <path d="m 0,0 v -152 c 0,-22.091 35.817,-40 80,-40 44.183,0 80,17.909 80,40 V 0 3 C 160,25.091 124.183,43 80,43 35.817,43 0,25.091 0,3 c 0,-22.091 35.817,-40 80,-40 0.668,0 1.335,0.004 2,0.012" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path27"/>
+        </g>
+        <g id="g29" transform="translate(95,166)">
+          <path d="m 0,0 h -15 c -33.137,0 -60,26.863 -60,60 v 206 c 0,33.137 26.863,60 60,60 h 352 c 33.137,0 60,-26.863 60,-60 V 154" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path31"/>
+        </g>
+        <g id="g33" transform="translate(220.0103,255.9995)">
+          <path d="m 0,0 c -23.82,14.013 -40.01,41.503 -40.01,73.122 0,45.84 34.026,83 76,83 41.973,0 76,-37.16 76,-83 0,-0.985 -0.016,-1.967 -0.047,-2.944 -0.089,-2.762 -0.3,-5.49 -0.63,-8.178" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path35"/>
+        </g>
+        <g id="g37" transform="translate(77,335)">
+          <path d="M 0,0 C 0,11.046 8.954,20 20,20 31.046,20 40,11.046 40,0 40,-11.046 31.046,-20 20,-20 8.954,-20 0,-11.046 0,0" style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path39"/>
+        </g>
+        <g id="g41" transform="translate(397,335)">
+          <path d="M 0,0 C 0,11.046 8.954,20 20,20 31.046,20 40,11.046 40,0 40,-11.046 31.046,-20 20,-20 8.954,-20 0,-11.046 0,0" style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path43"/>
+        </g>
+        <g id="g45" transform="translate(332,139)">
+          <path d="m 0,0 c 0,-22.091 35.817,-40 80,-40 0.668,0 1.335,0.004 2,0.012" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path47"/>
+        </g>
+        <g id="g49" transform="translate(332,138)">
+          <path d="m 0,0 c 0,22.091 -35.817,41 -80,41 -44.183,0 -80,-17.909 -80,-40 0,-22.091 35.817,-40 80,-40 0.668,0 1.335,0.004 2,0.012" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path51"/>
+        </g>
+        <g id="g53" transform="translate(332,138)">
+          <path d="m 0,0 v -78 c 0,-22.091 -35.817,-40 -80,-40 -44.183,0 -80,17.909 -80,40 V 0" style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path55"/>
+        </g>
+      </g>
+    </g>
+  </g></g>
+</svg>
