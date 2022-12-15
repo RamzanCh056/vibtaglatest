@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/auth/register.dart';
 
 import '../../utils/constant.dart';
@@ -14,7 +17,19 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  TextEditingController email = TextEditingController();
   bool isRemembered = true;
+  void forgotPassword() async {
+    final data = {
+      'type': 'reset_pass',
+      'email': email.text,
+    };
+    print(data);
+    final result = await API().postData(data);
+    final resposnse = jsonDecode(result.body);
+    print(resposnse);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -149,6 +164,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       child: Stack(
                         children: [
                           TextFormField(
+                            controller: email,
                             decoration: InputDecoration(
                               hintText: 'Enter your email',
                               hintStyle: TextStyle(
@@ -183,53 +199,58 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     const SizedBox(
                       height: 21,
                     ),
-                    Container(
-                      height: 58,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            HexColor('#FFC107'),
-                            HexColor('#FF8205'),
+                    InkWell(
+                      onTap: () {
+                        forgotPassword();
+                      },
+                      child: Container(
+                        height: 58,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              HexColor('#FFC107'),
+                              HexColor('#FF8205'),
+                            ],
+                          ),
+                          borderRadius: borderRadius(12),
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              child: Center(
+                                child: Text(
+                                  'RESET',
+                                  style: TextStyle(
+                                    color: white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              top: 0,
+                              right: 10,
+                              child: Center(
+                                child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: lightBg,
+                                    borderRadius: borderRadius(32),
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    size: 13,
+                                    color: white,
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                        borderRadius: borderRadius(12),
-                      ),
-                      child: Stack(
-                        children: [
-                          Container(
-                            child: Center(
-                              child: Text(
-                                'RESET',
-                                style: TextStyle(
-                                  color: white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            top: 0,
-                            right: 10,
-                            child: Center(
-                              child: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: lightBg,
-                                  borderRadius: borderRadius(32),
-                                ),
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 13,
-                                  color: white,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
                       ),
                     ),
                     const SizedBox(

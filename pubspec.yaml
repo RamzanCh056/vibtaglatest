@@ -47,6 +47,8 @@ dependencies:
   wave_linear_progress_indicator: ^0.1.0
   html_editor_enhanced: ^2.5.0
   http: ^0.13.5
+  provider: ^6.0.5
+  shared_preferences: ^2.0.15
   
 
 dev_dependencies:

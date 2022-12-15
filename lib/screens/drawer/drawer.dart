@@ -10,6 +10,9 @@ import 'package:vibetag/screens/compaign/boost.dart';
 import 'package:vibetag/screens/funding/funding.dart';
 import 'package:vibetag/screens/gift/gift.dart';
 import 'package:vibetag/screens/job/job.dart';
+import 'package:vibetag/screens/memories/memories.dart';
+import 'package:vibetag/screens/offers/offers.dart';
+import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/market/market.dart';
 import 'package:vibetag/screens/nodge/nodge.dart';
 import 'package:vibetag/screens/playlists/playlist.dart';
@@ -66,7 +69,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   onTap: () {
                     pushRoute(
                       context: context,
-                      screen: Profile(),
+                      screen: const Profile(),
                     );
                   },
                   child: Container(
@@ -412,17 +415,34 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          DrawerItems(
-                            title: 'Explore',
-                            imgUrl: 'assets/images/drawer/Explore_Gold-bk.png',
-                            notifications: 1,
-                            isNewNotification: false,
+                          InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen: const Explore(),
+                              );
+                            },
+                            child: DrawerItems(
+                              title: 'Explore',
+                              imgUrl:
+                                  'assets/images/drawer/Explore_Gold-bk.png',
+                              notifications: 1,
+                              isNewNotification: false,
+                            ),
                           ),
-                          DrawerItems(
-                            title: 'Popular Posts',
-                            imgUrl: 'assets/images/drawer/popular.png',
-                            notifications: 1,
-                            isNewNotification: false,
+                          InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen: const Explore(),
+                              );
+                            },
+                            child: DrawerItems(
+                              title: 'Popular Posts',
+                              imgUrl: 'assets/images/drawer/popular.png',
+                              notifications: 1,
+                              isNewNotification: false,
+                            ),
                           ),
                           InkWell(
                             onTap: () {
@@ -433,6 +453,36 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             },
                             child: DrawerItems(
                               title: 'Find Friends',
+                              imgUrl:
+                                  'assets/images/drawer/Friends near by.png',
+                              notifications: 1,
+                              isNewNotification: false,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen: const Offer(),
+                              );
+                            },
+                            child: DrawerItems(
+                              title: 'Offer',
+                              imgUrl:
+                                  'assets/images/drawer/Friends near by.png',
+                              notifications: 1,
+                              isNewNotification: false,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen:const  Memories(),
+                              );
+                            },
+                            child: DrawerItems(
+                              title: 'Memory',
                               imgUrl:
                                   'assets/images/drawer/Friends near by.png',
                               notifications: 1,

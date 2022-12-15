@@ -10,7 +10,7 @@ class API {
     );
   }
 
-  getData({required String route}) async {
+  getData({required Map<String,dynamic> data}) async {
     String url = API_Url;
     final response = await http.get(Uri.parse(url));
     return json.decode(response.body);

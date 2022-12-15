@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibetag/methods/auth.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/album/album.dart';
 import 'package:vibetag/screens/auth/forgot.dart';
 import 'package:vibetag/screens/auth/login.dart';
@@ -41,14 +46,47 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        backgroundColor: HexColor('#EFEFEF'),
-        fontFamily: 'HelveticalNeueLTStd',
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.orange,
+          backgroundColor: HexColor('#EFEFEF'),
+          fontFamily: 'HelveticalNeueLTStd',
+        ),
+        home: FutureBuilder(
+          future: SharedPreferences.getInstance(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('Some Issue has occurred!'),
+              );
+            }
+            if (snapshot.hasData) {
+              SharedPreferences preferences = snapshot.data!;
+              final userId = preferences.getString('userId');
+              if (userId == null) {
+                return const Login();
+              } else {
+                // Provider.of<UserProvider>(context, listen: false).setUser(
+                //   ModelUser.fromMap({}),
+                // );
+                return const Home();
+              }
+            }
+            return const Login();
+          },
+        ),
       ),
-      home: const Login(),
     );
   }
 }
