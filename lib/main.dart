@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/methods/auth.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
@@ -34,6 +35,7 @@ import 'package:vibetag/screens/shop/product/single_product.dart';
 import 'package:vibetag/screens/shop/sale/sale.dart';
 import 'package:vibetag/screens/ticket/ticket.dart';
 import 'package:vibetag/screens/wishlist/wishlist.dart';
+import 'package:vibetag/utils/constant.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,9 +79,8 @@ class MyApp extends StatelessWidget {
               if (userId == null) {
                 return const Login();
               } else {
-                // Provider.of<UserProvider>(context, listen: false).setUser(
-                //   ModelUser.fromMap({}),
-                // );
+                loginUserId = userId;
+                
                 return const Home();
               }
             }

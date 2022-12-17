@@ -40,6 +40,7 @@ double iconMed = 28.0;
 double iconMin = 26.0;
 
 String API_Url = 'https://vibetag.com/app_api.php';
+String loginUserId = '';
 
 double deviceHeight({required BuildContext context}) {
   return MediaQuery.of(context).size.height -
@@ -80,4 +81,13 @@ pushReplacement({
 
 borderRadius(double radius) {
   return BorderRadius.circular(radius);
+}
+
+Widget loadingSpinner() {
+  return Center(
+    child: Image.asset(
+      'assets/images/spinner.png',
+      width: 100,
+    ),
+  );
 }

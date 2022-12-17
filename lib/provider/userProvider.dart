@@ -4,8 +4,8 @@ import 'package:vibetag/model/user.dart';
 
 class UserProvider with ChangeNotifier {
   ModelUser _user = ModelUser(
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     username: '',
     email: '',
     avatar: '',
@@ -13,7 +13,7 @@ class UserProvider with ChangeNotifier {
     about: '',
     cover: '',
     birthday: '',
-    userId: 0,
+    user_id: '',
   );
 
   ModelUser get user => _user;

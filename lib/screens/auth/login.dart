@@ -3,8 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/methods/auth.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/auth/forgot.dart';
 import 'package:vibetag/screens/auth/register.dart';
 import 'package:vibetag/screens/home/home.dart';
@@ -55,18 +59,20 @@ class _LoginState extends State<Login> {
       'username': email.text.toString(),
       'password': password.text.toString(),
     };
-    print(data);
     final result = await API().postData(data);
     final response = json.decode(result.body);
-    print(response['user_id']);
-    print('+++++++++++++++++++++++++++++++++++++++');
 
     if (response['api_text'] == 'success') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString('userId', response['user_id']);
-      setState(() {
-        isMounted = true;
-      }); 
+      loginUserId = response['user_id'];
+Provider.of<UserProvider>(context, listen: false).setUser(
+      ModelUser.fromMap(
+        await AuthMethod().getUser(
+          userId: loginUserId,
+        ),
+      ),
+    );
       pushReplacement(
         context: context,
         screen: const Home(),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/screens/activties/activities.dart';
 import 'package:vibetag/screens/album/album.dart';
 import 'package:vibetag/screens/article/article.dart';
 import 'package:vibetag/screens/advertising/advertising.dart';
+import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
 import 'package:vibetag/screens/compaign/boost.dart';
 import 'package:vibetag/screens/funding/funding.dart';
@@ -478,7 +480,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen:const  Memories(),
+                                screen: const Memories(),
                               );
                             },
                             child: DrawerItems(
@@ -512,6 +514,24 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             },
                             child: DrawerItems(
                               title: 'Funding',
+                              imgUrl: 'assets/images/drawer/funding-icon.png',
+                              notifications: 1,
+                              isNewNotification: false,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              await preferences.clear().then((value) {
+                                pushRoute(
+                                  context: context,
+                                  screen: const Login(),
+                                );
+                              });
+                            },
+                            child: DrawerItems(
+                              title: 'Logout',
                               imgUrl: 'assets/images/drawer/funding-icon.png',
                               notifications: 1,
                               isNewNotification: false,
