@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/methods/auth.dart';
+import 'package:vibetag/methods/authmethod.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/widgets/footer.dart';
