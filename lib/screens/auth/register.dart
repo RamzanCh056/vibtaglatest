@@ -34,6 +34,7 @@ class _RegisterState extends State<Register> {
   TextEditingController ethnicityController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   bool isRemembered = true;
+  bool isLoading = false;
 
   List<String> bodyItems = const [
     'Select',
@@ -884,60 +885,62 @@ class _RegisterState extends State<Register> {
                     const SizedBox(
                       height: 45,
                     ),
-                    InkWell(
-                      onTap: () {
-                        registerUser();
-                      },
-                      child: Container(
-                        height: 58,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              HexColor('#FFC107'),
-                              HexColor('#FF8205'),
-                            ],
-                          ),
-                          borderRadius: borderRadius(12),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              child: Center(
-                                child: Text(
-                                  'SIGN UP',
-                                  style: TextStyle(
-                                    color: white,
-                                    fontSize: 16,
-                                  ),
+                    isLoading
+                        ? loadingSpinner()
+                        : InkWell(
+                            onTap: () {
+                              registerUser();
+                            },
+                            child: Container(
+                              height: 58,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    HexColor('#FFC107'),
+                                    HexColor('#FF8205'),
+                                  ],
                                 ),
+                                borderRadius: borderRadius(12),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    child: Center(
+                                      child: Text(
+                                        'SIGN UP',
+                                        style: TextStyle(
+                                          color: white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    top: 0,
+                                    right: 10,
+                                    child: Center(
+                                      child: Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: lightBg,
+                                          borderRadius: borderRadius(32),
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_forward,
+                                          size: 13,
+                                          color: white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                            Positioned(
-                              bottom: 0,
-                              top: 0,
-                              right: 10,
-                              child: Center(
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: lightBg,
-                                    borderRadius: borderRadius(32),
-                                  ),
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 13,
-                                    color: white,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                     const SizedBox(
                       height: 18,
                     ),

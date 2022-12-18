@@ -1,13 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/methods/authmethod.dart';
-import 'package:vibetag/model/user.dart';
+import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/provider/userProvider.dart';
+
+import 'package:vibetag/provider/user_detailsProvider.dart';
+import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
@@ -89,19 +89,34 @@ class _HomeState extends State<Home> {
   }
 
   void setUser() async {
-    Provider.of<UserProvider>(context, listen: false).setUser(
-      ModelUser.fromMap(
-        await AuthMethod().getUser(
-          userId: loginUserId,
-        ),
-      ),
+    setState(() {
+      isLoading = true;
+    });
+    await AuthMethod().setUser(
+      context: context,
+      userId: loginUserId,
     );
+    setState(() {
+      isLoading = false;
+    });
+    final user = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).user;
+
+    if (user.following_number == '0') {
+      pushReplacement(
+        context: context,
+        screen: const AddPhoto(),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+
     return Scaffold(
       key: _key,
       drawer: DrawerMenu(),

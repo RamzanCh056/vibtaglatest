@@ -832,6 +832,8 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                       fontSize: 22,
                                       color: lightGray,
                                       padding: 15,
+                                      selectedDate: '',
+                                      onConfirm: (data) {},
                                     ),
                                   ),
                                   SizedBox(
@@ -868,6 +870,8 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                       fontSize: 22,
                                       color: lightGray,
                                       padding: 15,
+                                      selectedDate: '',
+                                      onConfirm: (data) {},
                                     ),
                                   ),
                                   SizedBox(
@@ -1564,6 +1568,8 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                         fontSize: textSm,
                                         color: lightGray,
                                         padding: 15,
+                                        selectedDate: '',
+                                        onConfirm: (data) {},
                                       ),
                                     ),
                                     const SizedBox(

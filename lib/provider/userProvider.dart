@@ -38,6 +38,7 @@ class UserProvider with ChangeNotifier {
     language: '',
     email_code: '',
     src: '',
+    following_number: '',
   );
 
   ModelUser get user => _user;

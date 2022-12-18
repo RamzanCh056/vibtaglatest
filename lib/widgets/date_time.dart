@@ -13,6 +13,9 @@ class DateTimePicterField extends StatefulWidget {
   double fontSize;
   Color color;
   double padding;
+  bool isSelected;
+  String selectedDate;
+  dynamic Function(DateTime)? onConfirm;
 
   DateTimePicterField({
     super.key,
@@ -23,6 +26,9 @@ class DateTimePicterField extends StatefulWidget {
     this.fontSize = 14,
     this.color = Colors.white,
     this.padding = 10,
+    required this.selectedDate,
+    required this.onConfirm,
+    this.isSelected = false,
   });
 
   @override
@@ -30,8 +36,6 @@ class DateTimePicterField extends StatefulWidget {
 }
 
 class _DateTimePicterFieldState extends State<DateTimePicterField> {
-  String formatedDate = '';
-  bool isSelected = false;
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -99,17 +103,14 @@ class _DateTimePicterFieldState extends State<DateTimePicterField> {
                     'change $date in time zone ' +
                         date.timeZoneOffset.inHours.toString(),
                   );
-                }, onConfirm: (date) {
-                  print('confirm $date');
-                  setState(() {
-                    formatedDate = DateFormat.yMMMd().format(date);
-                    isSelected = true;
-                  });
-                }, currentTime: DateTime.now(), locale: LocaleType.en);
+                },
+                    onConfirm: widget.onConfirm,
+                    currentTime: DateTime.now(),
+                    locale: LocaleType.en);
               },
-              child: isSelected
+              child: widget.isSelected
                   ? Text(
-                      formatedDate.toString(),
+                      widget.selectedDate.toString(),
                       style: const TextStyle(
                         color: Color.fromARGB(255, 104, 103, 103),
                       ),

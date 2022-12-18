@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:image_picker/image_picker.dart';
 
 double deviceWidth({required BuildContext context}) {
   return MediaQuery.of(context).size.width;
@@ -89,5 +91,26 @@ Widget loadingSpinner() {
       'assets/images/spinner.png',
       width: 100,
     ),
+  );
+}
+
+Future<XFile?> pickImage() async {
+  final ImagePicker _picker = ImagePicker();
+  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  if (image != null) {
+    return image;
+  }
+  return null;
+}
+
+ToastMessage({required String message}) {
+  return Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 1,
+    backgroundColor: orange,
+    textColor: white,
+    fontSize: 18.0,
   );
 }

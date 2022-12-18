@@ -6,7 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/methods/authmethod.dart';
+import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/auth/forgot.dart';
@@ -27,6 +27,7 @@ class _LoginState extends State<Login> {
 
   bool isRemembered = true;
   bool isMounted = false;
+  bool isLoading = false;
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final PageController _pageController = PageController(initialPage: 0);
@@ -54,6 +55,9 @@ class _LoginState extends State<Login> {
   }
 
   void loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
     final Map<String, String> data = {
       'type': 'user_login',
       'username': email.text.toString(),
@@ -65,14 +69,18 @@ class _LoginState extends State<Login> {
     if (response['api_text'] == 'success') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString('userId', response['user_id']);
+
       loginUserId = response['user_id'];
-Provider.of<UserProvider>(context, listen: false).setUser(
-      ModelUser.fromMap(
-        await AuthMethod().getUser(
-          userId: loginUserId,
-        ),
-      ),
-    );
+      await AuthMethod().setUser(
+        context: context,
+        userId: loginUserId,
+      );
+      setState(() {
+        isMounted = true;
+      });
+      setState(() {
+        isLoading = false;
+      });
       pushReplacement(
         context: context,
         screen: const Home(),
@@ -359,60 +367,62 @@ Provider.of<UserProvider>(context, listen: false).setUser(
                           const SizedBox(
                             height: 35,
                           ),
-                          InkWell(
-                            onTap: () {
-                              loginUser();
-                            },
-                            child: Container(
-                              height: 58,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    HexColor('#FFC107'),
-                                    HexColor('#FF8205'),
-                                  ],
-                                ),
-                                borderRadius: borderRadius(12),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    child: Center(
-                                      child: Text(
-                                        'LOGIN',
-                                        style: TextStyle(
-                                          color: white,
-                                          fontSize: 16,
-                                        ),
+                          isLoading
+                              ? loadingSpinner()
+                              : InkWell(
+                                  onTap: () {
+                                    loginUser();
+                                  },
+                                  child: Container(
+                                    height: 58,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [
+                                          HexColor('#FFC107'),
+                                          HexColor('#FF8205'),
+                                        ],
                                       ),
+                                      borderRadius: borderRadius(12),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          child: Center(
+                                            child: Text(
+                                              'LOGIN',
+                                              style: TextStyle(
+                                                color: white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          top: 0,
+                                          right: 10,
+                                          child: Center(
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                color: lightBg,
+                                                borderRadius: borderRadius(32),
+                                              ),
+                                              child: Icon(
+                                                Icons.arrow_forward,
+                                                size: 13,
+                                                color: white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    bottom: 0,
-                                    top: 0,
-                                    right: 10,
-                                    child: Center(
-                                      child: Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: lightBg,
-                                          borderRadius: borderRadius(32),
-                                        ),
-                                        child: Icon(
-                                          Icons.arrow_forward,
-                                          size: 13,
-                                          color: white,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
+                                ),
                           const SizedBox(
                             height: 36,
                           ),
