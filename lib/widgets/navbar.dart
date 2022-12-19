@@ -24,6 +24,7 @@ class _NavBarState extends State<NavBar> {
         color: Colors.black,
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -31,7 +32,6 @@ class _NavBarState extends State<NavBar> {
               Container(
                 alignment: Alignment.topLeft,
                 height: height * 0.04,
-                width: width * 0.5,
                 padding: EdgeInsets.symmetric(
                   horizontal: width * 0.01,
                 ),
@@ -40,12 +40,10 @@ class _NavBarState extends State<NavBar> {
             ],
           ),
           Container(
-            width: width * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  width: width * 0.28,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -55,12 +53,22 @@ class _NavBarState extends State<NavBar> {
                             context: context,
                           );
                         },
-                        child: const Text(
-                          'My Vibes',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                        child: Container(
+                          padding: spacing(
+                            horizontal: 7,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: grayPrimary,
+                            borderRadius: borderRadius(width),
+                          ),
+                          child: const Text(
+                            'My Vibes',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
@@ -73,12 +81,22 @@ class _NavBarState extends State<NavBar> {
                             context: context,
                           );
                         },
-                        child: const Text(
-                          'Set up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                        child: Container(
+                          padding: spacing(
+                            horizontal: 7,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: grayPrimary,
+                            borderRadius: borderRadius(width),
+                          ),
+                          child: const Text(
+                            'Set up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
@@ -94,14 +112,14 @@ class _NavBarState extends State<NavBar> {
                     children: [
                       Container(
                         width: width * 0.045,
-                        child: Image.asset('assets/icons/notification.png'),
+                        child: Image.asset('assets/new/icons/notification.png'),
                       ),
                       SizedBox(
                         width: width * 0.02,
                       ),
                       Container(
                         width: width * 0.06,
-                        child: Image.asset('assets/icons/new-requests.png'),
+                        child: Image.asset('assets/new/icons/profile.png'),
                       ),
                     ],
                   ),

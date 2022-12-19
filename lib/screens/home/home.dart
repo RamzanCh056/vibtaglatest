@@ -4,6 +4,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/auth_method.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import 'package:vibetag/provider/user_detailsProvider.dart';
@@ -81,6 +83,8 @@ class _HomeState extends State<Home> {
   ];
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
+  late ModelUser user;
+  late UserDetails userDetails;
 
   @override
   void initState() {
@@ -99,11 +103,15 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = false;
     });
-    final user = Provider.of<UserProvider>(
+    user = Provider.of<UserProvider>(
       context,
       listen: false,
     ).user;
 
+    userDetails = Provider.of<UsersDetailsProvider>(
+      context,
+      listen: false,
+    ).userDetails;
     if (user.following_number == '0') {
       pushReplacement(
         context: context,
@@ -153,12 +161,11 @@ class _HomeState extends State<Home> {
                             Container(
                               width: width,
                               height: height * 0.23,
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 color: Colors.black,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image:
-                                      AssetImage('assets/images/home_bg.jpg'),
+                                  image: NetworkImage(user.cover!),
                                 ),
                               ),
                             ),
@@ -180,8 +187,9 @@ class _HomeState extends State<Home> {
                                       children: [
                                         CircleAvatar(
                                           radius: width * 0.06,
-                                          foregroundImage: const AssetImage(
-                                              'assets/images/streamer.jpg'),
+                                          foregroundImage: NetworkImage(
+                                            user.avatar!,
+                                          ),
                                         ),
                                         SizedBox(
                                           width: width * 0.02,
@@ -189,26 +197,26 @@ class _HomeState extends State<Home> {
                                         Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          children: const [
+                                          children: [
                                             Text(
-                                              'David Millan',
-                                              style: TextStyle(
+                                              '${user.first_name} ${user.last_name}',
+                                              style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                              '@david_millan1',
-                                              style: TextStyle(
+                                              '@${user.username}',
+                                              style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                              'United State',
-                                              style: TextStyle(
+                                              user.country_id!,
+                                              style: const TextStyle(
                                                 fontSize: 10,
                                                 color: Colors.black38,
                                                 fontWeight: FontWeight.bold,
@@ -242,9 +250,9 @@ class _HomeState extends State<Home> {
                                             SizedBox(
                                               height: height * 0.01,
                                             ),
-                                            const Text(
-                                              '386',
-                                              style: TextStyle(
+                                            Text(
+                                              userDetails.post_count,
+                                              style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.bold,
@@ -269,9 +277,9 @@ class _HomeState extends State<Home> {
                                             SizedBox(
                                               height: height * 0.01,
                                             ),
-                                            const Text(
-                                              '12',
-                                              style: TextStyle(
+                                            Text(
+                                              userDetails.following_count,
+                                              style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.bold,
@@ -296,9 +304,9 @@ class _HomeState extends State<Home> {
                                             SizedBox(
                                               height: height * 0.01,
                                             ),
-                                            const Text(
-                                              '32K',
-                                              style: TextStyle(
+                                            Text(
+                                              userDetails.followers_count,
+                                              style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.bold,
@@ -385,8 +393,8 @@ class _HomeState extends State<Home> {
                                                                 .circular(
                                                           width * 0.03,
                                                         ),
-                                                        child: Image.asset(
-                                                          'assets/images/streamer.jpg',
+                                                        child: Image.network(
+                                                          user.avatar!,
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
@@ -480,9 +488,10 @@ class _HomeState extends State<Home> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const CircleAvatar(
-                                          foregroundImage: AssetImage(
-                                              'assets/images/streamer.jpg'),
+                                        CircleAvatar(
+                                          foregroundImage: NetworkImage(
+                                            user.avatar!,
+                                          ),
                                         ),
                                         SizedBox(
                                           width: width * 0.03,

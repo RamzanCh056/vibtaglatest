@@ -26,6 +26,7 @@ import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/page/pages.dart';
 import 'package:vibetag/screens/drawer/drawer_item.dart';
+import 'package:vibetag/screens/shop/shop.dart';
 import '../shop/product/my_products.dart';
 import '../../utils/constant.dart';
 
@@ -255,7 +256,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Market(),
+                                screen: const Shop(),
                               );
                             },
                             child: DrawerItems(

@@ -28,6 +28,18 @@ Color lightGrayNew = HexColor('#C8D1E5');
 Color lightGrayNew2 = HexColor('#F1F4FB');
 Color darkGrayNew = HexColor('#434950');
 
+//New Design Color
+
+Color orangePrimary = HexColor('#FF9200');
+Color orangeSecondary = HexColor('#FDBA31');
+Color blackPrimary = HexColor('#212121');
+Color whitePrimary = HexColor('#F8F9FB');
+Color whiteSecondary = HexColor('#F1F4FB');
+Color grayLight = HexColor('#F1F4FB');
+Color grayMed = HexColor('#99A7C7');
+Color graySecondary = HexColor('#7D8CAC');
+Color grayPrimary = HexColor('#485470');
+
 //Size
 double textXXl = 32.0;
 double textXl = 28.0;

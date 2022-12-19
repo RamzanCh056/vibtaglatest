@@ -169,7 +169,7 @@ class _AddPhotoState extends State<AddPhoto> {
 
   String getInK(int number) {
     if (number < 1000) {
-      return ' ${number} ';
+      return '${number}';
     }
     int followers = (number ~/ 1000);
     String getUserInK = '${followers}K';

@@ -24,7 +24,6 @@ class AuthMethod {
     required BuildContext context,
     required String userId,
   }) async {
-    print(userId);
     final data = {
       'type': 'get_user_data',
       'user_profile_id': userId,
