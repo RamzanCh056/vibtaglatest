@@ -107,19 +107,65 @@ class _NavBarState extends State<NavBar> {
                   width: width * 0.03,
                 ),
                 Container(
-                  width: width * 0.15,
                   child: Row(
                     children: [
-                      Container(
-                        width: width * 0.045,
-                        child: Image.asset('assets/new/icons/notification.png'),
+                      Stack(
+                        children: [
+                          Positioned(
+                            child: Container(
+                              width: width * 0.07,
+                              padding: spacing(
+                                horizontal: 7,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: grayPrimary,
+                                borderRadius: borderRadius(width),
+                              ),
+                              child: Image.asset(
+                                  'assets/new/icons/notification.png'),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Image.asset(
+                              'assets/new/icons/active_n.png',
+                              width: 15,
+                            ),
+                          )
+                        ],
                       ),
                       SizedBox(
                         width: width * 0.02,
                       ),
-                      Container(
-                        width: width * 0.06,
-                        child: Image.asset('assets/new/icons/profile.png'),
+                      Stack(
+                        children: [
+                          Positioned(
+                            child: Container(
+                              width: width * 0.07,
+                              padding: spacing(
+                                horizontal: 7,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: grayPrimary,
+                                borderRadius: borderRadius(width),
+                              ),
+                              child: Image.asset(
+                                'assets/new/icons/profile.png',
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Image.asset(
+                              'assets/new/icons/active_n.png',
+                              width: 15,
+                            ),
+                          )
+                        ],
                       ),
                     ],
                   ),

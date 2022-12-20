@@ -35,20 +35,12 @@ class _HeaderState extends State<Header> {
         children: [
           Row(
             children: [
-              InkWell(
-                onTap: widget.onTap,
-                child: const Icon(
-                  Icons.menu_sharp,
-                  color: Colors.white,
-                  size: 40,
-                ),
-              ),
-              SizedBox(
-                width: width * 0.02,
-              ),
               Container(
-                width: width * 0.6,
+                width: width * 0.75,
                 height: height * 0.05,
+                padding: const EdgeInsets.only(
+                  left: 0,
+                ),
                 alignment: Alignment.bottomCenter,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -56,32 +48,41 @@ class _HeaderState extends State<Header> {
                     width * 0.1,
                   ),
                 ),
-                child: TextFormField(
-                  onTap: () {
-                    SearchPopup(context: context);
-                  },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(77, 27, 26, 26),
-                    ),
-                    contentPadding: const EdgeInsets.only(
-                      left: 0,
-                      right: 10,
-                    ),
-                    hintText: 'Search for Peoples, pages, groups & #hastags',
-                    prefix: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: width * 0.03,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 40,
+                      top: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: width * 0.55,
+                        child: TextFormField(
+                          onTap: () {
+                            SearchPopup(context: context);
+                          },
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: grayMed,
+                            ),
+                            hintText: 'Search for anything',
+                          ),
+                        ),
                       ),
                     ),
-                    suffix: const Icon(
-                      Icons.search,
-                      size: 16,
-                    ),
-                  ),
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 12,
+                      child: Container(
+                        width: width * 0.05,
+                        height: width * 0.05,
+                        child: Image.asset('assets/new/icons/search.png'),
+                      ),
+                    )
+                  ],
                 ),
               ),
               SizedBox(
@@ -90,16 +91,22 @@ class _HeaderState extends State<Header> {
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
                 onTap: () {
                   Options(context: context);
                 },
                 child: Container(
-                  width: width * 0.07,
-                  height: width * 0.07,
+                  width: height * 0.05,
+                  height: height * 0.05,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: whitePrimary,
+                    borderRadius: borderRadius(width),
+                  ),
                   child: Image.asset(
-                    'assets/icons/options_new.png',
+                    'assets/new/icons/chat.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -114,10 +121,8 @@ class _HeaderState extends State<Header> {
                   );
                 },
                 child: Container(
-                  width: width * 0.07,
-                  height: width * 0.07,
                   child: Image.asset(
-                    'assets/icons/message.png',
+                    'assets/new/icons/more_v.png',
                     fit: BoxFit.cover,
                   ),
                 ),

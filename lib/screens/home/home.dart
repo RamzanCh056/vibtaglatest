@@ -10,14 +10,18 @@ import 'package:vibetag/provider/userProvider.dart';
 
 import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
+import 'package:vibetag/screens/buzz/buzz.dart';
+import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/story/add_story.dart';
 import '../../utils/constant.dart';
+import '../compaign/boost.dart';
 import '../livestream/create stream/live.dart';
 import '../../widgets/post_option.dart';
+import '../shop/market/market.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -120,6 +124,15 @@ class _HomeState extends State<Home> {
     }
   }
 
+  int currentIndex = 0;
+  List<Widget> page = [
+    Home(),
+    Boost(),
+    Buzzin(),
+    Shop(),
+    Market(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -128,819 +141,602 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: _key,
       drawer: DrawerMenu(),
-      backgroundColor: backgroundColor,
+      backgroundColor: blackPrimary,
       body: SafeArea(
         child: isLoading
             ? loadingSpinner()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: width,
-                    child: Column(
-                      children: [
-                        NavBar(),
-                        Header(
-                          onTap: () {
-                            _key.currentState!.openDrawer();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
+            : SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
                       alignment: Alignment.topCenter,
                       width: width,
-                      height: height * 0.87,
+                      height: height * 0.77,
+                      decoration: BoxDecoration(
+                        color: whiteSecondary,
+                      ),
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: width,
-                              height: height * 0.23,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(user.cover!),
+                            Center(
+                              child: Container(
+                                width: width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    width * 0.02,
+                                  ),
+                                ),
+                                child: DefaultTabController(
+                                  length: 7,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const TabBar(
+                                        unselectedLabelColor:
+                                            Color.fromARGB(255, 110, 107, 107),
+                                        labelColor: Colors.orange,
+                                        indicatorColor: Colors.orange,
+                                        labelStyle: TextStyle(
+                                          fontSize: 24,
+                                        ),
+                                        tabs: [
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/category.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/camera.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/live_stream.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/location.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/speaker.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/doc.svg'),
+                                          ),
+                                          Tab(
+                                            icon: SvgIcon(
+                                                'assets/new/svg/live.svg'),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(),
+                                      Container(),
+                                      Container(),
+                                      Container(),
+                                      Container(),
+                                      Container(),
+                                      Container(),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             Container(
-                              width: width,
-                              height: height * 0.08,
-                              padding: spacing(
-                                horizontal: width * 0.02,
-                                vertical: 0,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: width * 0.48,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: width * 0.06,
-                                          foregroundImage: NetworkImage(
-                                            user.avatar!,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: width * 0.02,
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              '${user.first_name} ${user.last_name}',
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              '@${user.username}',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              user.country_id!,
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.black38,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width * 0.48,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              'Post',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.01,
-                                            ),
-                                            Text(
-                                              userDetails.post_count,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              'Following',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.01,
-                                            ),
-                                            Text(
-                                              userDetails.following_count,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              'Followers',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.01,
-                                            ),
-                                            Text(
-                                              userDetails.followers_count,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * 0.01,
-                            ),
-                            Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: spacing(
-                                      horizontal: width * 0.01,
-                                      vertical: 0,
-                                    ),
-                                    child: const Text(
-                                      'Moments',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: width,
+                                      height: height * 0.2,
+                                      padding: spacing(
+                                        vertical: 15,
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  Container(
-                                    width: width,
-                                    height: height * 0.3,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: 10,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, i) {
-                                        if (i < 1) {
-                                          return InkWell(
-                                            onTap: () {
-                                              addStory(context: context);
-                                            },
-                                            child: Container(
-                                              width: width * 0.3,
-                                              height: height * 0.2,
-                                              margin: spacing(
-                                                horizontal: width * 0.01,
-                                                vertical: height * 0.001,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  width * 0.03,
-                                                ),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.white,
-                                                    offset: Offset.zero,
-                                                    spreadRadius: 1,
-                                                    blurRadius: 3,
-                                                  )
-                                                ],
-                                              ),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    top: 0,
-                                                    bottom: 0,
-                                                    left: 0,
-                                                    right: 0,
-                                                    child: Container(
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          width * 0.03,
-                                                        ),
-                                                        child: Image.network(
-                                                          user.avatar!,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    child: Center(
-                                                      child: Container(
-                                                        width: width * 0.2,
-                                                        height: width * 0.2,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Color.fromARGB(
-                                                              132,
-                                                              255,
-                                                              255,
-                                                              255),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            width * 0.1,
-                                                          ),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
-                                                          size: width * 0.15,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        return Container(
-                                          width: width * 0.3,
-                                          height: height * 0.3,
-                                          margin: spacing(
-                                            horizontal: width * 0.01,
-                                            vertical: height * 0.001,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              width * 0.03,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Colors.white,
-                                                offset: Offset.zero,
-                                                spreadRadius: 1,
-                                                blurRadius: 3,
-                                              )
-                                            ],
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              width * 0.03,
-                                            ),
-                                            child: Image.asset(
-                                              'assets/images/streamer.jpg',
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  Container(
-                                    width: double.maxFinite,
-                                    height: height * 0.13,
-                                    padding: spacing(
-                                      horizontal: width * 0.02,
-                                      vertical: height * 0.01,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(
-                                        width * 0.02,
+                                      decoration: BoxDecoration(
+                                        color: white,
                                       ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                          foregroundImage: NetworkImage(
-                                            user.avatar!,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: width * 0.03,
-                                        ),
-                                        Column(
-                                          children: [
-                                            InkWell(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: 10,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, i) {
+                                          if (i < 1) {
+                                            return InkWell(
                                               onTap: () {
-                                                add_A_Post();
+                                                addStory(context: context);
                                               },
                                               child: Container(
-                                                width: width * 0.8,
-                                                height: height * 0.04,
+                                                width: width * 0.22,
+                                                height: height * 0.15,
+                                                margin: spacing(
+                                                  horizontal: width * 0.01,
+                                                  vertical: height * 0.001,
+                                                ),
+                                                padding: spacing(
+                                                  horizontal: 2,
+                                                  vertical: 1,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 2,
+                                                    color: orangePrimary,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    width * 0.015,
+                                                  ),
+                                                ),
                                                 child: Stack(
                                                   children: [
                                                     Positioned(
-                                                      child: Container(
-                                                        width: width * 0.8,
-                                                        height: height * 0.04,
-                                                      ),
-                                                    ),
-                                                    Positioned(
+                                                      top: 0,
                                                       bottom: 0,
                                                       left: 0,
                                                       right: 0,
                                                       child: Container(
-                                                        height: height * 0.001,
-                                                        width: double.maxFinite,
-                                                        color: Color.fromARGB(
-                                                            255, 126, 123, 123),
-                                                      ),
-                                                    ),
-                                                    const Positioned(
-                                                      top: 5,
-                                                      left: 5,
-                                                      child: Text(
-                                                        'What\'s going on? #Hastag.. @Mention.. Link..',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            width * 0.015,
+                                                          ),
+                                                          child: Image.network(
+                                                            user.avatar!,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                     Positioned(
-                                                      top: 2,
-                                                      right: 5,
                                                       child: InkWell(
                                                         onTap: () {
-                                                          LivePopUp(
-                                                            context: context,
-                                                          );
+                                                          addStory(
+                                                              context: context);
                                                         },
-                                                        child: SvgIcon(
-                                                          'assets/svg/live-streaming.svg',
+                                                        child: Center(
+                                                          child: Image.asset(
+                                                            'assets/new/icons/add_story.png',
+                                                            fit: BoxFit.cover,
+                                                            width: width * 0.1,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                    )
                                                   ],
                                                 ),
+                                              ),
+                                            );
+                                          }
+                                          return Stack(
+                                            children: [
+                                              Container(
+                                                width: width * 0.2,
+                                                height: height * 0.15,
+                                                margin: spacing(
+                                                  horizontal: width * 0.015,
+                                                  vertical: height * 0.001,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    width * 0.015,
+                                                  ),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      color: Colors.white,
+                                                      offset: Offset.zero,
+                                                      spreadRadius: 1,
+                                                      blurRadius: 3,
+                                                    )
+                                                  ],
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    width * 0.015,
+                                                  ),
+                                                  child: Image.asset(
+                                                    'assets/images/cover.jpg',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 5,
+                                                left: 5,
+                                                child: Container(
+                                                  width: width * 0.07,
+                                                  height: width * 0.07,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        borderRadius(width),
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        borderRadius(width),
+                                                    child: Image.asset(
+                                                      'assets/images/streamer.jpg',
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 5,
+                                                right: 10,
+                                                child: Container(
+                                                  padding: spacing(
+                                                    horizontal: 4,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: red,
+                                                    borderRadius:
+                                                        borderRadius(5),
+                                                  ),
+                                                  child: Text(
+                                                    'Live',
+                                                    style: TextStyle(
+                                                      color: white,
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.02,
+                                    ),
+                                    Container(
+                                      width: width,
+                                      height: height * 0.08,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: white,
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: width * 0.1,
+                                              height: width * 0.1,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                                child: Image.asset(
+                                                  'assets/images/streamer.jpg',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: width * 0.65,
+                                              height: width * 0.1,
+                                              margin: spacing(
+                                                horizontal: width * 0.02,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: whiteGray,
+                                                borderRadius:
+                                                    borderRadius(width),
+                                              ),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  hintText: 'What\'s your Vibe',
+                                                  border: InputBorder.none,
+                                                  hintStyle: TextStyle(
+                                                    color: graySecondary,
+                                                  ),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                    left: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: width * 0.1,
+                                              height: width * 0.1,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                              ),
+                                              child: Image.asset(
+                                                  'assets/new/icons/add_o.png'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.02),
+                                    Container(
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                        color: whiteSecondary,
+                                        borderRadius: BorderRadius.circular(
+                                          width * 0.02,
+                                        ),
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Image.asset(
+                                                'assets/images/cover.jpg'),
+                                            SizedBox(
+                                              height: height * 0.02,
+                                            ),
+                                            Container(
+                                              padding: spacing(
+                                                horizontal: 10,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: width * 0.04,
+                                                        height: width * 0.04,
+                                                        child: Image.asset(
+                                                          'assets/new/icons/heart.png',
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: width * 0.04,
+                                                        height: width * 0.04,
+                                                        child: Image.asset(
+                                                          'assets/new/icons/heart.png',
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      Text(
+                                                        '23.4k',
+                                                        style: TextStyle(
+                                                          color: grayMed,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    '4.3K Comments | 1.9K Revibed',
+                                                    style: TextStyle(
+                                                      color: grayMed,
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                             SizedBox(
                                               height: height * 0.02,
                                             ),
-                                            Container(
-                                              width: width * 0.75,
-                                              child: Row(
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: width * 0.04,
+                                                      height: width * 0.04,
+                                                      child: Image.asset(
+                                                        'assets/new/icons/heart.png',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    Text(
+                                                      'React',
+                                                      style: TextStyle(
+                                                        color: grayMed,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: width * 0.04,
+                                                      height: width * 0.04,
+                                                      child: Image.asset(
+                                                        'assets/new/icons/comment.png',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    Text(
+                                                      'Comment',
+                                                      style: TextStyle(
+                                                        color: grayMed,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: width * 0.04,
+                                                      height: width * 0.04,
+                                                      child: Image.asset(
+                                                        'assets/new/icons/revibe.png',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    Text(
+                                                      'Revibe',
+                                                      style: TextStyle(
+                                                        color: grayMed,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.01,
+                                    ),
+                                    Container(
+                                      width: width * 0.95,
+                                      height: 2,
+                                      color: medGray,
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.01,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 10.0,
+                                      ),
+                                      child: Text.rich(
+                                        TextSpan(
+                                          text:
+                                              'Lorem Ipsum is simply dummy text of the printing and typesetting',
+                                          style: TextStyle(
+                                            color: grayMed,
+                                          ),
+                                          children: <InlineSpan>[
+                                            WidgetSpan(
+                                                alignment: PlaceholderAlignment
+                                                    .baseline,
+                                                baseline:
+                                                    TextBaseline.alphabetic,
+                                                child: ConstrainedBox(
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                    maxWidth: 200,
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      left: 8.0,
+                                                    ),
+                                                    child: Text(
+                                                      '#Friends #atWork',
+                                                      style: TextStyle(
+                                                        color: orangePrimary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )),
+                                            const TextSpan(
+                                              text: '.',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.01,
+                                    ),
+                                    Container(
+                                      width: width,
+                                      height: height * 0.08,
+                                      margin: spacing(
+                                        horizontal: 10,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: width * 0.15,
+                                                height: width * 0.15,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        borderRadius(width),
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                      colors: [
+                                                        orangePrimary,
+                                                        graySecondary,
+                                                      ],
+                                                    )),
+                                                padding:
+                                                    const EdgeInsets.all(2),
+                                                child: CircleAvatar(
+                                                  radius: width * 0.075,
+                                                  foregroundImage: const AssetImage(
+                                                      'assets/images/streamer.jpg'),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Container(
-                                                    height: height * 0.04,
-                                                    padding: spacing(
-                                                      horizontal: width * 0.03,
-                                                      vertical: 0,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: backgroundColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              width * 0.1),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        const Text(
-                                                          'Your Feeds',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 9,
-                                                          ),
-                                                        ),
-                                                        Switch(
-                                                          value: yourFeeds,
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              yourFeeds = value;
-                                                            });
-                                                          },
-                                                        ),
-                                                        const Text(
-                                                          'All',
-                                                          style: TextStyle(
-                                                            color:
-                                                                Colors.orange,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 9,
-                                                          ),
-                                                        ),
-                                                      ],
+                                                  Text(
+                                                    'Gwen Stacy',
+                                                    style: TextStyle(
+                                                      color: blackPrimary,
                                                     ),
                                                   ),
-                                                  Container(
-                                                    height: height * 0.04,
-                                                    padding: spacing(
-                                                      horizontal: width * 0.03,
-                                                      vertical: 0,
+                                                  Text(
+                                                    '1hr ago',
+                                                    style: TextStyle(
+                                                      color: grayMed,
+                                                      fontSize: 12,
                                                     ),
-                                                    decoration: BoxDecoration(
-                                                      color: backgroundColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              width * 0.1),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'Day',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 9,
-                                                          ),
-                                                        ),
-                                                        Switch(
-                                                          value: activeTheme,
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              activeTheme =
-                                                                  value;
-                                                            });
-                                                          },
-                                                        ),
-                                                        const Text(
-                                                          'Night',
-                                                          style: TextStyle(
-                                                            color:
-                                                                Colors.orange,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 9,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  Container(
-                                    width: double.maxFinite,
-                                    height: height * 0.16,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(
-                                        width * 0.02,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        DefaultTabController(
-                                          length: 8,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const TabBar(
-                                                unselectedLabelColor:
-                                                    Color.fromARGB(
-                                                        255, 110, 107, 107),
-                                                labelColor: Colors.orange,
-                                                indicatorColor: Colors.orange,
-                                                labelStyle: TextStyle(
-                                                  fontSize: 24,
-                                                ),
-                                                tabs: [
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/list-text.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/writing.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/photo.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/play-button.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/music.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/copy.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/position.svg'),
-                                                  ),
-                                                  Tab(
-                                                    icon: SvgIcon(
-                                                        'assets/svg/live.svg'),
-                                                  ),
-                                                ],
-                                              ),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                              Container(),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: height * 0.02,
-                                        ),
-                                        Container(
-                                          width: width * 0.8,
-                                          height: height * 0.05,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              width * 0.1,
-                                            ),
-                                            border: Border.all(
-                                              width: width * 0.004,
-                                              color: Color.fromARGB(
-                                                  255, 116, 113, 113),
-                                            ),
-                                          ),
-                                          child: TextFormField(
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding: EdgeInsets.only(
-                                                bottom: 10,
-                                                left: 10,
-                                                right: 10,
-                                                top: 6,
-                                              ),
-                                              suffix: Icon(Icons.search),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.02),
-                                  Container(
-                                    width: double.maxFinite,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(
-                                        width * 0.02,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          leading: const CircleAvatar(
-                                            foregroundImage: AssetImage(
-                                                'assets/images/streamer.jpg'),
-                                          ),
-                                          title: Text('David Millan'),
-                                          subtitle: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              const Text('16 hrs'),
-                                              SizedBox(
-                                                width: width * 0.02,
-                                              ),
-                                              Container(
-                                                width: width * 0.025,
-                                                child: const SvgIcon(
-                                                  'assets/svg/globe.svg',
-                                                  width: 16,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: width * 0.02,
-                                              ),
-                                              Icon(
-                                                Icons.arrow_drop_down,
-                                                color: accent,
-                                                size: 16,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Image.asset('assets/images/cover.jpg'),
-                                        SizedBox(
-                                          height: height * 0.02,
-                                        ),
-                                        Padding(
-                                          padding: spacing(
-                                            horizontal: width * 0.01,
-                                            vertical: 0,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 30,
-                                                    child: Image.asset(
-                                                      'assets/icons/like1.png',
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: width * 0.02,
-                                                  ),
-                                                  Column(
-                                                    children: const [
-                                                      Text(
-                                                        'Likes',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        '465',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 30,
-                                                    child: Image.asset(
-                                                      'assets/icons/comment1.png',
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: width * 0.02,
-                                                  ),
-                                                  Column(
-                                                    children: const [
-                                                      Text(
-                                                        'Comments',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        '321',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 30,
-                                                    child: Image.asset(
-                                                      'assets/icons/revibe1.png',
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: width * 0.02,
-                                                  ),
-                                                  Column(
-                                                    children: const [
-                                                      Text(
-                                                        'Revibed',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        '212',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                  )
                                                 ],
                                               )
                                             ],
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: height * 0.02,
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                                          Container(
+                                            width: width * 0.08,
+                                            height: width * 0.08,
+                                            child: Image.asset(
+                                              'assets/new/icons/more_h.png',
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -955,8 +751,8 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
       ),
     );

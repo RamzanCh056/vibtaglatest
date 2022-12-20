@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibetag/front.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
                 return const Login();
               } else {
                 loginUserId = userId;
-                return const Home();
+                return const FrontPage();
               }
             }
             return const Login();
