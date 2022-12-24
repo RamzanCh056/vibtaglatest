@@ -12,6 +12,7 @@ import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/compaign/boost.dart';
+import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
@@ -93,35 +94,6 @@ class _FrontPageState extends State<FrontPage> {
   @override
   void initState() {
     super.initState();
-    setUser();
-  }
-
-  void setUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    await AuthMethod().setUser(
-      context: context,
-      userId: loginUserId,
-    );
-    setState(() {
-      isLoading = false;
-    });
-    user = Provider.of<UserProvider>(
-      context,
-      listen: false,
-    ).user;
-
-    userDetails = Provider.of<UsersDetailsProvider>(
-      context,
-      listen: false,
-    ).userDetails;
-    if (user.following_number == '0') {
-      pushReplacement(
-        context: context,
-        screen: const AddPhoto(),
-      );
-    }
   }
 
   int currentIndex = 0;
@@ -141,26 +113,12 @@ class _FrontPageState extends State<FrontPage> {
     return Scaffold(
       key: _key,
       drawer: DrawerMenu(),
-      backgroundColor: blackPrimary,
       body: SafeArea(
         child: isLoading
             ? loadingSpinner()
             : Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    width: width,
-                    child: Column(
-                      children: [
-                        NavBar(),
-                        Header(
-                          onTap: () {
-                            _key.currentState!.openDrawer();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
                   Container(
                     alignment: Alignment.topCenter,
                     width: width,
@@ -169,7 +127,7 @@ class _FrontPageState extends State<FrontPage> {
                     ),
                     child: SingleChildScrollView(
                       child: Container(
-                        height: height * 0.77,
+                        height: height * 0.894,
                         child: page[currentIndex],
                       ),
                     ),
@@ -178,7 +136,6 @@ class _FrontPageState extends State<FrontPage> {
               ),
       ),
       bottomNavigationBar: Container(
-        color: white,
         child: Container(
           height: height * 0.106,
           decoration: BoxDecoration(

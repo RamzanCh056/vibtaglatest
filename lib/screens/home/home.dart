@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/auth_method.dart';
@@ -11,12 +15,18 @@ import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
+import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/post.dart';
+import 'package:vibetag/screens/home/post_product.dart';
+import 'package:vibetag/screens/home/post_type.dart';
+import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/story/add_story.dart';
+import '../../methods/api.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
 import '../livestream/create stream/live.dart';
@@ -89,6 +99,7 @@ class _HomeState extends State<Home> {
   bool isLoading = false;
   late ModelUser user;
   late UserDetails userDetails;
+  late List<dynamic> posts;
 
   @override
   void initState() {
@@ -104,6 +115,12 @@ class _HomeState extends State<Home> {
       context: context,
       userId: loginUserId,
     );
+
+    final result = await API().postData({
+      'type': 'get_home_posts',
+      'user_id': loginUserId,
+    });
+    posts = jsonDecode(result.body)['posts_data'];
     setState(() {
       isLoading = false;
     });
@@ -150,9 +167,22 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
+                      width: width,
+                      child: Column(
+                        children: [
+                          NavBar(),
+                          Header(
+                            onTap: () {
+                              _key.currentState!.openDrawer();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
                       alignment: Alignment.topCenter,
                       width: width,
-                      height: height * 0.77,
+                      height: height * 0.894,
                       decoration: BoxDecoration(
                         color: whiteSecondary,
                       ),
@@ -419,8 +449,8 @@ class _HomeState extends State<Home> {
                                               child: ClipRRect(
                                                 borderRadius:
                                                     borderRadius(width),
-                                                child: Image.asset(
-                                                  'assets/images/streamer.jpg',
+                                                child: Image.network(
+                                                  user.avatar!,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -467,274 +497,54 @@ class _HomeState extends State<Home> {
                                     SizedBox(height: height * 0.02),
                                     Container(
                                       width: double.maxFinite,
-                                      decoration: BoxDecoration(
-                                        color: whiteSecondary,
-                                        borderRadius: BorderRadius.circular(
-                                          width * 0.02,
-                                        ),
-                                      ),
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            Image.asset(
-                                                'assets/images/cover.jpg'),
-                                            SizedBox(
-                                              height: height * 0.02,
-                                            ),
-                                            Container(
-                                              padding: spacing(
-                                                horizontal: 10,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Container(
-                                                        width: width * 0.04,
-                                                        height: width * 0.04,
-                                                        child: Image.asset(
-                                                          'assets/new/icons/heart.png',
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: width * 0.04,
-                                                        height: width * 0.04,
-                                                        child: Image.asset(
-                                                          'assets/new/icons/heart.png',
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      Text(
-                                                        '23.4k',
-                                                        style: TextStyle(
-                                                          color: grayMed,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Text(
-                                                    '4.3K Comments | 1.9K Revibed',
-                                                    style: TextStyle(
-                                                      color: grayMed,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.02,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width: width * 0.04,
-                                                      height: width * 0.04,
-                                                      child: Image.asset(
-                                                        'assets/new/icons/heart.png',
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 4,
-                                                    ),
-                                                    Text(
-                                                      'React',
-                                                      style: TextStyle(
-                                                        color: grayMed,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width: width * 0.04,
-                                                      height: width * 0.04,
-                                                      child: Image.asset(
-                                                        'assets/new/icons/comment.png',
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 4,
-                                                    ),
-                                                    Text(
-                                                      'Comment',
-                                                      style: TextStyle(
-                                                        color: grayMed,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width: width * 0.04,
-                                                      height: width * 0.04,
-                                                      child: Image.asset(
-                                                        'assets/new/icons/revibe.png',
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 4,
-                                                    ),
-                                                    Text(
-                                                      'Revibe',
-                                                      style: TextStyle(
-                                                        color: grayMed,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                      height: height * 0.6,
+                                      child: ListView.builder(
+                                        itemCount: posts.length,
+                                        itemBuilder: (constext, i) {
+                                          if (posts[i]['user_id'] != '0') {
+                                            return Post(
+                                              avatar: posts[i]['publisher']
+                                                  ['avatar'],
+                                              name:
+                                                  "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}",
+                                              postTime: posts[i]['post_time'],
+                                              postText: posts[i]['postText'],
+                                              postFile: posts[i]['postFile'],
+                                              comments: posts[i]
+                                                  ['post_comments'],
+                                              likes: posts[i]['post_likes'],
+                                              shares: posts[i]['post_shares'],
+                                            );
+                                          } else if (posts[i]['product_id'] !=
+                                              '0') {
+                                            return PostProduct(
+                                              name: posts[i]['publisher']
+                                                  ['page_title'],
+                                              productName: posts[i]['product']
+                                                  ['name'],
+                                              description: posts[i]['product']
+                                                  ['description'],
+                                              avatar: posts[i]['publisher']
+                                                  ['avatar'],
+                                              postTime: posts[i]['post_time'],
+                                              productImage: posts[i]['product']
+                                                  ['images'],
+                                              price: posts[i]['product']
+                                                  ['price_max'],
+                                              likes: posts[i]['post_likes'],
+                                              comments: posts[i]
+                                                  ['post_comments'],
+                                              shares: posts[i]['post_shares'],
+                                              stock_amount: posts[i]['product']
+                                                  ['amount_stock'],
+                                              location: posts[i]['product']
+                                                  ['location'],
+                                            );
+                                          }
+                                          return Container();
+                                        },
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: height * 0.01,
-                                    ),
-                                    Container(
-                                      width: width * 0.95,
-                                      height: 2,
-                                      color: medGray,
-                                    ),
-                                    SizedBox(
-                                      height: height * 0.01,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 10.0,
-                                      ),
-                                      child: Text.rich(
-                                        TextSpan(
-                                          text:
-                                              'Lorem Ipsum is simply dummy text of the printing and typesetting',
-                                          style: TextStyle(
-                                            color: grayMed,
-                                          ),
-                                          children: <InlineSpan>[
-                                            WidgetSpan(
-                                                alignment: PlaceholderAlignment
-                                                    .baseline,
-                                                baseline:
-                                                    TextBaseline.alphabetic,
-                                                child: ConstrainedBox(
-                                                  constraints:
-                                                      const BoxConstraints(
-                                                    maxWidth: 200,
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 8.0,
-                                                    ),
-                                                    child: Text(
-                                                      '#Friends #atWork',
-                                                      style: TextStyle(
-                                                        color: orangePrimary,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )),
-                                            const TextSpan(
-                                              text: '.',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: height * 0.01,
-                                    ),
-                                    Container(
-                                      width: width,
-                                      height: height * 0.08,
-                                      margin: spacing(
-                                        horizontal: 10,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: width * 0.15,
-                                                height: width * 0.15,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        borderRadius(width),
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topLeft,
-                                                      end:
-                                                          Alignment.bottomRight,
-                                                      colors: [
-                                                        orangePrimary,
-                                                        graySecondary,
-                                                      ],
-                                                    )),
-                                                padding:
-                                                    const EdgeInsets.all(2),
-                                                child: CircleAvatar(
-                                                  radius: width * 0.075,
-                                                  foregroundImage: const AssetImage(
-                                                      'assets/images/streamer.jpg'),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    'Gwen Stacy',
-                                                    style: TextStyle(
-                                                      color: blackPrimary,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '1hr ago',
-                                                    style: TextStyle(
-                                                      color: grayMed,
-                                                      fontSize: 12,
-                                                    ),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          Container(
-                                            width: width * 0.08,
-                                            height: width * 0.08,
-                                            child: Image.asset(
-                                              'assets/new/icons/more_h.png',
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),

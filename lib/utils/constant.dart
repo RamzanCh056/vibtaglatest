@@ -126,3 +126,13 @@ ToastMessage({required String message}) {
     fontSize: 18.0,
   );
 }
+
+SizedBox gap({
+  double w = 0,
+  double h = 0,
+}) {
+  return SizedBox(
+    width: w,
+    height: h,
+  );
+}
