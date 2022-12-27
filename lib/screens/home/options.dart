@@ -10,6 +10,8 @@ import '../../utils/constant.dart';
 Options({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
+  bool feeds = true;
+  bool darkMode = false;
   return showDialog(
     context: context,
     builder: (context) {
@@ -18,16 +20,16 @@ Options({required BuildContext context}) {
           backgroundColor: HexColor('#F0F0F0'),
           insetPadding: EdgeInsets.only(
             top: 0,
-            right: 0,
+            right: 15,
             left: width * 0.4,
-            bottom: height * 0.47,
+            bottom: height * 0.4,
           ),
           contentPadding: EdgeInsets.zero,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           iconPadding: EdgeInsets.zero,
           content: Container(
             width: width * 0.2,
-            height: height * 0.25,
+            height: height * 0.35,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -51,11 +53,12 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.07,
-                        child: Image.asset(
-                          'assets/icons/lightning.png',
-                          width: width * 0.07,
-                          height: width * 0.07,
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/boast.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
                         ),
                       ),
                       const SizedBox(
@@ -80,11 +83,12 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.07,
-                        child: Image.asset(
-                          'assets/icons/setting.png',
-                          width: width * 0.07,
-                          height: width * 0.07,
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/setting.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
                         ),
                       ),
                       const SizedBox(
@@ -109,11 +113,12 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.07,
-                        child: Image.asset(
-                          'assets/icons/help.png',
-                          width: width * 0.07,
-                          height: width * 0.07,
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/help.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
                         ),
                       ),
                       const SizedBox(
@@ -138,11 +143,12 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.07,
-                        child: Image.asset(
-                          'assets/icons/write.png',
-                          width: width * 0.07,
-                          height: width * 0.07,
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/support.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
                         ),
                       ),
                       const SizedBox(
@@ -155,6 +161,82 @@ Options({required BuildContext context}) {
                             fontSize: textMed,
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/star.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            child: Text(
+                              'Your Feeds',
+                              style: TextStyle(
+                                fontSize: textMed,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                              value: feeds,
+                              onChanged: (value) {
+                                setState(() {
+                                  feeds = !feeds;
+                                });
+                              })
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        width: width * 0.06,
+                        child: SvgPicture.asset(
+                          'assets/new/svg/menu/darkmode.svg',
+                          width: width * 0.06,
+                          height: width * 0.06,
+                          color: grayMed,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            child: Text(
+                              'Dark mode',
+                              style: TextStyle(
+                                fontSize: textMed,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                              value: darkMode,
+                              onChanged: (value) {
+                                setState(() {
+                                  darkMode = !darkMode;
+                                });
+                              })
+                        ],
                       ),
                     ],
                   ),

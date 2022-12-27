@@ -15,8 +15,11 @@ import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
+import 'package:vibetag/screens/home/post_blog.dart';
 import 'package:vibetag/screens/home/comment.dart';
-import 'package:vibetag/screens/home/post.dart';
+import 'package:vibetag/screens/home/post_poll.dart';
+import 'package:vibetag/screens/home/post_photo.dart';
+import 'package:vibetag/screens/home/post_event.dart';
 import 'package:vibetag/screens/home/post_product.dart';
 import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
@@ -149,6 +152,28 @@ class _HomeState extends State<Home> {
     Shop(),
     Market(),
   ];
+  String lastPostId = '';
+  bool loadingMore = false;
+  loadMore() async {
+    setState(() {
+      loadingMore = true;
+    });
+    final data = {
+      'type': 'load_more_home_posts',
+      'after_post_id': lastPostId,
+      'user_id': loginUserId,
+    };
+    final result = await API().postData(data);
+    final newPosts = jsonDecode(result.body)['posts_data'];
+    if (newPosts.length > 0) {
+      for (var i = 0; i < newPosts.length; i++) {
+        posts.add(newPosts[i]);
+      }
+    }
+    setState(() {
+      loadingMore = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,407 +187,429 @@ class _HomeState extends State<Home> {
       body: SafeArea(
         child: isLoading
             ? loadingSpinner()
-            : SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width,
-                      child: Column(
-                        children: [
-                          NavBar(),
-                          Header(
-                            onTap: () {
-                              _key.currentState!.openDrawer();
-                            },
-                          ),
-                        ],
-                      ),
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: width,
+                    child: Column(
+                      children: [
+                        NavBar(),
+                        Header(
+                          onTap: () {
+                            _key.currentState!.openDrawer();
+                          },
+                        ),
+                      ],
                     ),
-                    Container(
-                      alignment: Alignment.topCenter,
-                      width: width,
-                      height: height * 0.894,
-                      decoration: BoxDecoration(
-                        color: whiteSecondary,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Container(
-                                width: width,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(
-                                    width * 0.02,
-                                  ),
-                                ),
-                                child: DefaultTabController(
-                                  length: 7,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const TabBar(
-                                        unselectedLabelColor:
-                                            Color.fromARGB(255, 110, 107, 107),
-                                        labelColor: Colors.orange,
-                                        indicatorColor: Colors.orange,
-                                        labelStyle: TextStyle(
-                                          fontSize: 24,
-                                        ),
-                                        tabs: [
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/category.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/camera.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/live_stream.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/location.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/speaker.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/doc.svg'),
-                                          ),
-                                          Tab(
-                                            icon: SvgIcon(
-                                                'assets/new/svg/live.svg'),
-                                          ),
-                                        ],
-                                      ),
-                                      Container(),
-                                      Container(),
-                                      Container(),
-                                      Container(),
-                                      Container(),
-                                      Container(),
-                                      Container(),
-                                    ],
-                                  ),
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    width: width,
+                    height: height * 0.734,
+                    decoration: BoxDecoration(
+                      color: whiteSecondary,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: width,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(
+                                  width * 0.02,
                                 ),
                               ),
-                            ),
-                            Container(
-                              child: SingleChildScrollView(
+                              child: DefaultTabController(
+                                length: 7,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Container(
-                                      width: width,
-                                      height: height * 0.2,
-                                      padding: spacing(
-                                        vertical: 15,
+                                    const TabBar(
+                                      unselectedLabelColor:
+                                          Color.fromARGB(255, 110, 107, 107),
+                                      labelColor: Colors.orange,
+                                      indicatorColor: Colors.orange,
+                                      labelStyle: TextStyle(
+                                        fontSize: 24,
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: white,
-                                      ),
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: 10,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, i) {
-                                          if (i < 1) {
-                                            return InkWell(
-                                              onTap: () {
-                                                addStory(context: context);
-                                              },
-                                              child: Container(
-                                                width: width * 0.22,
-                                                height: height * 0.15,
-                                                margin: spacing(
-                                                  horizontal: width * 0.01,
-                                                  vertical: height * 0.001,
-                                                ),
-                                                padding: spacing(
-                                                  horizontal: 2,
-                                                  vertical: 1,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    width: 2,
-                                                    color: orangePrimary,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    width * 0.015,
-                                                  ),
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    Positioned(
-                                                      top: 0,
-                                                      bottom: 0,
-                                                      left: 0,
-                                                      right: 0,
-                                                      child: Container(
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            width * 0.015,
-                                                          ),
-                                                          child: Image.network(
-                                                            user.avatar!,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          addStory(
-                                                              context: context);
-                                                        },
-                                                        child: Center(
-                                                          child: Image.asset(
-                                                            'assets/new/icons/add_story.png',
-                                                            fit: BoxFit.cover,
-                                                            width: width * 0.1,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          return Stack(
-                                            children: [
-                                              Container(
-                                                width: width * 0.2,
-                                                height: height * 0.15,
-                                                margin: spacing(
-                                                  horizontal: width * 0.015,
-                                                  vertical: height * 0.001,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    width * 0.015,
-                                                  ),
-                                                  boxShadow: const [
-                                                    BoxShadow(
-                                                      color: Colors.white,
-                                                      offset: Offset.zero,
-                                                      spreadRadius: 1,
-                                                      blurRadius: 3,
-                                                    )
-                                                  ],
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    width * 0.015,
-                                                  ),
-                                                  child: Image.asset(
-                                                    'assets/images/cover.jpg',
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 5,
-                                                left: 5,
-                                                child: Container(
-                                                  width: width * 0.07,
-                                                  height: width * 0.07,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        borderRadius(width),
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        borderRadius(width),
-                                                    child: Image.asset(
-                                                      'assets/images/streamer.jpg',
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 5,
-                                                right: 10,
-                                                child: Container(
-                                                  padding: spacing(
-                                                    horizontal: 4,
-                                                    vertical: 2,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: red,
-                                                    borderRadius:
-                                                        borderRadius(5),
-                                                  ),
-                                                  child: Text(
-                                                    'Live',
-                                                    style: TextStyle(
-                                                      color: white,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: height * 0.02,
-                                    ),
-                                    Container(
-                                      width: width,
-                                      height: height * 0.08,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: white,
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: width * 0.1,
-                                              height: width * 0.1,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    borderRadius(width),
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    borderRadius(width),
-                                                child: Image.network(
-                                                  user.avatar!,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: width * 0.65,
-                                              height: width * 0.1,
-                                              margin: spacing(
-                                                horizontal: width * 0.02,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: whiteGray,
-                                                borderRadius:
-                                                    borderRadius(width),
-                                              ),
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                  hintText: 'What\'s your Vibe',
-                                                  border: InputBorder.none,
-                                                  hintStyle: TextStyle(
-                                                    color: graySecondary,
-                                                  ),
-                                                  contentPadding:
-                                                      const EdgeInsets.only(
-                                                    left: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: width * 0.1,
-                                              height: width * 0.1,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    borderRadius(width),
-                                              ),
-                                              child: Image.asset(
-                                                  'assets/new/icons/add_o.png'),
-                                            )
-                                          ],
+                                      tabs: [
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/category.svg'),
                                         ),
-                                      ),
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/camera.svg'),
+                                        ),
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/live_stream.svg'),
+                                        ),
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/location.svg'),
+                                        ),
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/speaker.svg'),
+                                        ),
+                                        Tab(
+                                          icon:
+                                              SvgIcon('assets/new/svg/doc.svg'),
+                                        ),
+                                        Tab(
+                                          icon: SvgIcon(
+                                              'assets/new/svg/live.svg'),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: height * 0.02),
-                                    Container(
-                                      width: double.maxFinite,
-                                      height: height * 0.6,
-                                      child: ListView.builder(
-                                        itemCount: posts.length,
-                                        itemBuilder: (constext, i) {
-                                          if (posts[i]['user_id'] != '0') {
-                                            return Post(
-                                              avatar: posts[i]['publisher']
-                                                  ['avatar'],
-                                              name:
-                                                  "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}",
-                                              postTime: posts[i]['post_time'],
-                                              postText: posts[i]['postText'],
-                                              postFile: posts[i]['postFile'],
-                                              comments: posts[i]
-                                                  ['post_comments'],
-                                              likes: posts[i]['post_likes'],
-                                              shares: posts[i]['post_shares'],
-                                            );
-                                          } else if (posts[i]['product_id'] !=
-                                              '0') {
-                                            return PostProduct(
-                                              name: posts[i]['publisher']
-                                                  ['page_title'],
-                                              productName: posts[i]['product']
-                                                  ['name'],
-                                              description: posts[i]['product']
-                                                  ['description'],
-                                              avatar: posts[i]['publisher']
-                                                  ['avatar'],
-                                              postTime: posts[i]['post_time'],
-                                              productImage: posts[i]['product']
-                                                  ['images'],
-                                              price: posts[i]['product']
-                                                  ['price_max'],
-                                              likes: posts[i]['post_likes'],
-                                              comments: posts[i]
-                                                  ['post_comments'],
-                                              shares: posts[i]['post_shares'],
-                                              stock_amount: posts[i]['product']
-                                                  ['amount_stock'],
-                                              location: posts[i]['product']
-                                                  ['location'],
-                                            );
-                                          }
-                                          return Container();
-                                        },
-                                      ),
-                                    ),
+                                    Container(),
+                                    Container(),
+                                    Container(),
+                                    Container(),
+                                    Container(),
+                                    Container(),
+                                    Container(),
                                   ],
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: height * 0.1,
+                          ),
+                          Container(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: width,
+                                    height: height * 0.2,
+                                    padding: spacing(
+                                      vertical: 15,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: white,
+                                    ),
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: 10,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, i) {
+                                        if (i < 1) {
+                                          return InkWell(
+                                            onTap: () {
+                                              addStory(context: context);
+                                            },
+                                            child: Container(
+                                              width: width * 0.22,
+                                              height: height * 0.15,
+                                              margin: spacing(
+                                                horizontal: width * 0.01,
+                                                vertical: height * 0.001,
+                                              ),
+                                              padding: spacing(
+                                                horizontal: 2,
+                                                vertical: 1,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: orangePrimary,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  width * 0.015,
+                                                ),
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                    top: 0,
+                                                    bottom: 0,
+                                                    left: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                          width * 0.015,
+                                                        ),
+                                                        child: Image.network(
+                                                          user.avatar!,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        addStory(
+                                                            context: context);
+                                                      },
+                                                      child: Center(
+                                                        child: Image.asset(
+                                                          'assets/new/icons/add_story.png',
+                                                          fit: BoxFit.cover,
+                                                          width: width * 0.1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return Stack(
+                                          children: [
+                                            Container(
+                                              width: width * 0.2,
+                                              height: height * 0.15,
+                                              margin: spacing(
+                                                horizontal: width * 0.015,
+                                                vertical: height * 0.001,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  width * 0.015,
+                                                ),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                    color: Colors.white,
+                                                    offset: Offset.zero,
+                                                    spreadRadius: 1,
+                                                    blurRadius: 3,
+                                                  )
+                                                ],
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  width * 0.015,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/cover.jpg',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              left: 5,
+                                              child: Container(
+                                                width: width * 0.07,
+                                                height: width * 0.07,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                  child: Image.asset(
+                                                    'assets/images/streamer.jpg',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              right: 10,
+                                              child: Container(
+                                                padding: spacing(
+                                                  horizontal: 4,
+                                                  vertical: 2,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: red,
+                                                  borderRadius: borderRadius(5),
+                                                ),
+                                                child: Text(
+                                                  'Live',
+                                                  style: TextStyle(
+                                                    color: white,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    width: double.maxFinite,
+                                    color: grayLight,
+                                    height: height * 0.6,
+                                    child: ListView.builder(
+                                      itemCount: posts.length + 1,
+                                      itemBuilder: (constext, i) {
+                                        if (i == posts.length - 1) {
+                                          lastPostId =
+                                              posts[i]['post_id'].toString();
+                                          Future.delayed(Duration(seconds: 2),
+                                              () {
+                                            loadMore();
+                                          });
+                                        }
+
+                                        if (i == posts.length) {
+                                          return loadingMore
+                                              ? loadingSpinner()
+                                              : InkWell(
+                                                  child: Container(
+                                                    margin: spacing(
+                                                      vertical: 20,
+                                                      horizontal: 10,
+                                                    ),
+                                                  ),
+                                                );
+                                        }
+
+                                        if (posts[i]['product_id'] == '0') {
+                                          if (posts[i]['poll_id'] != '0') {
+                                            return PoolPost(
+                                              postId: posts[i]['post_id'],
+                                              avatar: posts[i]['publisher']
+                                                  ['avatar'],
+                                              name: posts[i]['publisher']
+                                                          ['first_name'] !=
+                                                      null
+                                                  ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+                                                  : "${posts[i]['publisher']['page_title']}",
+                                              postTime: posts[i]['post_time'],
+                                              postText: posts[i]['postText'],
+                                              poolOptions: posts[i]['options'],
+                                              likes: posts[i]['reaction']
+                                                      ['count']
+                                                  .toString(),
+                                              comments: posts[i]
+                                                  ['post_comments'],
+                                              shares: posts[i]['post_shares'],
+                                            );
+                                          } else if (posts[i]['blog_id'] !=
+                                              '0') {
+                                            return BlogPost(
+                                              postId: posts[i]['post_id'],
+                                              avatar: posts[i]['publisher']
+                                                  ['avatar'],
+                                              name: posts[i]['publisher']
+                                                          ['first_name'] !=
+                                                      null
+                                                  ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+                                                  : "${posts[i]['publisher']['page_title']}",
+                                              about:
+                                                  "${posts[i]['publisher']['about']}}",
+                                              postTime: posts[i]['post_time'],
+                                              postText: posts[i]['postText'],
+                                              blog: posts[i]['blog'],
+                                              likes: posts[i]['reaction']
+                                                      ['count']
+                                                  .toString(),
+                                              comments: posts[i]
+                                                  ['post_comments'],
+                                              shares: posts[i]['post_shares'],
+                                            );
+                                          } else if (posts[i]
+                                                  ['page_event_id'] !=
+                                              '0') {
+                                            return PostEvent(
+                                              postId: posts[i]['post_id'],
+                                              avatar: posts[i]['publisher']
+                                                  ['avatar'],
+                                              name: posts[i]['publisher']
+                                                          ['first_name'] !=
+                                                      null
+                                                  ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+                                                  : "${posts[i]['publisher']['page_title']}",
+                                              postTime: posts[i]['post_time'],
+                                              coverImage: posts[i]['event']
+                                                  ['cover'],
+                                              eventName: posts[i]['event']
+                                                  ['name'],
+                                              startDate: posts[i]['event']
+                                                  ['start_date'],
+                                              endDate: posts[i]['event']
+                                                  ['end_date'],
+                                              likes: posts[i]['reaction']
+                                                      ['count']
+                                                  .toString(),
+                                              comments: posts[i]
+                                                  ['post_comments'],
+                                              shares: posts[i]['post_shares'],
+                                            );
+                                          }
+                                          return Post(
+                                            postId: posts[i]['post_id'],
+                                            avatar: posts[i]['publisher']
+                                                ['avatar'],
+                                            name: posts[i]['publisher']
+                                                        ['first_name'] !=
+                                                    null
+                                                ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+                                                : "${posts[i]['publisher']['page_title']}",
+                                            postTime: posts[i]['post_time'],
+                                            feelings: posts[i]['postFeeling'],
+                                            location: posts[i]['postMap'],
+                                            postText: posts[i]['postText'],
+                                            postFile: posts[i]['postFile'],
+                                            videoViews: int.parse(
+                                                posts[i]['videoViews']),
+                                            comments: posts[i]['post_comments'],
+                                            likes: posts[i]['reaction']['count']
+                                                .toString(),
+                                            shares: posts[i]['post_shares'],
+                                          );
+                                        } else {
+                                          return PostProduct(
+                                            name: posts[i]['publisher']
+                                                        ['first_name'] !=
+                                                    null
+                                                ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+                                                : "${posts[i]['publisher']['page_title']}",
+                                            productName: posts[i]['product']
+                                                ['name'],
+                                            description: posts[i]['product']
+                                                ['description'],
+                                            avatar: posts[i]['publisher']
+                                                ['avatar'],
+                                            postTime: posts[i]['post_time'],
+                                            productImage: posts[i]['product']
+                                                ['images'],
+                                            price: posts[i]['product']
+                                                ['price_max'],
+                                            likes: posts[i]['reaction']['count']
+                                                .toString(),
+                                            comments: posts[i]['post_comments'],
+                                            shares: posts[i]['post_shares'],
+                                            stock_amount: posts[i]['product']
+                                                ['amount_stock'],
+                                            location: posts[i]['product']
+                                                ['location'],
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Container(
-                              width: width,
-                              height: height * 0.1,
-                              child: AppFooter(),
-                            )
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
       ),
     );

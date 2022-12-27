@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibetag/front.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/model/user.dart';
@@ -69,7 +70,6 @@ class _LoginState extends State<Login> {
     if (response['api_text'] == 'success') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString('userId', response['user_id']);
-
       loginUserId = response['user_id'];
       await AuthMethod().setUser(
         context: context,
@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
       });
       pushReplacement(
         context: context,
-        screen: const Home(),
+        screen: const FrontPage(),
       );
     }
   }

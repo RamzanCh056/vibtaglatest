@@ -127,6 +127,18 @@ ToastMessage({required String message}) {
   );
 }
 
+String getInK({required int number}) {
+  if (number < 1000) {
+    return number.toString();
+  } else if (number < 1000000) {
+    return '${(number / 1000).round()}K';
+  } else if (number < 10000000) {
+    return '${(number / 1000000).round()}M';
+  } else {
+    return '${(number / 10000000).round()}B';
+  }
+}
+
 SizedBox gap({
   double w = 0,
   double h = 0,

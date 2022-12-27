@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:vibetag/front.dart';
 import 'package:vibetag/widgets/setup_pop.dart';
 
 import '../utils/constant.dart';
@@ -29,13 +30,21 @@ class _NavBarState extends State<NavBar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                alignment: Alignment.topLeft,
-                height: height * 0.04,
-                padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.01,
+              InkWell(
+                onTap: () {
+                  pushReplacement(
+                    context: context,
+                    screen: const FrontPage(),
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  height: height * 0.04,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.01,
+                  ),
+                  child: Image.asset('assets/images/logo.png'),
                 ),
-                child: Image.asset('assets/images/logo.png'),
               ),
             ],
           ),

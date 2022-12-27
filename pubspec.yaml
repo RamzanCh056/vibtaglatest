@@ -39,7 +39,7 @@ dependencies:
   drop_down_list: ^0.0.4
   hexcolor: ^3.0.1
   flutter_datetime_picker: ^1.5.1
-  intl: ^0.17.0
+  intl: ^0.18.0
   svg_icon: ^0.0.1
   flutter_svg: ^0.22.0
   dotted_border: ^2.0.0+1
@@ -84,6 +84,7 @@ flutter:
     - assets/new/images/
     - assets/new/icons/
     - assets/new/svg/
+    - assets/new/svg/menu/
     - assets/new/gif/
     - assets/images/
     - assets/images/compaign/

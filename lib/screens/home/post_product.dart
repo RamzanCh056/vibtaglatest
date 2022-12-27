@@ -73,6 +73,18 @@ class _PostProductState extends State<PostProduct> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Container(
+      margin: spacing(
+        vertical: 10,
+      ),
+      padding: const EdgeInsets.only(
+        bottom: 10,
+      ),
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(
+          width * 0.02,
+        ),
+      ),
       child: Container(
         width: double.maxFinite,
         decoration: BoxDecoration(
@@ -182,7 +194,7 @@ class _PostProductState extends State<PostProduct> {
                 children: [
                   Image.network(
                     widget.productImage[currentImage]['image'],
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fitWidth,
                   ),
                   widget.productImage.length > 1
                       ? Positioned(

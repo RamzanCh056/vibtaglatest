@@ -95,7 +95,9 @@ class _HeaderState extends State<Header> {
             children: [
               InkWell(
                 onTap: () {
-                  Options(context: context);
+                  ChatBar(
+                    context: context,
+                  );
                 },
                 child: Container(
                   width: height * 0.05,
@@ -116,9 +118,7 @@ class _HeaderState extends State<Header> {
               ),
               InkWell(
                 onTap: () {
-                  ChatBar(
-                    context: context,
-                  );
+                  Options(context: context);
                 },
                 child: Container(
                   child: Image.asset(

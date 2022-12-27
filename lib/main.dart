@@ -9,7 +9,7 @@ import 'package:vibetag/provider/user_detailsProvider.dart';
 
 import 'package:vibetag/screens/auth/login.dart';
 
-import 'package:vibetag/screens/home/home.dart';
+import 'package:vibetag/screens/home/video_player.dart';
 
 import 'package:vibetag/utils/constant.dart';
 
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
                 return const Login();
               } else {
                 loginUserId = userId;
-                return const FrontPage();
+                return FrontPage();
               }
             }
             return const Login();
