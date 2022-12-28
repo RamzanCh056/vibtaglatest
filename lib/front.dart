@@ -17,6 +17,7 @@ import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/shop.dart';
+import 'package:vibetag/screens/trending/trending.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
@@ -99,13 +100,13 @@ class _FrontPageState extends State<FrontPage> {
     super.initState();
   }
 
-  int currentIndex = 0;
+  int currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     List<Widget> page = [
       Home(),
-      Boost(),
+      Trending(),
       Buzzin(),
       Shop(),
       Market(),

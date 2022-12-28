@@ -319,15 +319,21 @@ class _PostState extends State<Post> {
               right: 10,
             ),
             child: ReadMoreText(
-              widget.postText,
+              Html(data: widget.postText).toString(),
               trimLines: 2,
               colorClickableText: orangePrimary,
               trimMode: TrimMode.Line,
               trimCollapsedText: 'Read more',
               trimExpandedText: 'Read less',
-              moreStyle: const TextStyle(
-                fontSize: 14,
+              moreStyle: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: orangePrimary,
+              ),
+              lessStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: orangePrimary,
               ),
             ),
           ),

@@ -611,6 +611,7 @@ class _HomeState extends State<Home> {
                                             );
                                           } else {
                                             return PostProduct(
+                                              postId: posts[i]['post_id'],
                                               name: posts[i]['publisher']
                                                           ['first_name'] !=
                                                       null

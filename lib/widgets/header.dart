@@ -8,9 +8,12 @@ import 'package:vibetag/screens/home/search.dart';
 import '../utils/constant.dart';
 
 class Header extends StatefulWidget {
-  final VoidCallback onTap;
+  dynamic onTap;
 
-  const Header({super.key, required this.onTap});
+  Header({
+    super.key,
+    this.onTap,
+  });
 
   @override
   State<Header> createState() => _HeaderState();
