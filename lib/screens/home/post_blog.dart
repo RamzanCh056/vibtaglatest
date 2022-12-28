@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/home/comment.dart';
 import 'package:vibetag/screens/home/revibe.dart';
@@ -340,8 +341,17 @@ class _BlogPostState extends State<BlogPost> {
                   )
                 : Container(),
             gap(h: 10),
-            Html(
-              data: widget.postText,
+            ReadMoreText(
+              widget.postText,
+              trimLines: 2,
+              colorClickableText: orangePrimary,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: 'Read more',
+              trimExpandedText: 'Read less',
+              moreStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             gap(h: 10),
             Container(

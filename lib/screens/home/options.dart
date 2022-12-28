@@ -17,19 +17,28 @@ Options({required BuildContext context}) {
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          backgroundColor: HexColor('#F0F0F0'),
+          backgroundColor: Color.fromARGB(0, 255, 255, 255),
           insetPadding: EdgeInsets.only(
             top: 0,
             right: 15,
-            left: width * 0.4,
-            bottom: height * 0.4,
+            left: width * 0.5,
+            bottom: height * 0.45,
           ),
           contentPadding: EdgeInsets.zero,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           iconPadding: EdgeInsets.zero,
           content: Container(
-            width: width * 0.2,
-            height: height * 0.35,
+            width: width * 0.18,
+            height: height * 0.32,
+            decoration: BoxDecoration(
+              color: whitePrimary,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(0),
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+            ),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -53,11 +62,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/boast.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -65,10 +74,10 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        child: Text(
+                        child: const Text(
                           'Boost Your Vibes',
                           style: TextStyle(
-                            fontSize: textMed,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -83,11 +92,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/setting.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -95,10 +104,10 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        child: Text(
+                        child: const Text(
                           'Setting',
                           style: TextStyle(
-                            fontSize: textMed,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -113,11 +122,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/help.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -125,10 +134,10 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        child: Text(
+                        child: const Text(
                           'Help',
                           style: TextStyle(
-                            fontSize: textMed,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -143,11 +152,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/support.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -155,10 +164,10 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        child: Text(
+                        child: const Text(
                           'Support',
                           style: TextStyle(
-                            fontSize: textMed,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -170,11 +179,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/star.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -184,10 +193,10 @@ Options({required BuildContext context}) {
                       Row(
                         children: [
                           Container(
-                            child: Text(
+                            child: const Text(
                               'Your Feeds',
                               style: TextStyle(
-                                fontSize: textMed,
+                                fontSize: 14,
                               ),
                             ),
                           ),
@@ -208,11 +217,11 @@ Options({required BuildContext context}) {
                         width: 10,
                       ),
                       Container(
-                        width: width * 0.06,
+                        width: width * 0.045,
                         child: SvgPicture.asset(
                           'assets/new/svg/menu/darkmode.svg',
-                          width: width * 0.06,
-                          height: width * 0.06,
+                          width: width * 0.045,
+                          height: width * 0.045,
                           color: grayMed,
                         ),
                       ),
@@ -222,10 +231,10 @@ Options({required BuildContext context}) {
                       Row(
                         children: [
                           Container(
-                            child: Text(
+                            child: const Text(
                               'Dark mode',
                               style: TextStyle(
-                                fontSize: textMed,
+                                fontSize: 14,
                               ),
                             ),
                           ),

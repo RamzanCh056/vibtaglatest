@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/home/comment.dart';
 import 'package:vibetag/screens/home/revibe.dart';
@@ -117,12 +118,17 @@ class _PoolPostState extends State<PoolPost> {
                   padding: spacing(
                     horizontal: 10,
                   ),
-                  child: Text(
-                    '${widget.postText}',
-                    style: const TextStyle(
-                      overflow: TextOverflow.clip,
+                  child: ReadMoreText(
+                    widget.postText,
+                    trimLines: 2,
+                    colorClickableText: orangePrimary,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Read more',
+                    trimExpandedText: 'Read less',
+                    moreStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.left,
                   ),
                 ),
                 gap(h: 10),
@@ -232,7 +238,7 @@ class _PoolPostState extends State<PoolPost> {
               ],
             ),
             Container(
-             padding: spacing(
+              padding: spacing(
                 horizontal: 15,
                 vertical: 5,
               ),

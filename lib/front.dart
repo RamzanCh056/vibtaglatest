@@ -9,10 +9,12 @@ import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import 'package:vibetag/provider/user_detailsProvider.dart';
+import 'package:vibetag/screens/article/article.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/compaign/boost.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
+import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -101,7 +103,13 @@ class _FrontPageState extends State<FrontPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> page = [Home(), Boost(), Buzzin(), Shop(), Market()];
+    List<Widget> page = [
+      Home(),
+      Boost(),
+      Buzzin(),
+      Shop(),
+      Market(),
+    ];
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
 
@@ -191,12 +199,12 @@ class _FrontPageState extends State<FrontPage> {
                       Container(
                         height: height * 0.035,
                         child: SvgIcon(
-                          'assets/new/svg/chart.svg',
+                          'assets/new/svg/trending.svg',
                           color: currentIndex == 1 ? orangePrimary : grayMed,
                         ),
                       ),
                       Text(
-                        'Chart',
+                        'Trending',
                         style: TextStyle(
                           color: currentIndex == 1 ? orangePrimary : grayMed,
                         ),
@@ -254,9 +262,10 @@ class _FrontPageState extends State<FrontPage> {
                 ),
                 InkWell(
                   onTap: () {
-                    setState(() {
-                      currentIndex = 4;
-                    });
+                    // setState(() {
+                    //   currentIndex = 4;
+                    // });
+                    BottomDrawer(context: context);
                   },
                   child: Column(
                     children: [

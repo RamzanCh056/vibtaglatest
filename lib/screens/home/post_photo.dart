@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/api.dart';
 
@@ -116,9 +117,9 @@ class _PostState extends State<Post> {
               videoViews: widget.videoViews),
           Container(
             padding: spacing(
-                horizontal: 15,
-                vertical: 5,
-              ),
+              horizontal: 15,
+              vertical: 5,
+            ),
             decoration: BoxDecoration(
               color: whiteSecondary,
             ),
@@ -266,7 +267,7 @@ class _PostState extends State<Post> {
           ),
           isShowReactions
               ? Container(
-                  width: width * 0.7,
+                  width: width * 0.74,
                   height: width * 0.11,
                   padding: spacing(
                     horizontal: 10,
@@ -317,8 +318,17 @@ class _PostState extends State<Post> {
               left: 10.0,
               right: 10,
             ),
-            child: Html(
-              data: widget.postText,
+            child: ReadMoreText(
+              widget.postText,
+              trimLines: 2,
+              colorClickableText: orangePrimary,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: 'Read more',
+              trimExpandedText: 'Read less',
+              moreStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           SizedBox(
@@ -425,7 +435,7 @@ class _PostState extends State<Post> {
                                         w: 5,
                                       ),
                                       Container(
-                                        width: width * 0.55,
+                                        width: width * 0.5,
                                         child: Text(
                                           '${widget.location}',
                                           style: TextStyle(

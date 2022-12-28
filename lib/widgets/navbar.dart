@@ -58,9 +58,7 @@ class _NavBarState extends State<NavBar> {
                     children: [
                       InkWell(
                         onTap: () {
-                          myVibePop(
-                            context: context,
-                          );
+                          MyVibes(context: context);
                         },
                         child: Container(
                           padding: spacing(
@@ -68,7 +66,6 @@ class _NavBarState extends State<NavBar> {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: grayPrimary,
                             borderRadius: borderRadius(width),
                           ),
                           child: const Text(
@@ -86,9 +83,7 @@ class _NavBarState extends State<NavBar> {
                       ),
                       InkWell(
                         onTap: () {
-                          setupPop(
-                            context: context,
-                          );
+                          SetUpPopUp(context: context);
                         },
                         child: Container(
                           padding: spacing(
@@ -96,7 +91,6 @@ class _NavBarState extends State<NavBar> {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: grayPrimary,
                             borderRadius: borderRadius(width),
                           ),
                           child: const Text(
