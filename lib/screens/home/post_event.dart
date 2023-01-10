@@ -103,7 +103,6 @@ class _PostEventState extends State<PostEvent> {
     double height = deviceHeight(context: context);
     totalLikes = int.parse(widget.likes) + userLike;
 
-    print(loginUserId);
     return Container(
       margin: spacing(
         vertical: 10,
@@ -125,6 +124,7 @@ class _PostEventState extends State<PostEvent> {
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Stack(
               children: [
@@ -241,6 +241,7 @@ class _PostEventState extends State<PostEvent> {
                     child: Text(
                       "${widget.comments} Comments | ${widget.shares} Revibed",
                       style: TextStyle(
+                        fontSize: 10,
                         color: grayMed,
                       ),
                     ),
@@ -264,8 +265,8 @@ class _PostEventState extends State<PostEvent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/heart.png',
                         ),
@@ -276,6 +277,7 @@ class _PostEventState extends State<PostEvent> {
                       Text(
                         'React',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -292,8 +294,8 @@ class _PostEventState extends State<PostEvent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
                         ),
@@ -304,6 +306,7 @@ class _PostEventState extends State<PostEvent> {
                       Text(
                         'Comment',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -318,8 +321,8 @@ class _PostEventState extends State<PostEvent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
                         ),
@@ -330,6 +333,7 @@ class _PostEventState extends State<PostEvent> {
                       Text(
                         'Revibe',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -405,8 +409,8 @@ class _PostEventState extends State<PostEvent> {
                   Row(
                     children: [
                       Container(
-                        width: width * 0.15,
-                        height: width * 0.15,
+                        width: width * 0.12,
+                        height: width * 0.12,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
@@ -420,7 +424,7 @@ class _PostEventState extends State<PostEvent> {
                             )),
                         padding: const EdgeInsets.all(2),
                         child: CircleAvatar(
-                          radius: width * 0.075,
+                          radius: width * 0.06,
                           foregroundImage: NetworkImage(
                             widget.avatar,
                           ),

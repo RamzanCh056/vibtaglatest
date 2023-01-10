@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/provider/userProvider.dart';
 
 import '../utils/constant.dart';
 
@@ -10,7 +13,6 @@ class postOption extends StatelessWidget {
   final String title;
   final String icon;
   final Color iconColor;
-
 
   postOption({
     super.key,
@@ -59,10 +61,14 @@ class postOption extends StatelessWidget {
           SizedBox(
             width: width * 0.02,
           ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
+          Container(
+            width: width * 0.28,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 10,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           )
         ],

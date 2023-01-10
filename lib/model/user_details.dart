@@ -8,7 +8,6 @@ class UserDetails {
   final String followers_count;
   final String groups_count;
   final String likes_count;
-  final bool mutual_friends_count;
   UserDetails({
     required this.post_count,
     required this.album_count,
@@ -16,7 +15,6 @@ class UserDetails {
     required this.followers_count,
     required this.groups_count,
     required this.likes_count,
-    required this.mutual_friends_count,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,7 +25,6 @@ class UserDetails {
       'followers_count': followers_count,
       'groups_count': groups_count,
       'likes_count': likes_count,
-      'mutual_friends_count': mutual_friends_count,
     };
   }
 
@@ -39,7 +36,6 @@ class UserDetails {
       followers_count: map['followers_count'] as String,
       groups_count: map['groups_count'] as String,
       likes_count: map['likes_count'] as String,
-      mutual_friends_count: map['mutual_friends_count'] as bool,
     );
   }
 

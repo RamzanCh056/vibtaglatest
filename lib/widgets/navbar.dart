@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/front.dart';
 import 'package:vibetag/widgets/setup_pop.dart';
 
@@ -67,6 +68,7 @@ class _NavBarState extends State<NavBar> {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
+                            color: HexColor('#3D3D3D'),
                           ),
                           child: const Text(
                             'My Vibes',
@@ -92,6 +94,7 @@ class _NavBarState extends State<NavBar> {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
+                            color: HexColor('#3D3D3D'),
                           ),
                           child: const Text(
                             'Set up',
@@ -122,8 +125,8 @@ class _NavBarState extends State<NavBar> {
                                 vertical: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: grayPrimary,
                                 borderRadius: borderRadius(width),
+                                color: HexColor('#3D3D3D'),
                               ),
                               child: Image.asset(
                                   'assets/new/icons/notification.png'),
@@ -152,8 +155,8 @@ class _NavBarState extends State<NavBar> {
                                 vertical: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: grayPrimary,
                                 borderRadius: borderRadius(width),
+                                color: HexColor('#3D3D3D'),
                               ),
                               child: Image.asset(
                                 'assets/new/icons/profile.png',

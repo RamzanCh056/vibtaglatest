@@ -1,16 +1,37 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:svg_icon/svg_icon.dart';
+import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 
+import '../../model/user.dart';
+import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
+import '../auth/login.dart';
+
+int feedType = 1;
+
+void changeFeeds() async {
+  final data = {
+    'type': 'change_feeds',
+    'feed_type': feedType.toString(),
+    'user_id': loginUserId.toString(),
+  };
+  final result = await API().postData(data);
+}
 
 Options({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
-  bool feeds = true;
+  ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+
+  bool feeds = user.order_posts_by == '1' ? true : false;
   bool darkMode = false;
   return showDialog(
     context: context,
@@ -21,7 +42,7 @@ Options({required BuildContext context}) {
           insetPadding: EdgeInsets.only(
             top: 0,
             right: 15,
-            left: width * 0.5,
+            left: width * 0.45,
             bottom: height * 0.45,
           ),
           contentPadding: EdgeInsets.zero,
@@ -29,7 +50,7 @@ Options({required BuildContext context}) {
           iconPadding: EdgeInsets.zero,
           content: Container(
             width: width * 0.18,
-            height: height * 0.32,
+            height: height * 0.35,
             decoration: BoxDecoration(
               color: whitePrimary,
               borderRadius: const BorderRadius.only(
@@ -41,6 +62,7 @@ Options({required BuildContext context}) {
             ),
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(
                     height: 10,
@@ -143,10 +165,9 @@ Options({required BuildContext context}) {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
                         width: 10,
@@ -173,6 +194,7 @@ Options({required BuildContext context}) {
                       ),
                     ],
                   ),
+                  gap(h: 10),
                   Row(
                     children: [
                       const SizedBox(
@@ -200,17 +222,24 @@ Options({required BuildContext context}) {
                               ),
                             ),
                           ),
-                          Switch(
-                              value: feeds,
-                              onChanged: (value) {
-                                setState(() {
-                                  feeds = !feeds;
-                                });
-                              })
+                          Container(
+                            height: width * 0.045,
+                            child: Switch(
+                                value: feeds,
+                                onChanged: (value) {
+                                  setState(() {
+                                    feeds = !feeds;
+
+                                    feedType = feeds ? 1 : 0;
+                                  });
+                                  changeFeeds();
+                                }),
+                          )
                         ],
                       ),
                     ],
                   ),
+                  gap(h: 10),
                   Row(
                     children: [
                       const SizedBox(
@@ -238,16 +267,59 @@ Options({required BuildContext context}) {
                               ),
                             ),
                           ),
-                          Switch(
-                              value: darkMode,
-                              onChanged: (value) {
-                                setState(() {
-                                  darkMode = !darkMode;
-                                });
-                              })
+                          Container(
+                            height: width * 0.045,
+                            child: Switch(
+                                value: darkMode,
+                                onChanged: (value) {
+                                  setState(() {
+                                    darkMode = !darkMode;
+                                  });
+                                }),
+                          )
                         ],
                       ),
                     ],
+                  ),
+                  gap(h: 10),
+                  InkWell(
+                    onTap: () async {
+                      SharedPreferences preferences =
+                          await SharedPreferences.getInstance();
+                      await preferences.clear().then((value) {
+                        pushRoute(
+                          context: context,
+                          screen: const Login(),
+                        );
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          width: width * 0.045,
+                          child: SvgPicture.asset(
+                            'assets/new/svg/menu/logout.svg',
+                            width: width * 0.045,
+                            height: width * 0.045,
+                            color: grayMed,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          child: const Text(
+                            'Logout',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

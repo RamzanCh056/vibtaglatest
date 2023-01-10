@@ -41,6 +41,7 @@ class _AddPhotoState extends State<AddPhoto> {
   late List<dynamic> famouseUsers;
   bool isloadedFamousUsers = false;
   List<String> following = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -49,6 +50,9 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   void SaveInfo() async {
+    setState(() {
+      isLoading = true;
+    });
     final data = {
       'type': 'update_user_information_startup',
       'user_id': loginUserId.toString(),
@@ -59,9 +63,11 @@ class _AddPhotoState extends State<AddPhoto> {
     };
     final result = await API().postData(data);
     final response = jsonDecode(result.body);
+    setState(() {
+      isLoading = false;
+    });
     if (response['message'] == 'success') {
       ToastMessage(message: 'Your personal info saved successfully');
-
       PageScroller();
     }
   }
@@ -131,6 +137,9 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   void uploadImage() async {
+    setState(() {
+      isLoading = true;
+    });
     if (file != '') {
       final result = await API().uploadImage(
         path: file,
@@ -141,9 +150,15 @@ class _AddPhotoState extends State<AddPhoto> {
         PageScroller();
       }
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void pushFollowing() async {
+    setState(() {
+      isLoading = true;
+    });
     String followingUsers = following.join(',');
     final data = {
       'type': 'follow_user_startup',
@@ -165,6 +180,9 @@ class _AddPhotoState extends State<AddPhoto> {
         screen: const Home(),
       );
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String getInK(int number) {
@@ -365,38 +383,41 @@ class _AddPhotoState extends State<AddPhoto> {
                           Container(
                             height: height * 0.6,
                             width: width * 0.9,
+                            padding: spacing(
+                              horizontal: 15,
+                            ),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
                                     BorderRadius.circular(width * 0.02)),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                SizedBox(
-                                  height: height * 0.04,
-                                ),
-                                const Text(
-                                  'Add a Photo',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Text(
-                                  'Show your unique personality and style',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color.fromARGB(255, 110, 109, 109),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.06,
+                                Column(
+                                  children: const [
+                                    Text(
+                                      'Add a Photo',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Show your unique personality and style',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color:
+                                            Color.fromARGB(255, 110, 109, 109),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 InkWell(
                                   onTap: selectImage,
                                   child: Container(
-                                    width: width * 0.6,
-                                    height: width * 0.6,
+                                    width: width * 0.5,
+                                    height: width * 0.5,
                                     decoration: BoxDecoration(
                                       color: backgroundColor,
                                       borderRadius: BorderRadius.circular(
@@ -426,7 +447,7 @@ class _AddPhotoState extends State<AddPhoto> {
                                                 ),
                                                 const Icon(
                                                   Icons.camera_alt,
-                                                  size: 80,
+                                                  size: 60,
                                                   color: Color.fromARGB(
                                                       255, 153, 150, 150),
                                                 ),
@@ -436,7 +457,7 @@ class _AddPhotoState extends State<AddPhoto> {
                                                 const Text(
                                                   'Upload Your Photo',
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize: 12,
                                                     color: Color.fromARGB(
                                                         255, 153, 150, 150),
                                                     fontWeight: FontWeight.bold,
@@ -446,9 +467,6 @@ class _AddPhotoState extends State<AddPhoto> {
                                             ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.04,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -466,37 +484,39 @@ class _AddPhotoState extends State<AddPhoto> {
                                         child: const Text(
                                           'Skip',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             color: Colors.blue,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          uploadImage();
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.02,
-                                            vertical: height * 0.01,
-                                          ),
-                                          decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                width * 0.02,
-                                              )),
-                                          child: const Text(
-                                            'Save & Continue',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
+                                      isLoading
+                                          ? loadingSpinner()
+                                          : InkWell(
+                                              onTap: () {
+                                                uploadImage();
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: width * 0.02,
+                                                  vertical: height * 0.01,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.orange,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      width * 0.02,
+                                                    )),
+                                                child: const Text(
+                                                  'Save & Continue',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 )
@@ -655,136 +675,138 @@ class _AddPhotoState extends State<AddPhoto> {
                                 color: Colors.white,
                                 borderRadius:
                                     BorderRadius.circular(width * 0.02)),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: height * 0.04,
-                                ),
-                                const Text(
-                                  'Tell us about yourself',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Text(
-                                  'Share your information with our community',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color.fromARGB(255, 110, 109, 109),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.05,
-                                ),
-                                InputField2(
-                                  controller: fname,
-                                  title: 'First name',
-                                  hintText: 'Stephen',
-                                ),
-                                SizedBox(
-                                  height: height * 0.01,
-                                ),
-                                InputField2(
-                                  controller: lname,
-                                  title: 'Last name',
-                                  hintText: 'David',
-                                ),
-                                SizedBox(
-                                  height: height * 0.01,
-                                ),
-                                isloadedCountries
-                                    ? SelectCountry(
-                                        title: 'Country',
-                                        items: countryList,
-                                        controller: countryName,
-                                      )
-                                    : Container(),
-                                SizedBox(
-                                  height: height * 0.01,
-                                ),
-                                Container(
-                                  width: width * 0.8,
-                                  child: DateTimePicterField(
-                                    padding: 6,
-                                    hintText: 'Select',
-                                    selectedDate: selectedDate,
-                                    isSelected: isdateSelected,
-                                    onConfirm: (date) {
-                                      print('confirm $date');
-                                      bday.text =
-                                          DateFormat().add_yMd().format(date);
-
-                                      //                       (date) {
-                                      //   print('confirm $date');
-                                      //   setState(() {
-                                      //     formatedDate = DateFormat.yMMMMd().format(date);
-                                      setState(() {
-                                        isdateSelected = true;
-                                        selectedDate = bday.text;
-                                        // widget.selectedDate = formatedDate;
-                                        // isSelected = true;
-                                      });
-                                      //   });
-                                      // }
-                                    },
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.05,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Column(
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            PageScroller();
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Skip',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      SizedBox(
+                                        height: height * 0.02,
+                                      ),
+                                      const Text(
+                                        'Tell us about yourself',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          SaveInfo();
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.02,
-                                            vertical: height * 0.01,
-                                          ),
-                                          decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                width * 0.02,
-                                              )),
-                                          child: const Text(
-                                            'Save & Continue',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
+                                      const Text(
+                                        'Share your information with our community',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color.fromARGB(
+                                              255, 110, 109, 109),
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ],
                                   ),
-                                )
-                              ],
+                                  SizedBox(
+                                    height: height * 0.02,
+                                  ),
+                                  InputField2(
+                                    controller: fname,
+                                    title: 'First name',
+                                    hintText: 'Stephen',
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.01,
+                                  ),
+                                  InputField2(
+                                    controller: lname,
+                                    title: 'Last name',
+                                    hintText: 'David',
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.01,
+                                  ),
+                                  isloadedCountries
+                                      ? SelectCountry(
+                                          title: 'Country',
+                                          items: countryList,
+                                          controller: countryName,
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: height * 0.01,
+                                  ),
+                                  Container(
+                                    width: width * 0.8,
+                                    child: DateTimePicterField(
+                                      padding: 6,
+                                      hintText: 'Select',
+                                      selectedDate: selectedDate,
+                                      isSelected: isdateSelected,
+                                      onConfirm: (date) {
+                                        print('confirm $date');
+                                        bday.text =
+                                            DateFormat().add_yMd().format(date);
+
+                                        setState(() {
+                                          isdateSelected = true;
+                                          selectedDate = bday.text;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.05,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              PageScroller();
+                                            });
+                                          },
+                                          child: const Text(
+                                            'Skip',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        isLoading
+                                            ? loadingSpinner()
+                                            : InkWell(
+                                                onTap: () {
+                                                  SaveInfo();
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: width * 0.02,
+                                                    vertical: height * 0.01,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.orange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                        width * 0.02,
+                                                      )),
+                                                  child: const Text(
+                                                    'Save & Continue',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           )
                         ],
@@ -937,557 +959,591 @@ class _AddPhotoState extends State<AddPhoto> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(width * 0.02),
                             ),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: height * 0.04,
-                                ),
-                                const Text(
-                                  'Follow Our famous users',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: height * 0.02,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.001,
-                                ),
-                                const Text(
-                                  'Get latest activites from our popular users',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color.fromARGB(255, 110, 109, 109),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.02,
-                                ),
-                                Container(
-                                  width: width * 0.9,
-                                  height: height * 0.4,
-                                  alignment: Alignment.topCenter,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      width * 0.03,
+                                  const FittedBox(
+                                    child: Text(
+                                      'Follow Our famous users',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                  child: isloadedFamousUsers
-                                      ? ListView.builder(
-                                          itemCount: famouseUsers.length,
-                                          scrollDirection: Axis.vertical,
-                                          itemBuilder: (context, i) {
-                                            return Container(
-                                              width: width * 0.6,
-                                              alignment: Alignment.topCenter,
-                                              color: HexColor('#F9F9F9'),
-                                              margin: EdgeInsets.symmetric(
-                                                horizontal: width * 0.02,
-                                              ),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    child: Container(
-                                                      width: width * 0.6,
-                                                      height: height * 0.4,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          width * 0.01,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    child: Container(
-                                                      width: width * 0.6,
-                                                      height: height * 0.1,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                            width * 0.03,
+                                  const Text(
+                                    'Get latest activites from our popular users',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color.fromARGB(255, 110, 109, 109),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.02,
+                                  ),
+                                  Container(
+                                    width: width * 0.9,
+                                    height: height * 0.4,
+                                    alignment: Alignment.topCenter,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        width * 0.03,
+                                      ),
+                                    ),
+                                    child: isloadedFamousUsers
+                                        ? ListView.builder(
+                                            itemCount: famouseUsers.length,
+                                            scrollDirection: Axis.vertical,
+                                            itemBuilder: (context, i) {
+                                              return Container(
+                                                width: width * 0.6,
+                                                alignment: Alignment.topCenter,
+                                                color: HexColor('#F9F9F9'),
+                                                margin: EdgeInsets.symmetric(
+                                                  horizontal: width * 0.02,
+                                                ),
+                                                child: Stack(
+                                                  children: [
+                                                    Positioned(
+                                                      child: Container(
+                                                        width: width * 0.6,
+                                                        height: height * 0.4,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            width * 0.01,
                                                           ),
-                                                          topRight:
-                                                              Radius.circular(
-                                                            width * 0.03,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      child: Container(
+                                                        width: width * 0.6,
+                                                        height: height * 0.1,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                              width * 0.03,
+                                                            ),
+                                                            topRight:
+                                                                Radius.circular(
+                                                              width * 0.03,
+                                                            ),
+                                                          ),
+                                                          child: Image.network(
+                                                            famouseUsers[i]
+                                                                ['cover'],
+                                                            fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                        child: Image.network(
-                                                          famouseUsers[i]
-                                                              ['cover'],
-                                                          fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      top: height * 0.01,
+                                                      right: width * 0.02,
+                                                      child: Container(
+                                                        width: width * 0.05,
+                                                        height: width * 0.05,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            width * 0.01,
+                                                          ),
+                                                          child: famouseUsers[i]
+                                                                      [
+                                                                      'flag'] !=
+                                                                  null
+                                                              ? Image.network(
+                                                                  famouseUsers[
+                                                                          i]
+                                                                      ['flag'],
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )
+                                                              : Container(),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Positioned(
-                                                    top: height * 0.01,
-                                                    right: width * 0.02,
-                                                    child: Container(
-                                                      width: width * 0.05,
-                                                      height: width * 0.05,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          width * 0.01,
-                                                        ),
-                                                        child: Image.network(
-                                                          famouseUsers[i]
-                                                              ['flag'],
-                                                          fit: BoxFit.cover,
+                                                    Positioned(
+                                                      top: height * 0.045,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: Container(
+                                                        width: width * 0.2,
+                                                        height: width * 0.2,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            width * 0.01,
+                                                          ),
+                                                          child: Center(
+                                                            child: CircleAvatar(
+                                                              radius:
+                                                                  width * 0.1,
+                                                              foregroundImage:
+                                                                  NetworkImage(
+                                                                famouseUsers[i]
+                                                                    ['avatar'],
+                                                                scale: 1.2,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Positioned(
-                                                    top: height * 0.045,
-                                                    right: 0,
-                                                    left: 0,
-                                                    child: Container(
-                                                      width: width * 0.2,
-                                                      height: width * 0.2,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          width * 0.01,
+                                                    Positioned(
+                                                      top: height * 0.16,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: Container(
+                                                        padding: spacing(
+                                                          horizontal: 10,
                                                         ),
+                                                        width: double.maxFinite,
                                                         child: Center(
-                                                          child: CircleAvatar(
-                                                            radius: width * 0.1,
-                                                            foregroundImage:
-                                                                NetworkImage(
-                                                              famouseUsers[i]
-                                                                  ['avatar'],
-                                                              scale: 1.2,
-                                                            ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                "${famouseUsers[i]['first_name']} ${famouseUsers[i]['last_name']}",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                '@${famouseUsers[i]['username']}',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              famouseUsers[i][
+                                                                          'country_name'] !=
+                                                                      null
+                                                                  ? Text(
+                                                                      famouseUsers[
+                                                                              i]
+                                                                          [
+                                                                          'country_name'],
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            128,
+                                                                            126,
+                                                                            126),
+                                                                        fontSize:
+                                                                            8,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    )
+                                                                  : Container(),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Positioned(
-                                                    top: height * 0.16,
-                                                    right: 0,
-                                                    left: 0,
-                                                    child: Container(
-                                                      width: width * 0.25,
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                            "${famouseUsers[i]['first_name']} ${famouseUsers[i]['last_name']}",
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                    Positioned(
+                                                      bottom: 50,
+                                                      child: Container(
+                                                        width: width * 0.6,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                  width * 0.01,
+                                                                ),
+                                                                color: HexColor(
+                                                                    '#F0F0F0'),
+                                                              ),
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      width *
+                                                                          0.01,
+                                                                  vertical:
+                                                                      height *
+                                                                          0.005),
+                                                              child: Column(
+                                                                children: [
+                                                                  const FittedBox(
+                                                                    child: Text(
+                                                                      'Likes',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            10,
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            128,
+                                                                            126,
+                                                                            126),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Container(
+                                                                    width:
+                                                                        width *
+                                                                            0.15,
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            173,
+                                                                            170,
+                                                                            170),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Text(
+                                                                    famouseUsers[i]
+                                                                            [
+                                                                            'total_likes_']
+                                                                        .toString(),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                  width * 0.01,
+                                                                ),
+                                                                color: HexColor(
+                                                                    '#F0F0F0'),
+                                                              ),
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      width *
+                                                                          0.01,
+                                                                  vertical:
+                                                                      height *
+                                                                          0.005),
+                                                              child: Column(
+                                                                children: [
+                                                                  const FittedBox(
+                                                                    child: Text(
+                                                                      'Following',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            10,
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            128,
+                                                                            126,
+                                                                            126),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Container(
+                                                                    width:
+                                                                        width *
+                                                                            0.15,
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            173,
+                                                                            170,
+                                                                            170),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Text(
+                                                                    famouseUsers[i]
+                                                                            [
+                                                                            'total_following_']
+                                                                        .toString(),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              width:
+                                                                  width * 0.17,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                  width * 0.01,
+                                                                ),
+                                                                color: HexColor(
+                                                                    '#F0F0F0'),
+                                                              ),
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      width *
+                                                                          0.01,
+                                                                  vertical:
+                                                                      height *
+                                                                          0.005),
+                                                              child: Column(
+                                                                children: [
+                                                                  const FittedBox(
+                                                                    child: Text(
+                                                                      'Followers',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            10,
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            128,
+                                                                            126,
+                                                                            126),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Container(
+                                                                    width:
+                                                                        width *
+                                                                            0.15,
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            173,
+                                                                            170,
+                                                                            170),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height:
+                                                                        height *
+                                                                            0.002,
+                                                                  ),
+                                                                  Text(
+                                                                    famouseUsers[i]
+                                                                            [
+                                                                            'total_followers_']
+                                                                        .toString(),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      bottom: 10,
+                                                      left: 30,
+                                                      right: 30,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          if (following.contains(
+                                                              famouseUsers[i][
+                                                                  'user_id'])) {
+                                                            following.remove(
+                                                                famouseUsers[i][
+                                                                        'user_id']
+                                                                    .toString());
+                                                          } else {
+                                                            following.add(
+                                                                famouseUsers[i][
+                                                                        'user_id']
+                                                                    .toString());
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                        child: Container(
+                                                          padding: spacing(
+                                                            horizontal: 20,
+                                                            vertical: 5,
+                                                          ),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Colors.orange,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              6,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            '@${famouseUsers[i]['username']}',
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.black,
+                                                          child: Text(
+                                                            following.contains(
+                                                                    famouseUsers[
+                                                                            i][
+                                                                        'user_id'])
+                                                                ? 'Following'
+                                                                : 'Follow',
+                                                            style: TextStyle(
+                                                              color: white,
                                                               fontSize: 12,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            famouseUsers[i][
-                                                                'country_name'],
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      128,
-                                                                      126,
-                                                                      126),
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 80,
-                                                    child: Container(
-                                                      width: width * 0.6,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceEvenly,
-                                                        children: [
-                                                          Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                width * 0.01,
-                                                              ),
-                                                              color: HexColor(
-                                                                  '#F0F0F0'),
-                                                            ),
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        width *
-                                                                            0.01,
-                                                                    vertical:
-                                                                        height *
-                                                                            0.005),
-                                                            child: Column(
-                                                              children: [
-                                                                const FittedBox(
-                                                                  child: Text(
-                                                                    'Likes',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          10,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          128,
-                                                                          126,
-                                                                          126),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Container(
-                                                                  width: width *
-                                                                      0.15,
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          173,
-                                                                          170,
-                                                                          170),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Text(
-                                                                  famouseUsers[
-                                                                              i]
-                                                                          [
-                                                                          'total_likes_']
-                                                                      .toString(),
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                width * 0.01,
-                                                              ),
-                                                              color: HexColor(
-                                                                  '#F0F0F0'),
-                                                            ),
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        width *
-                                                                            0.01,
-                                                                    vertical:
-                                                                        height *
-                                                                            0.005),
-                                                            child: Column(
-                                                              children: [
-                                                                const FittedBox(
-                                                                  child: Text(
-                                                                    'Following',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          10,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          128,
-                                                                          126,
-                                                                          126),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Container(
-                                                                  width: width *
-                                                                      0.15,
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          173,
-                                                                          170,
-                                                                          170),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Text(
-                                                                  famouseUsers[
-                                                                              i]
-                                                                          [
-                                                                          'total_following_']
-                                                                      .toString(),
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            width: width * 0.17,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                width * 0.01,
-                                                              ),
-                                                              color: HexColor(
-                                                                  '#F0F0F0'),
-                                                            ),
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        width *
-                                                                            0.01,
-                                                                    vertical:
-                                                                        height *
-                                                                            0.005),
-                                                            child: Column(
-                                                              children: [
-                                                                const FittedBox(
-                                                                  child: Text(
-                                                                    'Followers',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          10,
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          128,
-                                                                          126,
-                                                                          126),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Container(
-                                                                  width: width *
-                                                                      0.15,
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          173,
-                                                                          170,
-                                                                          170),
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                      height *
-                                                                          0.002,
-                                                                ),
-                                                                Text(
-                                                                  famouseUsers[
-                                                                              i]
-                                                                          [
-                                                                          'total_followers_']
-                                                                      .toString(),
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 10,
-                                                    left: 30,
-                                                    right: 30,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        if (following.contains(
-                                                            famouseUsers[i]
-                                                                ['user_id'])) {
-                                                          following.remove(
-                                                              famouseUsers[i][
-                                                                      'user_id']
-                                                                  .toString());
-                                                        } else {
-                                                          following.add(
-                                                              famouseUsers[i][
-                                                                      'user_id']
-                                                                  .toString());
-                                                        }
-                                                        setState(() {});
-                                                      },
-                                                      child: Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        width: width * 0.3,
-                                                        height: height * 0.05,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.orange,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            width * 0.03,
-                                                          ),
-                                                        ),
-                                                        child: Text(
-                                                          following.contains(
-                                                                  famouseUsers[
-                                                                          i][
-                                                                      'user_id'])
-                                                              ? 'Following'
-                                                              : 'Follow',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : loadingSpinner(),
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.02,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            pushReplacement(
+                                              context: context,
+                                              screen: Home(),
                                             );
                                           },
-                                        )
-                                      : loadingSpinner(),
-                                ),
-                                SizedBox(
-                                  height: height * 0.02,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          pushReplacement(
-                                            context: context,
-                                            screen: Home(),
-                                          );
-                                        },
-                                        child: const Text(
-                                          'Skip',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          pushFollowing();
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.02,
-                                            vertical: height * 0.01,
-                                          ),
-                                          decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                width * 0.02,
-                                              )),
-                                          child: const Text(
-                                            'Finish',
+                                          child: Text(
+                                            'Skip',
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
+                                              fontSize: 12,
+                                              color: blue,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                                        isLoading
+                                            ? loadingSpinner()
+                                            : InkWell(
+                                                onTap: () {
+                                                  pushFollowing();
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: width * 0.02,
+                                                    vertical: height * 0.01,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      color: orange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                        width * 0.02,
+                                                      )),
+                                                  child: Text(
+                                                    'Finish',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ],

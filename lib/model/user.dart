@@ -34,6 +34,7 @@ class ModelUser {
   final String? post_privacy;
   final String? mailru;
   final String? language;
+  final String? order_posts_by;
   final String? email_code;
   final String? following_number;
   final String? src;
@@ -70,6 +71,7 @@ class ModelUser {
     required this.post_privacy,
     required this.mailru,
     required this.language,
+    this.order_posts_by,
     required this.email_code,
     this.following_number,
     required this.src,
@@ -110,6 +112,7 @@ class ModelUser {
       'post_privacy': post_privacy,
       'mailru': mailru,
       'language': language,
+      'order_posts_by': order_posts_by,
       'email_code': email_code,
       'following_number': following_number,
       'src': src,
@@ -150,6 +153,7 @@ class ModelUser {
       post_privacy: map['post_privacy'] != null ? map['post_privacy'] as String : null,
       mailru: map['mailru'] != null ? map['mailru'] as String : null,
       language: map['language'] != null ? map['language'] as String : null,
+      order_posts_by: map['order_posts_by'] != null ? map['order_posts_by'] as String : null,
       email_code: map['email_code'] != null ? map['email_code'] as String : null,
       following_number: map['following_number'] != null ? map['following_number'] as String : null,
       src: map['src'] != null ? map['src'] as String : null,

@@ -1,47 +1,50 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:readmore/readmore.dart';
-import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/methods/api.dart';
 
+import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/home/comment.dart';
 import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
+import 'package:path/path.dart' as p;
 
 import '../../utils/constant.dart';
 
 class Post extends StatefulWidget {
   final String avatar;
+  final String first;
   final String name;
   final String postId;
   final String postTime;
   final String postText;
   final String postFile;
   final int videoViews;
+  final Map<String, dynamic> reactions;
   final String feelings;
   final String location;
   final String comments;
   final String likes;
+  final String likeString;
+
   final String shares;
 
   const Post({
     Key? key,
     required this.avatar,
+    required this.first,
     required this.name,
     required this.postId,
     required this.postTime,
     required this.postText,
     required this.postFile,
     required this.videoViews,
+    required this.reactions,
     required this.feelings,
     required this.location,
     required this.comments,
     required this.likes,
+    required this.likeString,
     required this.shares,
   }) : super(key: key);
 
@@ -56,6 +59,8 @@ class _PostState extends State<Post> {
   String responseData = '';
   int totalLikes = 0;
   int userLike = 0;
+  List<int> reactionOnPost = [];
+  List<Widget> reactionsOnPostList = [];
 
   final List<String> reactions = [
     'assets/new/gif/thumbs_up.gif',
@@ -67,7 +72,16 @@ class _PostState extends State<Post> {
     'assets/new/gif/weary_face.gif',
     'assets/new/gif/broken_heart.gif',
   ];
-
+  final List<String> reactionsText = [
+    'Like',
+    'Love',
+    'Haha',
+    'Wow',
+    'Sad',
+    'Angry',
+    'Cry',
+    'Break'
+  ];
   void reactOnPost() async {
     setState(() {
       isAdded = false;
@@ -81,7 +95,7 @@ class _PostState extends State<Post> {
     };
     final result = await API().postData(data);
     final response = jsonDecode(result.body)['status'];
-    if (response == 200) {
+    if (response == 200 && !(widget.reactions['is_reacted'])) {
       userLike = 1;
     }
     setState(() {
@@ -90,10 +104,27 @@ class _PostState extends State<Post> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    postReactionsList();
+    super.initState();
+  }
+
+  postReactionsList() {
+    for (var i = 0; i < 8; i++) {
+      if (widget.reactions['${i + 1}'] != null) {
+        reactionOnPost.add(i);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     totalLikes = int.parse(widget.likes) + userLike;
+    String fileExtension = p.extension(widget.postFile);
+    bool isAudio = fileExtension == '.mp3' || fileExtension == '.wave';
 
     return Container(
       width: double.maxFinite,
@@ -110,14 +141,15 @@ class _PostState extends State<Post> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           postFile(
-              file: widget.postFile,
-              context: context,
-              videoViews: widget.videoViews),
+            file: widget.postFile,
+            context: context,
+          ),
           Container(
             padding: spacing(
-              horizontal: 15,
+              horizontal: 5,
               vertical: 5,
             ),
             decoration: BoxDecoration(
@@ -127,28 +159,59 @@ class _PostState extends State<Post> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: spacing(
-                    horizontal: 15,
-                    vertical: 5,
-                  ),
-                  margin: spacing(
-                    horizontal: 3,
-                  ),
+                  margin: const EdgeInsets.only(left: 10),
                   decoration: BoxDecoration(
                     color: grayLight,
                     borderRadius: borderRadius(width),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Image.asset('assets/new/icons/heavy_smil.png'),
-                      Image.asset('assets/new/icons/small_heart.png'),
-                      gap(w: 5),
-                      Text(
-                        "${totalLikes}",
-                        style: TextStyle(
-                          color: grayMed,
+                      Container(
+                        width: 0,
+                        height: 0,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: reactionOnPost.length,
+                            reverse: true,
+                            itemBuilder: (context, i) {
+                              reactionsOnPostList.add(Positioned(
+                                left: i * 12,
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius(width),
+                                  ),
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: borderRadius(width),
+                                      child: Image.asset(
+                                        reactions[reactionOnPost[i]],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ));
+                              return Container();
+                            }),
+                      ),
+                      Container(
+                        width: 15 * reactionOnPost.length.toDouble(),
+                        height: 25,
+                        child: Stack(
+                          children: reactionsOnPostList,
                         ),
                       ),
+                      gap(w: 5),
+                    widget.videoViews != 0? gap(): Text(
+                        widget.likeString,
+                        style: TextStyle(
+                          color: grayMed,
+                          fontSize: 10,
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -157,11 +220,34 @@ class _PostState extends State<Post> {
                     horizontal: 15,
                     vertical: 5,
                   ),
-                  child: Text(
-                    "${widget.comments} Comments | ${widget.shares} Revibed",
-                    style: TextStyle(
-                      color: grayMed,
-                    ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "${widget.comments} Comments | ${widget.shares} Revibed",
+                        style: TextStyle(
+                          color: grayMed,
+                          fontSize: 10,
+                        ),
+                      ),
+                      widget.videoViews != 0 ? gap(w: 10) : gap(),
+                      widget.videoViews != 0
+                          ? isAudio
+                              ? Text(
+                                  '${getInK(number: widget.videoViews)} listen',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                )
+                              : Text(
+                                  '${getInK(number: widget.videoViews)} views',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                )
+                          : const SizedBox(),
+                    ],
                   ),
                 )
               ],
@@ -183,19 +269,31 @@ class _PostState extends State<Post> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: width * 0.04,
-                      height: width * 0.04,
-                      child: Image.asset(
-                        'assets/new/icons/heart.png',
-                      ),
+                      width: width * 0.03,
+                      height: width * 0.03,
+                      child: reactionValue != 0
+                          ? Image.asset(reactions[reactionValue - 1])
+                          : widget.reactions['is_reacted']
+                              ? Image.asset(reactions[
+                                  int.parse(widget.reactions['type']) - 1])
+                              : Image.asset(
+                                  'assets/new/icons/heart.png',
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                     const SizedBox(
                       width: 4,
                     ),
                     Text(
-                      'React',
+                      reactionValue != 0
+                          ? reactionsText[reactionValue - 1]
+                          : widget.reactions['is_reacted']
+                              ? reactionsText[
+                                  int.parse(widget.reactions['type']) - 1]
+                              : 'React',
                       style: TextStyle(
                         color: grayMed,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -211,8 +309,8 @@ class _PostState extends State<Post> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: width * 0.04,
-                      height: width * 0.04,
+                      width: width * 0.03,
+                      height: width * 0.03,
                       child: Image.asset(
                         'assets/new/icons/comment.png',
                       ),
@@ -223,6 +321,7 @@ class _PostState extends State<Post> {
                     Text(
                       'Comment',
                       style: TextStyle(
+                        fontSize: 12,
                         color: grayMed,
                       ),
                     ),
@@ -237,8 +336,8 @@ class _PostState extends State<Post> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: width * 0.04,
-                      height: width * 0.04,
+                      width: width * 0.03,
+                      height: width * 0.03,
                       child: Image.asset(
                         'assets/new/icons/revibe.png',
                       ),
@@ -249,6 +348,7 @@ class _PostState extends State<Post> {
                     Text(
                       'Revibe',
                       style: TextStyle(
+                        fontSize: 12,
                         color: grayMed,
                       ),
                     ),
@@ -318,23 +418,16 @@ class _PostState extends State<Post> {
               left: 10.0,
               right: 10,
             ),
-            child: ReadMoreText(
-              Html(data: widget.postText).toString(),
-              trimLines: 2,
-              colorClickableText: orangePrimary,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: 'Read more',
-              trimExpandedText: 'Read less',
-              moreStyle: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: orangePrimary,
-              ),
-              lessStyle: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: orangePrimary,
-              ),
+            child: Html(
+              data: widget.postText,
+              style: {
+                "body": Style(
+                  fontSize: FontSize(12.0),
+                  textOverflow: TextOverflow.ellipsis,
+                  color: Colors.black54,
+                  maxLines: 3,
+                ),
+              },
             ),
           ),
           SizedBox(
@@ -353,8 +446,8 @@ class _PostState extends State<Post> {
                 Row(
                   children: [
                     Container(
-                      width: width * 0.15,
-                      height: width * 0.15,
+                      width: width * 0.12,
+                      height: width * 0.12,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                           borderRadius: borderRadius(width),
@@ -368,7 +461,7 @@ class _PostState extends State<Post> {
                           )),
                       padding: const EdgeInsets.all(2),
                       child: CircleAvatar(
-                        radius: width * 0.075,
+                        radius: width * 0.06,
                         foregroundImage: NetworkImage(
                           widget.avatar,
                         ),
@@ -383,10 +476,13 @@ class _PostState extends State<Post> {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              widget.name,
-                              style: TextStyle(
-                                color: blackPrimary,
+                            FittedBox(
+                              child: Text(
+                                widget.name,
+                                style: TextStyle(
+                                  color: blackPrimary,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
                             gap(

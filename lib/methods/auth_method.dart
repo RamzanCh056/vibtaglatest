@@ -26,9 +26,11 @@ class AuthMethod {
   }) async {
     final data = {
       'type': 'get_user_data',
+      'sub_type':'profile_info',
       'user_profile_id': userId,
       'user_id': userId,
     };
+    print(userId);
     final result = await API().postData(data);
     final jsonData = jsonDecode(result.body)['user_data'];
     Provider.of<UserProvider>(context, listen: false).setUser(

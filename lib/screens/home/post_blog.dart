@@ -3,12 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:readmore/readmore.dart';
-import 'package:svg_icon/svg_icon.dart';
+
 import 'package:vibetag/screens/home/comment.dart';
 import 'package:vibetag/screens/home/revibe.dart';
-
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
@@ -21,6 +18,8 @@ class BlogPost extends StatefulWidget {
   final String postText;
   final dynamic blog;
   final String about;
+  final String first;
+  final Map<String, dynamic> reactions;
 
   final String likes;
   final String comments;
@@ -35,6 +34,8 @@ class BlogPost extends StatefulWidget {
     required this.postText,
     required this.blog,
     required this.about,
+    required this.first,
+    required this.reactions,
     required this.likes,
     required this.comments,
     required this.shares,
@@ -51,6 +52,7 @@ class _BlogPostState extends State<BlogPost> {
   String responseData = '';
   int totalLikes = 0;
   int userLike = 0;
+  List<int> reactionOnPost = [];
 
   final List<String> reactions = [
     'assets/new/gif/thumbs_up.gif',
@@ -82,6 +84,20 @@ class _BlogPostState extends State<BlogPost> {
     setState(() {
       isAdded = true;
     });
+  }
+
+  void initState() {
+    // TODO: implement initState
+    postReactionsList();
+    super.initState();
+  }
+
+  postReactionsList() {
+    for (var i = 0; i < 8; i++) {
+      if (widget.reactions['${i + 1}'] != null) {
+        reactionOnPost.add(i);
+      }
+    }
   }
 
   @override
@@ -126,23 +142,34 @@ class _BlogPostState extends State<BlogPost> {
                     vertical: 10,
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        '${widget.blog['title']}',
+                      Html(
+                        data: widget.blog['title'],
+                        style: {
+                          "body": Style(
+                              fontSize: FontSize(14.0),
+                              fontWeight: FontWeight.bold,
+                              textOverflow: TextOverflow.ellipsis,
+                              color: graySecondary,
+                              maxLines: 2),
+                        },
                       ),
-                      gap(h: 7),
-                      Text(
-                        '${widget.blog['description']}',
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
+                      Html(
+                        data: widget.blog['description'],
+                        style: {
+                          "body": Style(
+                            fontSize: FontSize(12.0),
+                            fontWeight: FontWeight.bold,
+                            textOverflow: TextOverflow.ellipsis,
+                            color: grayMed,
+                          ),
+                        },
                       ),
                     ],
                   ),
                 ),
                 gap(h: 5),
-                gap(h: 10),
               ],
             ),
             Container(
@@ -169,16 +196,61 @@ class _BlogPostState extends State<BlogPost> {
                       borderRadius: borderRadius(width),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Image.asset('assets/new/icons/heavy_smil.png'),
-                        Image.asset('assets/new/icons/small_heart.png'),
-                        gap(w: 5),
-                        Text(
-                          "${totalLikes}",
-                          style: TextStyle(
-                            color: grayMed,
-                          ),
+                        Container(
+                          width: 37 * reactionOnPost.length.toDouble(),
+                          height: reactionOnPost.length > 0 ? height * 0.05 : 0,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: reactionOnPost.length,
+                              reverse: true,
+                              itemBuilder: (context, i) {
+                                return Container(
+                                    width: 35,
+                                    height: 35,
+                                    padding: spacing(
+                                      horizontal: 5,
+                                      vertical: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: borderRadius(width),
+                                    ),
+                                    child: Center(
+                                      child: ClipRRect(
+                                        borderRadius: borderRadius(width),
+                                        child: Image.asset(
+                                          reactions[reactionOnPost[i]],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ));
+                              }),
                         ),
+                        gap(w: 2),
+                        widget.reactions['is_reacted']
+                            ? totalLikes > 1
+                                ? Text(
+                                    "You and ${totalLikes - 1} other(s)",
+                                    style: TextStyle(
+                                      color: grayMed,
+                                      fontSize: 10,
+                                    ),
+                                  )
+                                : Text(
+                                    "You, ${widget.first}",
+                                    style: TextStyle(
+                                      color: grayMed,
+                                      fontSize: 10,
+                                    ),
+                                  )
+                            : Text(
+                                '${totalLikes}',
+                                style: TextStyle(
+                                  color: grayMed,
+                                  fontSize: 10,
+                                ),
+                              ),
                       ],
                     ),
                   ),
@@ -190,6 +262,7 @@ class _BlogPostState extends State<BlogPost> {
                     child: Text(
                       "${widget.comments} Comments | ${widget.shares} Revibed",
                       style: TextStyle(
+                        fontSize: 10,
                         color: grayMed,
                       ),
                     ),
@@ -213,18 +286,30 @@ class _BlogPostState extends State<BlogPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
-                        child: Image.asset(
-                          'assets/new/icons/heart.png',
-                        ),
+                        width: width * 0.03,
+                        height: width * 0.03,
+                        child: reactionValue != 0
+                            ? Image.asset(reactions[reactionValue - 1])
+                            : widget.reactions['is_reacted']
+                                ? Image.asset(reactions[
+                                    int.parse(widget.reactions['type']) - 1])
+                                : Image.asset(
+                                    'assets/new/icons/heart.png',
+                                    fit: BoxFit.cover,
+                                  ),
                       ),
                       const SizedBox(
                         width: 4,
                       ),
                       Text(
-                        'React',
+                        reactionValue != 0
+                            ? reactionsText[reactionValue - 1]
+                            : widget.reactions['is_reacted']
+                                ? reactionsText[
+                                    int.parse(widget.reactions['type']) - 1]
+                                : 'React',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -241,8 +326,8 @@ class _BlogPostState extends State<BlogPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
                         ),
@@ -253,6 +338,7 @@ class _BlogPostState extends State<BlogPost> {
                       Text(
                         'Comment',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -267,8 +353,8 @@ class _BlogPostState extends State<BlogPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
                         ),
@@ -279,6 +365,7 @@ class _BlogPostState extends State<BlogPost> {
                       Text(
                         'Revibe',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -341,16 +428,22 @@ class _BlogPostState extends State<BlogPost> {
                   )
                 : Container(),
             gap(h: 10),
-            ReadMoreText(
-              widget.postText,
-              trimLines: 2,
-              colorClickableText: orangePrimary,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: 'Read more',
-              trimExpandedText: 'Read less',
-              moreStyle: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10,
+              ),
+              child: Html(
+                data: widget.postText,
+                style: {
+                  "body": Style(
+                    textOverflow: TextOverflow.ellipsis,
+                    fontSize: FontSize(12.0),
+                
+                  color: Colors.black54,
+                    maxLines: 3,
+                  ),
+                },
               ),
             ),
             gap(h: 10),
@@ -367,8 +460,8 @@ class _BlogPostState extends State<BlogPost> {
                   Row(
                     children: [
                       Container(
-                        width: width * 0.15,
-                        height: width * 0.15,
+                        width: width * 0.12,
+                        height: width * 0.12,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
@@ -382,7 +475,7 @@ class _BlogPostState extends State<BlogPost> {
                             )),
                         padding: const EdgeInsets.all(2),
                         child: CircleAvatar(
-                          radius: width * 0.075,
+                          radius: width * 0.06,
                           foregroundImage: NetworkImage(
                             widget.avatar,
                           ),

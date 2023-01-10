@@ -66,9 +66,13 @@ class _HeaderState extends State<Header> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintStyle: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: grayMed,
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                              top: 0,
+                              bottom: 8,
                             ),
                             hintText: 'Search for anything',
                           ),

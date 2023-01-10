@@ -33,6 +33,7 @@ Color darkGrayNew = HexColor('#434950');
 Color orangePrimary = HexColor('#FF9200');
 Color orangeSecondary = HexColor('#FDBA31');
 Color blackPrimary = HexColor('#212121');
+Color blackLight = HexColor('#7D8CAC');
 Color whitePrimary = HexColor('#F8F9FB');
 Color whiteSecondary = HexColor('#F1F4FB');
 Color grayLight = HexColor('#F1F4FB');
@@ -54,6 +55,8 @@ double iconMed = 28.0;
 double iconMin = 26.0;
 
 String API_Url = 'https://vibetag.com/app_api.php';
+final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
+
 String loginUserId = '';
 
 double deviceHeight({required BuildContext context}) {
@@ -101,7 +104,7 @@ Widget loadingSpinner() {
   return Center(
     child: Image.asset(
       'assets/images/spinner.png',
-      width: 100,
+      width: 50,
     ),
   );
 }
@@ -148,3 +151,24 @@ SizedBox gap({
     height: h,
   );
 }
+
+final List<String> reactions = [
+  'assets/new/gif/thumbs_up.gif',
+  'assets/new/gif/sparkling_heart.gif',
+  'assets/new/gif/squinting_face.gif',
+  'assets/new/gif/hushed_face.gif',
+  'assets/new/gif/weary_face.gif',
+  'assets/new/gif/pouting_face.gif',
+  'assets/new/gif/weary_face.gif',
+  'assets/new/gif/broken_heart.gif',
+];
+final List<String> reactionsText = [
+  'Like',
+  'Love',
+  'Haha',
+  'Wow',
+  'Sad',
+  'Angry',
+  'Cry',
+  'Heartbroken'
+];

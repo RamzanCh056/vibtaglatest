@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
@@ -108,6 +109,7 @@ class _PoolPostState extends State<PoolPost> {
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -118,18 +120,18 @@ class _PoolPostState extends State<PoolPost> {
                   padding: spacing(
                     horizontal: 10,
                   ),
-                  child: ReadMoreText(
-                    widget.postText,
-                    trimLines: 2,
-                    colorClickableText: orangePrimary,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: 'Read more',
-                    trimExpandedText: 'Read less',
-                    moreStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Html(
+                    data: widget.postText,
+                    style: {
+                      "body": Style(
+                        fontSize: FontSize(12.0),
+                        color: Colors.black54,
+                        textOverflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      ),
+                    },
                   ),
+               
                 ),
                 gap(h: 10),
                 Container(
@@ -283,6 +285,7 @@ class _PoolPostState extends State<PoolPost> {
                       "${widget.comments} Comments | ${widget.shares} Revibed",
                       style: TextStyle(
                         color: grayMed,
+                        fontSize: 10,
                       ),
                     ),
                   )
@@ -305,8 +308,8 @@ class _PoolPostState extends State<PoolPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/heart.png',
                         ),
@@ -317,6 +320,7 @@ class _PoolPostState extends State<PoolPost> {
                       Text(
                         'React',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -333,8 +337,8 @@ class _PoolPostState extends State<PoolPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
                         ),
@@ -345,6 +349,7 @@ class _PoolPostState extends State<PoolPost> {
                       Text(
                         'Comment',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -359,8 +364,8 @@ class _PoolPostState extends State<PoolPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
                         ),
@@ -371,6 +376,7 @@ class _PoolPostState extends State<PoolPost> {
                       Text(
                         'Revibe',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -448,8 +454,8 @@ class _PoolPostState extends State<PoolPost> {
                   Row(
                     children: [
                       Container(
-                        width: width * 0.15,
-                        height: width * 0.15,
+                        width: width * 0.12,
+                        height: width * 0.12,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
@@ -463,7 +469,7 @@ class _PoolPostState extends State<PoolPost> {
                             )),
                         padding: const EdgeInsets.all(2),
                         child: CircleAvatar(
-                          radius: width * 0.075,
+                          radius: width * 0.06,
                           foregroundImage: NetworkImage(
                             widget.avatar,
                           ),

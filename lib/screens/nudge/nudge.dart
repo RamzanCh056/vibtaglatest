@@ -15,14 +15,14 @@ import 'package:vibetag/widgets/secondary_footer.dart';
 import '../drawer/shop_drawer.dart';
 import '../shop/shop_header.dart';
 
-class Nodge extends StatefulWidget {
-  const Nodge({super.key});
+class Nudge extends StatefulWidget {
+  const Nudge({super.key});
 
   @override
-  State<Nodge> createState() => _NodgeState();
+  State<Nudge> createState() => _NudgeState();
 }
 
-class _NodgeState extends State<Nodge> {
+class _NudgeState extends State<Nudge> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
 
   @override

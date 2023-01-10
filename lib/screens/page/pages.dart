@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/screens/page/page.dart';
+import 'package:vibetag/screens/page/page_old.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
@@ -162,7 +162,7 @@ class _PagesState extends State<Pages> {
                                               onTap: () {
                                                 pushRoute(
                                                   context: context,
-                                                  screen: const PageScreen(),
+                                                  screen: const PageScreen_Old(),
                                                 );
                                               },
                                               child: Container(
@@ -308,7 +308,7 @@ class _PagesState extends State<Pages> {
                                               onTap: () {
                                                 pushRoute(
                                                   context: context,
-                                                  screen: const PageScreen(),
+                                                  screen: const PageScreen_Old(),
                                                 );
                                               },
                                               child: Container(

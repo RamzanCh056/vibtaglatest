@@ -301,11 +301,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
                                               child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -315,7 +318,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -347,7 +350,7 @@ class _ShopState extends State<Shop> {
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -372,7 +375,7 @@ class _ShopState extends State<Shop> {
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -390,7 +393,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -406,7 +409,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -421,74 +424,6 @@ class _ShopState extends State<Shop> {
                                     );
                                   },
                                 ),
-                              ),
-                              SizedBox(
-                                height: height * 0.01,
-                              ),
-                              Container(
-                                padding: spacing(
-                                  horizontal: width * 0.05,
-                                  vertical: height * 0.007,
-                                ),
-                                // child: Row(
-                                //   mainAxisAlignment:
-                                //       MainAxisAlignment.spaceBetween,
-                                //   children: [
-                                //     Container(
-                                //       padding: spacing(
-                                //         horizontal: width * 0.05,
-                                //         vertical: height * 0.007,
-                                //       ),
-                                //       decoration: BoxDecoration(
-                                //         color: HexColor('#000000'),
-                                //         borderRadius: borderRadius(10),
-                                //       ),
-                                //       child: const Text(
-                                //         'See offers',
-                                //         style: TextStyle(
-                                //           color: Colors.white,
-                                //           fontSize: 20,
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     Row(
-                                //       mainAxisAlignment:
-                                //           MainAxisAlignment.center,
-                                //       crossAxisAlignment:
-                                //           CrossAxisAlignment.center,
-                                //       children: [
-                                //         Container(
-                                //           width: width * 0.1,
-                                //           height: width * 0.1,
-                                //           padding: const EdgeInsets.all(5),
-                                //           decoration: BoxDecoration(
-                                //             color: HexColor('#DCDCDC'),
-                                //             borderRadius: borderRadius(10),
-                                //           ),
-                                //           child: const Icon(
-                                //             Icons.keyboard_arrow_left_outlined,
-                                //             size: 32,
-                                //           ),
-                                //         ),
-                                //         SizedBox(
-                                //           width: width * 0.01,
-                                //         ),
-                                //         Container(
-                                //           width: width * 0.1,
-                                //           height: width * 0.1,
-                                //           decoration: BoxDecoration(
-                                //             color: HexColor('#DCDCDC'),
-                                //             borderRadius: borderRadius(10),
-                                //           ),
-                                //           child: const Icon(
-                                //             Icons.keyboard_arrow_right_outlined,
-                                //             size: 32,
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     )
-                                //   ],
-                                // ),
                               ),
                             ],
                           ),
@@ -620,11 +555,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
                                               child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -634,7 +572,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -666,7 +604,7 @@ class _ShopState extends State<Shop> {
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -691,7 +629,7 @@ class _ShopState extends State<Shop> {
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -709,7 +647,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -725,7 +663,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -810,11 +748,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
                                               child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -824,7 +765,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -856,7 +797,7 @@ class _ShopState extends State<Shop> {
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -881,7 +822,7 @@ class _ShopState extends State<Shop> {
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -899,7 +840,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -915,7 +856,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1045,11 +986,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
                                               child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -1059,7 +1003,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -1091,7 +1035,7 @@ class _ShopState extends State<Shop> {
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1116,7 +1060,7 @@ class _ShopState extends State<Shop> {
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1134,7 +1078,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -1150,7 +1094,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1367,11 +1311,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
                                               child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -1381,7 +1328,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -1413,7 +1360,7 @@ class _ShopState extends State<Shop> {
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1438,7 +1385,7 @@ class _ShopState extends State<Shop> {
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1456,7 +1403,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -1472,7 +1419,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1652,11 +1599,14 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
+                                              width: width * 0.3,
                                               alignment: Alignment.center,
-                                              child: Text(
+                                              child: const Text(
                                                 'Toomax Storway 1670',
                                                 style: TextStyle(
                                                   fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ),
@@ -1666,7 +1616,7 @@ class _ShopState extends State<Shop> {
                                             left: 5,
                                             child: Container(
                                               height: height * 0.05,
-                                              width: width * 0.37,
+                                              width: width * 0.35,
                                               alignment: Alignment.center,
                                               child: Row(
                                                 mainAxisAlignment:
@@ -1694,11 +1644,11 @@ class _ShopState extends State<Shop> {
                                                           borderRadius:
                                                               borderRadius(10),
                                                         ),
-                                                        child: Text(
+                                                        child: const Text(
                                                           'Gardens & Pets',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1719,11 +1669,11 @@ class _ShopState extends State<Shop> {
                                                           borderRadius:
                                                               borderRadius(10),
                                                         ),
-                                                        child: Text(
+                                                        child: const Text(
                                                           'Storage',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1741,7 +1691,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color: HexColor(
                                                                 '#A0A0A0'),
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                             decoration:
                                                                 TextDecoration
                                                                     .lineThrough,
@@ -1757,7 +1707,7 @@ class _ShopState extends State<Shop> {
                                                           style: TextStyle(
                                                             color:
                                                                 Colors.orange,
-                                                            fontSize: 10,
+                                                            fontSize: 8,
                                                           ),
                                                         ),
                                                       ),
@@ -1880,13 +1830,14 @@ class _ShopState extends State<Shop> {
                             ),
                             Container(
                               width: width * 0.95,
-                              height: height * 0.52,
+                              height: height * 0.5,
                               child: GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 10,
+                                  childAspectRatio: 1,
                                 ),
                                 itemCount: 4,
                                 itemBuilder: (BuildContext context, int index) {
@@ -1895,7 +1846,7 @@ class _ShopState extends State<Shop> {
                                     child: Column(
                                       children: [
                                         Container(
-                                          height: height * 0.18,
+                                          height: height * 0.165,
                                           decoration: BoxDecoration(
                                             color: HexColor('#DCDCDC'),
                                             borderRadius:
@@ -2085,42 +2036,6 @@ class _ShopState extends State<Shop> {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.orange,
-        selectedIconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        currentIndex: currentPage,
-        onTap: (value) {
-          setState(() {
-            currentPage = value;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            backgroundColor: Colors.orange,
-            icon: Icon(Icons.star_border),
-            label: 'Favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Setting',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.refresh),
-            label: 'Refresh',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
-            label: 'Cart',
-            tooltip: '1',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-        ],
       ),
     );
   }

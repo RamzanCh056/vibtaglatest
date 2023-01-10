@@ -14,11 +14,12 @@ import 'package:vibetag/screens/gift/gift.dart';
 import 'package:vibetag/screens/job/job.dart';
 import 'package:vibetag/screens/memories/memories.dart';
 import 'package:vibetag/screens/offers/offers.dart';
+import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/market/market.dart';
-import 'package:vibetag/screens/nodge/nodge.dart';
+import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/playlists/playlist.dart';
-import 'package:vibetag/screens/profile/profile.dart';
+import 'package:vibetag/screens/profile/profile_old.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
 import 'package:vibetag/screens/find%20friends/find_friends.dart';
@@ -107,25 +108,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: width * 0.55,
+                              width: width * 0.5,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'David Millan',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  Container(
+                                    width: width * 0.3,
+                                    child: const Text(
+                                      'David Millan',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                  // SizedBox(
-                                  //   width: width * 0.01,
-                                  // ),
-                                  // SvgPicture.asset(
-                                  //   'assets/svg/story/star.svg',
-                                  //   width: width * 0.05,
-                                  // )
                                   Container(
                                     padding: spacing(
                                       horizontal: 5,
@@ -142,13 +139,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: height * 0.001,
-                            ),
                             const Text(
                               '@david_millan1',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                               ),
                             ),
                             SizedBox(
@@ -166,7 +160,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                                 const Text(
                                   'Pakistan',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 10,
                                   ),
                                 ),
                               ],
@@ -366,11 +360,11 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Nodge(),
+                                screen: const Nudge(),
                               );
                             },
                             child: DrawerItems(
-                              title: 'Nodge',
+                              title: 'Nudge',
                               imgUrl: 'assets/images/drawer/Nodge.png',
                               notifications: 1,
                               isNewNotification: false,

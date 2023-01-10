@@ -171,27 +171,30 @@ class _BuzzinState extends State<Buzzin> {
                           color: whitePrimary,
                         ),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/new/icons/music.png',
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          FittedBox(
-                            child: Text(
-                              'Really good stuff....Its amazing!',
-                              style: TextStyle(
-                                color: white,
-                                fontSize: 12,
-                                overflow: TextOverflow.ellipsis,
+                      child: Center(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Image.asset(
+                              'assets/new/icons/music.png',
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              width: width * 0.4,
+                              child: Text(
+                                'Really good stuff....Its amazing!',
+                                style: TextStyle(
+                                  color: white,
+                                  fontSize: 10,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   ],

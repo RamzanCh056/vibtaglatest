@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/auth/input_field_new.dart';
 import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/widgets/select_field.dart';
@@ -51,10 +52,10 @@ class _RegisterState extends State<Register> {
     '<5\'1\" (152cm)',
     '5\'2\" (155cm)',
     '5\'3\" (157cm)',
-    '5\'4\" (160cm)',
-    '5\'5\" (163cm)',
-    '5\'6\" (165cm)',
-    '5\'7\" (168cm)',
+    '5\'4\" (120cm)',
+    '5\'5\" (123cm)',
+    '5\'6\" (125cm)',
+    '5\'7\" (128cm)',
     '5\'8\" (170cm)',
     '5\'9\" (173cm)',
     '5\'10\" (175cm)',
@@ -330,7 +331,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           child: Stack(
                             children: [
                               TextFormField(
@@ -338,8 +339,13 @@ class _RegisterState extends State<Register> {
                                 decoration: InputDecoration(
                                   hintText: 'e.g; @mark12',
                                   hintStyle: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     color: lightblue,
+                                  ),
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 0,
+                                    left: 10,
+                                    bottom: 0,
                                   ),
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -368,15 +374,20 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           child: Stack(
                             children: [
                               TextFormField(
                                 controller: emailController,
                                 decoration: InputDecoration(
                                   hintText: 'Email Address',
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 0,
+                                    left: 10,
+                                    bottom: 0,
+                                  ),
                                   hintStyle: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     color: lightblue,
                                   ),
                                   border: OutlineInputBorder(
@@ -393,105 +404,41 @@ class _RegisterState extends State<Register> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: const Text('Password'),
-                        ),
-                        const SizedBox(
-                          height: 6,
-                        ),
-                        Container(
-                          height: 56,
-                          child: Stack(
-                            children: [
-                              TextFormField(
-                                controller: passowrdController,
-                                decoration: InputDecoration(
-                                  hintText: '',
-                                  hintStyle:
-                                      TextStyle(fontSize: 16, color: lightblue),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 1,
-                                      color: lightGrayNew,
-                                    ),
-                                    borderRadius: borderRadius(12),
-                                  ),
-                                  suffix: Container(
-                                    width: 40,
-                                    height: 20,
-                                  ),
-                                ),
-                                obscureText: true,
-                              ),
-                              Positioned(
-                                top: 18,
-                                right: 15,
-                                child: Container(
-                                  child: Image.asset(
-                                    'assets/icons/hide.png',
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 12,
                     ),
-                    Column(
-                      children: [
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: const Text('Confirm Password'),
-                        ),
-                        const SizedBox(
-                          height: 6,
-                        ),
-                        Container(
-                          height: 56,
-                          child: Stack(
-                            children: [
-                              TextFormField(
-                                controller: confirmPasswordController,
-                                decoration: InputDecoration(
-                                  hintText: '',
-                                  hintStyle:
-                                      TextStyle(fontSize: 16, color: lightblue),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 1,
-                                      color: lightGrayNew,
-                                    ),
-                                    borderRadius: borderRadius(12),
-                                  ),
-                                  suffix: Container(
-                                    width: 40,
-                                    height: 20,
-                                  ),
-                                ),
-                                obscureText: true,
-                              ),
-                              Positioned(
-                                top: 18,
-                                right: 15,
-                                child: Container(
-                                  child: Image.asset(
-                                    'assets/icons/hide.png',
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text('Password'),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    NewInputField(
+                      hintText: 'mark264',
+                      controller: passowrdController,
+                      isObscure: true,
+                      isSvgIcons: true,
+                      suffexIcon: 'assets/new/svg/hide_password.svg',
+                      chageIcon: 'assets/new/svg/show_password.svg',
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text('Confirm Password'),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    NewInputField(
+                      hintText: 'mark264',
+                      controller: confirmPasswordController,
+                      isObscure: true,
+                      isSvgIcons: true,
+                      suffexIcon: 'assets/new/svg/hide_password.svg',
+                      chageIcon: 'assets/new/svg/show_password.svg',
                     ),
                     Column(
                       children: [
@@ -506,7 +453,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -524,6 +471,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -541,7 +490,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -559,6 +508,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -576,7 +527,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -594,6 +545,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -611,7 +564,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -629,6 +582,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -646,7 +601,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -664,6 +619,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -681,7 +638,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -699,6 +656,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -716,7 +675,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -734,6 +693,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -751,7 +712,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -769,6 +730,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -786,7 +749,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -804,6 +767,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -821,7 +786,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -839,6 +804,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -856,7 +823,7 @@ class _RegisterState extends State<Register> {
                           height: 6,
                         ),
                         Container(
-                          height: 56,
+                          height: height * 0.05,
                           padding: spacing(
                             horizontal: 10,
                           ),
@@ -878,6 +845,8 @@ class _RegisterState extends State<Register> {
                             bgColor: Color.fromARGB(0, 255, 255, 255),
                             textColor: lightblue,
                             isUnderline: true,
+                            fontSize: 12,
+                            fieldHeight: 0.045,
                           ),
                         )
                       ],
@@ -912,7 +881,7 @@ class _RegisterState extends State<Register> {
                                         'SIGN UP',
                                         style: TextStyle(
                                           color: white,
-                                          fontSize: 16,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),

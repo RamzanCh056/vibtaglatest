@@ -11,6 +11,7 @@ import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/auth/forgot.dart';
+import 'package:vibetag/screens/auth/input_field_new.dart';
 import 'package:vibetag/screens/auth/register.dart';
 import 'package:vibetag/screens/home/home.dart';
 
@@ -195,7 +196,7 @@ class _LoginState extends State<Login> {
                     Container(
                       padding: spacing(
                         horizontal: 19,
-                        vertical: 27,
+                        vertical: 20,
                       ),
                       decoration: BoxDecoration(),
                       child: Column(
@@ -223,10 +224,10 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           const SizedBox(
-                            height: 21,
+                            height: 15,
                           ),
                           Container(
-                            height: 56,
+                            height: 40,
                             child: Stack(
                               children: [
                                 TextFormField(
@@ -234,8 +235,12 @@ class _LoginState extends State<Login> {
                                   decoration: InputDecoration(
                                     hintText: 'abc@gmail.com',
                                     hintStyle: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 12,
                                       color: lightblue,
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                      top: 0,
+                                      bottom: 0,
                                     ),
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide(
@@ -251,7 +256,7 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 18,
+                                  top: 10,
                                   left: 15,
                                   child: Container(
                                     child: Image.asset(
@@ -263,59 +268,19 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           const SizedBox(
-                            height: 21,
+                            height: 10,
                           ),
-                          Container(
-                            height: 56,
-                            child: Stack(
-                              children: [
-                                TextFormField(
-                                  controller: password,
-                                  decoration: InputDecoration(
-                                    hintText: 'Password',
-                                    hintStyle: TextStyle(
-                                        fontSize: 16, color: lightblue),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 1,
-                                        color: lightGrayNew,
-                                      ),
-                                      borderRadius: borderRadius(12),
-                                    ),
-                                    prefix: Container(
-                                      width: 40,
-                                      height: 20,
-                                    ),
-                                    suffix: Container(
-                                      width: 40,
-                                      height: 20,
-                                    ),
-                                  ),
-                                  obscureText: true,
-                                ),
-                                Positioned(
-                                  top: 18,
-                                  left: 15,
-                                  child: Container(
-                                    child: Image.asset(
-                                      'assets/icons/lock.png',
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 18,
-                                  right: 15,
-                                  child: Container(
-                                    child: Image.asset(
-                                      'assets/icons/hide.png',
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+                          NewInputField(
+                            hintText: 'Password',
+                            controller: password,
+                            isObscure: true,
+                            isSvgIcons: true,
+                            prefixIcon: 'assets/new/svg/padlock 1.svg',
+                            suffexIcon: 'assets/new/svg/hide_password.svg',
+                            chageIcon: 'assets/new/svg/show_password.svg',
                           ),
                           const SizedBox(
-                            height: 15,
+                            height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -339,7 +304,7 @@ class _LoginState extends State<Login> {
                                     'Remember Me',
                                     style: TextStyle(
                                       color: lightblue,
-                                      fontSize: 14,
+                                      fontSize: 10,
                                     ),
                                   )
                                 ],
@@ -358,14 +323,14 @@ class _LoginState extends State<Login> {
                                   'Forgot Password?',
                                   style: TextStyle(
                                     color: lightblue,
-                                    fontSize: 14,
+                                    fontSize: 10,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(
-                            height: 35,
+                            height: 20,
                           ),
                           isLoading
                               ? loadingSpinner()
@@ -424,7 +389,7 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                           const SizedBox(
-                            height: 36,
+                            height: 25,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

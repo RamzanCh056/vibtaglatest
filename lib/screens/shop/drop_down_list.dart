@@ -10,6 +10,7 @@ class DropDownList extends StatefulWidget {
   Color bgColor = Colors.black;
   Color textColor = Colors.black;
   double fontSize;
+  double fieldHeight;
   double padding;
   bool isUnderline;
 
@@ -23,6 +24,7 @@ class DropDownList extends StatefulWidget {
     this.padding = 0,
     this.fontSize = 18,
     this.isUnderline = false,
+    this.fieldHeight = 0.8,
   }) : super(key: key);
 
   @override
@@ -39,6 +41,7 @@ class _DropDownListState extends State<DropDownList> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
+          height: height * widget.fieldHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(width * 0.04),
           ),
@@ -58,7 +61,6 @@ class _DropDownListState extends State<DropDownList> {
               ),
               child: Text('Select Correct'),
             ),
-            elevation: 16,
             style: TextStyle(
               color: widget.textColor,
               fontSize: widget.fontSize,

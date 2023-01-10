@@ -5,11 +5,13 @@ class InputField2 extends StatelessWidget {
   final TextEditingController controller;
   final String title;
   final String hintText;
+  final double fieldHeight;
   InputField2({
     super.key,
     required this.controller,
     required this.title,
     required this.hintText,
+    this.fieldHeight = 0.05,
   });
 
   @override
@@ -37,7 +39,7 @@ class InputField2 extends StatelessWidget {
         ),
         Container(
           width: width * 0.8,
-          height: height * 0.04,
+          height: height * fieldHeight,
           decoration: BoxDecoration(
               border: Border.all(
                 width: width * 0.005,
@@ -50,7 +52,8 @@ class InputField2 extends StatelessWidget {
             controller: controller,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(
-                bottom: 15,
+                bottom: 10,
+                top: 0,
               ),
               border: InputBorder.none,
               hintText: hintText,

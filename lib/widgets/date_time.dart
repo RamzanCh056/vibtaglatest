@@ -87,7 +87,7 @@ class _DateTimePicterFieldState extends State<DateTimePicterField> {
               onTap: () {
                 DatePicker.showDatePicker(context,
                     showTitleActions: true,
-                    minTime: DateTime(1995, 3, 5),
+                    minTime: DateTime(0000, 01, 01),
                     maxTime: DateTime.now(),
                     theme: const DatePickerTheme(
                         headerColor: Colors.orange,

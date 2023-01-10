@@ -31,7 +31,7 @@ class AppFooter extends StatelessWidget {
               Text(
                 'c 2022 VibeTag',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 12,
                   color: Color.fromARGB(255, 39, 38, 38),
                   fontWeight: FontWeight.bold,
                 ),
@@ -39,7 +39,7 @@ class AppFooter extends StatelessWidget {
               Text(
                 'Language',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 12,
                   color: Color.fromARGB(255, 39, 38, 38),
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,6 +57,7 @@ class AppFooter extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
+                  fontSize: 10,
                 ),
               ),
               SizedBox(
@@ -67,6 +68,7 @@ class AppFooter extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
+                  fontSize: 10,
                 ),
               ),
               SizedBox(
@@ -77,6 +79,7 @@ class AppFooter extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
+                  fontSize: 10,
                 ),
               ),
               SizedBox(
@@ -87,6 +90,7 @@ class AppFooter extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
+                  fontSize: 10,
                 ),
               ),
             ],

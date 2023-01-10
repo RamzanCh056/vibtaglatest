@@ -25,72 +25,79 @@ SetUpPopUp({required BuildContext context}) {
     context: context,
     builder: (context) {
       return Container(
-        height: height * 0.6,
-        child: Column(
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  gap(h: height * 0.03),
-                  const Text(
-                    'Set Up',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  gap(h: height * 0.03),
-                  Container(
-                    width: double.maxFinite,
-                    height: 1,
-                    color: grayPrimary,
-                    margin: spacing(
-                      horizontal: 20,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              height: height * 0.5,
-              child: SingleChildScrollView(
+        height: height * 0.75,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
                 child: Column(
                   children: [
-                    gap(h: 10),
-                    BottomModalItems(
-                      iconPath: 'assets/svg/create ads.svg',
-                      title: 'Create Ad',
-                      notifications: 0,
+                    gap(h: height * 0.03),
+                    const Text(
+                      'Set Up',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
-                      title: 'Create Blog',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/events.svg',
-                      title: 'Create Event',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/groups.svg',
-                      title: 'Create Group',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
-                      title: 'Create Page',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
-                      title: 'Create Currency',
-                      notifications: 0,
-                    ),
+                    gap(h: height * 0.03),
+                    Container(
+                      width: double.maxFinite,
+                      height: 1,
+                      color: grayPrimary,
+                      margin: spacing(
+                        horizontal: 20,
+                      ),
+                    )
                   ],
                 ),
               ),
-            )
-          ],
+              Container(
+                height: height * 0.65,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      gap(h: 10),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/create_live.svg',
+                        title: 'Create Live',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/svg/create ads.svg',
+                        title: 'Create Ad',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
+                        title: 'Create Blog',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/events.svg',
+                        title: 'Create Event',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/groups.svg',
+                        title: 'Create Group',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                        title: 'Create Page',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
+                        title: 'Create Currency',
+                        notifications: 0,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       );
     },
@@ -326,76 +333,80 @@ MyVibes({required BuildContext context}) {
     context: context,
     builder: (context) {
       return Container(
-        height: height * 0.6,
-        child: Column(
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  gap(h: height * 0.03),
-                  const Text(
-                    'Quick Pins',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  gap(h: height * 0.03),
-                  Container(
-                    width: double.maxFinite,
-                    height: 1,
-                    color: grayPrimary,
-                    margin: spacing(
-                      horizontal: 20,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              height: height * 0.5,
-              child: SingleChildScrollView(
+        height: height * 0.75,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
                 child: Column(
                   children: [
-                    gap(h: 10),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
-                      title: 'Shortcut to your page',
-                      notifications: 0,
+                    gap(h: height * 0.03),
+                    const Text(
+                      'Quick Pins',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                    BottomModalItems(
-                      iconPath:
-                          'assets/new/svg/bottom_drawer/explore groups and discover.svg',
-                      title: 'Explore your groups & discover other Groups',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath:
-                          'assets/new/svg/bottom_drawer/check daily sales of your fav.svg',
-                      title: 'Checkout daily sale on your favorite items',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath:
-                          'assets/new/svg/bottom_drawer/See all wishlists.svg',
-                      title: 'See all your wishlist',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath:
-                          'assets/new/svg/bottom_drawer/see all your inspired recently.svg',
-                      title: 'See all your inspired recently viewed shop items',
-                      notifications: 0,
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/publish edit.svg',
-                      title: 'Publish, Edit, Discover, Product & Business',
-                      notifications: 0,
-                    ),
+                    gap(h: height * 0.03),
+                    Container(
+                      width: double.maxFinite,
+                      height: 1,
+                      color: grayPrimary,
+                      margin: spacing(
+                        horizontal: 20,
+                      ),
+                    )
                   ],
                 ),
               ),
-            )
-          ],
+              Container(
+                height: height * 0.6,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      gap(h: 10),
+                      BottomModalItems(
+                        iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                        title: 'Shortcut to your page',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath:
+                            'assets/new/svg/bottom_drawer/explore groups and discover.svg',
+                        title: 'Explore your groups & discover other Groups',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath:
+                            'assets/new/svg/bottom_drawer/check daily sales of your fav.svg',
+                        title: 'Checkout daily sale on your favorite items',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath:
+                            'assets/new/svg/bottom_drawer/See all wishlists.svg',
+                        title: 'See all your wishlist',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath:
+                            'assets/new/svg/bottom_drawer/see all your inspired recently.svg',
+                        title:
+                            'See all your inspired recently viewed shop items',
+                        notifications: 0,
+                      ),
+                      BottomModalItems(
+                        iconPath:
+                            'assets/new/svg/bottom_drawer/publish edit.svg',
+                        title: 'Publish, Edit, Discover, Product & Business',
+                        notifications: 0,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       );
     },

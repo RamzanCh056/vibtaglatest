@@ -5,12 +5,16 @@ import '../utils/constant.dart';
 class SelectCountry extends StatefulWidget {
   final List<String> items;
   final String title;
+  final double fieldHeight;
+  final double fontSize;
   final TextEditingController controller;
   const SelectCountry({
     Key? key,
     required this.title,
     required this.items,
     required this.controller,
+    this.fieldHeight = 0.05,
+    this.fontSize = 16,
   }) : super(key: key);
 
   @override
@@ -38,7 +42,7 @@ class _SelectCountryState extends State<SelectCountry> {
               widget.title,
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.start,
@@ -49,7 +53,7 @@ class _SelectCountryState extends State<SelectCountry> {
           ),
           Container(
             width: width * 0.8,
-            height: height * 0.04,
+            height: height * widget.fieldHeight,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(width * 0.04),
@@ -87,7 +91,13 @@ class _SelectCountryState extends State<SelectCountry> {
                   value: value,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 5),
-                    child: Text(value),
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: widget.fontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 );
               }).toList(),

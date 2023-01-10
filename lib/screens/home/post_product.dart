@@ -119,7 +119,7 @@ class _PostProductState extends State<PostProduct> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     totalLikes = int.parse(widget.likes) + userLike;
-
+    print(widget.productImage);
     return Container(
       margin: spacing(
         vertical: 10,
@@ -142,174 +142,63 @@ class _PostProductState extends State<PostProduct> {
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ListTile(
-              leading: CircleAvatar(
-                foregroundImage: NetworkImage(widget.avatar),
-              ),
-              title: Row(
-                children: [
-                  Container(
-                    width: width * 0.22,
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            Container(
+              height: height * 0.45,
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: widget.productImage.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, i) {
+                  return Container(
+                    width: widget.productImage.length > 1 ? width * 0.9 : width,
+                    margin: spacing(
+                      horizontal: widget.productImage.length > 1 ? 10 : 0,
+                      vertical: 0,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: accent,
-                        borderRadius: borderRadius(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Like',
-                        style: TextStyle(
-                          color: blue,
-                          fontSize: 10,
+                    height: double.maxFinite,
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: widget.productImage.length > 1
+                              ? borderRadius(7)
+                              : borderRadius(0),
+                          child: Image.network(
+                            widget.productImage[i]['image'],
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      Container(
-                        width: width * 0.43,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: width * 0.3,
-                              child: FittedBox(
-                                child: Text(
-                                  'Added products for sale',
-                                  style: TextStyle(
-                                    color: darkGray,
-                                    fontSize: 10,
-                                    overflow: TextOverflow.ellipsis,
+                        widget.productImage.length > 1
+                            ? Positioned(
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  padding: spacing(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius(5),
+                                    color: lightBg,
+                                  ),
+                                  child: Text(
+                                    '${i + 1}/${widget.productImage.length}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: white,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            const Icon(
-                              Icons.keyboard_arrow_down_outlined,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              subtitle: Row(
-                children: [
-                  Text(widget.postTime),
-                  SizedBox(
-                    width: width * 0.02,
-                  ),
-                  Container(
-                    width: width * 0.025,
-                    child: const SvgIcon(
-                      'assets/svg/globe.svg',
-                      width: 12,
+                              )
+                            : Container(),
+                      ],
                     ),
-                  ),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: accent,
-                    size: 16,
-                  )
-                ],
+                  );
+                },
               ),
             ),
-            Container(
-              child: Stack(
-                children: [
-                  Image.network(
-                    widget.productImage[currentImage]['image'],
-                    fit: BoxFit.fitWidth,
-                  ),
-                  widget.productImage.length > 1
-                      ? Positioned(
-                          top: 0,
-                          bottom: 0,
-                          child: Center(
-                            child: Container(
-                              padding: spacing(
-                                horizontal: 20,
-                              ),
-                              width: width,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      imageSliderLeft();
-                                    },
-                                    child: Container(
-                                      padding: spacing(
-                                        horizontal: 5,
-                                        vertical: 5,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: darkGray,
-                                        borderRadius: borderRadius(width),
-                                      ),
-                                      child: Icon(
-                                        Icons.keyboard_arrow_left_rounded,
-                                        color: white,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      imageSliderRight();
-                                    },
-                                    child: Container(
-                                      padding: spacing(
-                                        horizontal: 5,
-                                        vertical: 5,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: darkGray,
-                                        borderRadius: borderRadius(width),
-                                      ),
-                                      child: Icon(
-                                        Icons.keyboard_arrow_right_rounded,
-                                        color: white,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
+            gap(h: 10),
             Container(
               padding: spacing(
                 horizontal: 10,
@@ -548,6 +437,7 @@ class _PostProductState extends State<PostProduct> {
                       "${widget.comments} Comments | ${widget.shares} Revibed",
                       style: TextStyle(
                         color: grayMed,
+                        fontSize: 10,
                       ),
                     ),
                   )
@@ -570,8 +460,8 @@ class _PostProductState extends State<PostProduct> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/heart.png',
                         ),
@@ -583,6 +473,7 @@ class _PostProductState extends State<PostProduct> {
                         'React',
                         style: TextStyle(
                           color: grayMed,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -598,8 +489,8 @@ class _PostProductState extends State<PostProduct> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
                         ),
@@ -610,6 +501,7 @@ class _PostProductState extends State<PostProduct> {
                       Text(
                         'Comment',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -624,8 +516,8 @@ class _PostProductState extends State<PostProduct> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.04,
-                        height: width * 0.04,
+                        width: width * 0.03,
+                        height: width * 0.03,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
                         ),
@@ -636,6 +528,7 @@ class _PostProductState extends State<PostProduct> {
                       Text(
                         'Revibe',
                         style: TextStyle(
+                          fontSize: 12,
                           color: grayMed,
                         ),
                       ),
@@ -713,8 +606,8 @@ class _PostProductState extends State<PostProduct> {
                   Row(
                     children: [
                       Container(
-                        width: width * 0.15,
-                        height: width * 0.15,
+                        width: width * 0.12,
+                        height: width * 0.12,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             borderRadius: borderRadius(width),
@@ -728,7 +621,7 @@ class _PostProductState extends State<PostProduct> {
                             )),
                         padding: const EdgeInsets.all(2),
                         child: CircleAvatar(
-                          radius: width * 0.075,
+                          radius: width * 0.06,
                           foregroundImage: NetworkImage(
                             widget.avatar,
                           ),
@@ -743,14 +636,18 @@ class _PostProductState extends State<PostProduct> {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                widget.name,
-                                style: TextStyle(
-                                  color: blackPrimary,
+                              Container(
+                                width: width * 0.25,
+                                child: Text(
+                                  widget.name,
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               gap(
-                                w: 5,
+                                w: 4,
                               ),
                               Row(
                                 children: [
@@ -761,16 +658,32 @@ class _PostProductState extends State<PostProduct> {
                                         color: blackPrimary,
                                         borderRadius: borderRadius(width)),
                                   ),
-                                  gap(
-                                    w: 5,
+                                  gap(w: 4),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Like',
+                                        style: TextStyle(
+                                          color: blue,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      Container(
+                                        width: width * 0.3,
+                                        child: Text(
+                                          'Added products for sale',
+                                          style: TextStyle(
+                                            color: darkGray,
+                                            fontSize: 10,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    'created a poll',
-                                    style: TextStyle(
-                                      color: graySecondary,
-                                      fontSize: 12,
-                                    ),
-                                  )
                                 ],
                               )
                             ],

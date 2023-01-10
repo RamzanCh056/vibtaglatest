@@ -3,13 +3,19 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/front.dart';
+import 'package:vibetag/provider/post_provider.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
 
 import 'package:vibetag/screens/auth/login.dart';
+import 'package:vibetag/screens/groups/group.dart';
+import 'package:vibetag/screens/groups/group_old.dart';
+import 'package:vibetag/screens/groups/private_group.dart';
 
 import 'package:vibetag/screens/home/video_player.dart';
+import 'package:vibetag/screens/page/page.dart';
+import 'package:vibetag/screens/profile/profile.dart';
 
 import 'package:vibetag/utils/constant.dart';
 
@@ -31,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => UsersDetailsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PostProvider(),
         ),
       ],
       child: MaterialApp(
