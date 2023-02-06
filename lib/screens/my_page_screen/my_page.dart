@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:vab_tag/res/static_info.dart';
+import 'package:vibetag/utils/constant.dart';
 import 'components/custom_list_tile.dart';
 
 class MyPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _MyPageState extends State<MyPage> {
     request.fields.addAll({
       'type': 'get_pages',
       'sub_type': 'my_pages',
-      'user_id': StaticInfo.userIdLogin,
+      'user_id': loginUserId.toString(),
     });
 
     request.headers.addAll(headers);
@@ -50,125 +50,125 @@ class _MyPageState extends State<MyPage> {
     return Scaffold(
       body: SafeArea(
 
-        child: GestureDetector(
-      onTap: (){
-    getMyPage();
-    },
-          child: //Container( color: Colors.red,)
-          FutureBuilder(
-              future:  getMyPage(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.data != null || getData != null) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount:getData.length,
-                      itemBuilder: (context, index){
-                    return  Column(children: [
-                     // Text(getData[index]["page_name"],)
-                      CustomListTile(
-                       circularImage:getData[index]["avatar"] ,
-                        title: getData[index]["page_name"],
-                        likeImage: 'assets/like.svg',
-                        likeTitle: getData[index]["likes"],
-                        carImage: 'assets/lable.svg',
-                        carTitle:  getData[index]["category"],
-                        child: SvgPicture.asset(
-                          'assets/editnotes.svg',
-                        ),
-                      ),
-                      // Spacer(),
-                      // Container(
-                      //   color: Color(0xFFFF9200),
-                      //   child: Padding(
-                      //     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       children: [
-                      //         Column(
-                      //           mainAxisAlignment: MainAxisAlignment.center,
-                      //           children: [
-                      //             Text(
-                      //               "Market Place\nTerms",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //             SizedBox(
-                      //               height: 20,
-                      //             ),
-                      //             Text(
-                      //               "Your\nWishlist",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //         Column(
-                      //           mainAxisAlignment: MainAxisAlignment.center,
-                      //           children: [
-                      //             Text(
-                      //               "Refund\nPolicy",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //             SizedBox(
-                      //               height: 20,
-                      //             ),
-                      //             Text(
-                      //               "On Sale\nItems",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //         Column(
-                      //           mainAxisAlignment: MainAxisAlignment.center,
-                      //           children: [
-                      //             Text(
-                      //               "Start\nSelling",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //             SizedBox(
-                      //               height: 20,
-                      //             ),
-                      //             Text(
-                      //               "Find Help &\nSupport",
-                      //               style: TextStyle(color: Colors.white),
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: 10),
-                      //   child: Row(
-                      //     children: [
-                      //       Text("C 2022 VibeTag"),
-                      //       Spacer(),
-                      //       Text("C 2022 VibeTag"),
-                      //     ],
-                      //   ),
-                      // ),
-                    ],);
-                  });
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              }),
+        child:     Column(
+          children: [
+            Expanded(
 
+              child: FutureBuilder(
+                  future: getMyPage(),
+                  builder: (context,AsyncSnapshot snapshot) {
+                    if ( snapshot.connectionState == ConnectionState.waiting) {
+                      return
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        );
 
+                    } else {
+                      return   ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount:getData.length,
+                          itemBuilder: (context, index){
+                            return  Column(children: [
+                              // Text(getData[index]["page_name"],)
+                              CustomListTile(
+                                circularImage:getData[index]["avatar"] ,
+                                title: getData[index]["page_name"],
+                                likeImage: 'assets/like.svg',
+                                likeTitle: getData[index]["likes"],
+                                carImage: 'assets/lable.svg',
+                                carTitle:  getData[index]["category"],
+                                child: SvgPicture.asset(
+                                  'assets/editnotes.svg',
+                                ),
+                              ),
+                              // Spacer(),
+                              // Container(
+                              //   color: Color(0xFFFF9200),
+                              //   child: Padding(
+                              //     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Column(
+                              //           mainAxisAlignment: MainAxisAlignment.center,
+                              //           children: [
+                              //             Text(
+                              //               "Market Place\nTerms",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //             SizedBox(
+                              //               height: 20,
+                              //             ),
+                              //             Text(
+                              //               "Your\nWishlist",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //           ],
+                              //         ),
+                              //         Column(
+                              //           mainAxisAlignment: MainAxisAlignment.center,
+                              //           children: [
+                              //             Text(
+                              //               "Refund\nPolicy",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //             SizedBox(
+                              //               height: 20,
+                              //             ),
+                              //             Text(
+                              //               "On Sale\nItems",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //           ],
+                              //         ),
+                              //         Column(
+                              //           mainAxisAlignment: MainAxisAlignment.center,
+                              //           children: [
+                              //             Text(
+                              //               "Start\nSelling",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //             SizedBox(
+                              //               height: 20,
+                              //             ),
+                              //             Text(
+                              //               "Find Help &\nSupport",
+                              //               style: TextStyle(color: Colors.white),
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(
+                              //   height: 10,
+                              // ),
+                              // Padding(
+                              //   padding: EdgeInsets.symmetric(horizontal: 10),
+                              //   child: Row(
+                              //     children: [
+                              //       Text("C 2022 VibeTag"),
+                              //       Spacer(),
+                              //       Text("C 2022 VibeTag"),
+                              //     ],
+                              //   ),
+                              // ),
+                            ],);
+                          });
+                    }
+                  }),
+            ),
+          ],
+        )
 
-
-
-        ),
       ),
     );
   }

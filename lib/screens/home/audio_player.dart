@@ -6,10 +6,12 @@ import '../../utils/constant.dart';
 
 class AudioMediaPlayer extends StatefulWidget {
   final String url;
+  final String audioThumbnail;
 
   const AudioMediaPlayer({
     Key? key,
     required this.url,
+    required this.audioThumbnail,
   }) : super(key: key);
 
   @override
@@ -76,10 +78,17 @@ class _AudioMediaPlayerState extends State<AudioMediaPlayer> {
           Container(
             width: width,
             height: height * 0.3,
-            child: Image.asset(
-              'assets/images/No-Audio-thumbnail.png',
-              fit: BoxFit.cover,
-            ),
+            child: widget.audioThumbnail.trim().toString().isNotEmpty
+                ? Image.network(
+                    widget.audioThumbnail.contains(serverUrl)
+                        ? widget.audioThumbnail
+                        : '${serverUrl}${widget.audioThumbnail}',
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    'assets/images/No-Audio-thumbnail.png',
+                    fit: BoxFit.cover,
+                  ),
           ),
           Positioned(
             bottom: 10,
@@ -141,7 +150,6 @@ class _AudioMediaPlayerState extends State<AudioMediaPlayer> {
               ],
             ),
           ),
-          
         ],
       ),
     );

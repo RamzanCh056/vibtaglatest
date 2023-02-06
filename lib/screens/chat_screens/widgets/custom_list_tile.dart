@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
+import '../screen/pages/page_message.dart';
 import '../screen/private_message_screen.dart';
 
-class CustomListTile extends StatelessWidget {
+class CustomListTile extends StatefulWidget {
   Map<String, dynamic> mapData;
   CustomListTile({required this.mapData});
+
+  @override
+  State<CustomListTile> createState() => _CustomListTileState();
+}
+
+class _CustomListTileState extends State<CustomListTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +26,7 @@ class CustomListTile extends StatelessWidget {
             // Navigator.push(
             //     context,
             //     MaterialPageRoute(
-            //         builder: (context) => PrivateMessageScreen()));
+            //         builder: (context) => PageMessage()));
           },
           minVerticalPadding: 0,
           leading: Stack(
@@ -27,10 +34,10 @@ class CustomListTile extends StatelessWidget {
             alignment: Alignment.topRight,
             children: [
               Image.asset(
-                mapData['imgurl'],
+                widget.mapData['imgurl'],
                 fit: BoxFit.cover,
               ),
-              if (mapData['isOnline'])
+              if (widget.mapData['isOnline'])
                 Positioned(
                   top: -1,
                   right: 3,
@@ -49,13 +56,13 @@ class CustomListTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                mapData['subtitle'],
+                widget.mapData['subtitle'],
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   color: txtColor,
                 ),
               ),
-              if (mapData['msgNotifications'] != 0)
+              if (widget.mapData['msgNotifications'] != 0)
                 Container(
                     alignment: Alignment.center,
                     width: screenWidthSize(15, context),
@@ -65,7 +72,7 @@ class CustomListTile extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Text(
-                      mapData['msgNotifications'].toString(),
+                      widget.mapData['msgNotifications'].toString(),
                       style: TextStyle(
                           fontSize: screenWidthSize(10, context),
                           color: Colors.white),
@@ -76,7 +83,7 @@ class CustomListTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                mapData['title'],
+                widget.mapData['title'],
                 style: TextStyle(
                   fontSize: screenWidthSize(17, context),
                   fontWeight: FontWeight.w500,
@@ -84,7 +91,7 @@ class CustomListTile extends StatelessWidget {
                 ),
               ),
               Text(
-                mapData['time'],
+                widget.mapData['time'],
                 style: TextStyle(
                   fontSize: screenWidthSize(13, context),
                   fontWeight: FontWeight.w600,

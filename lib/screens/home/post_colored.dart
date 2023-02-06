@@ -6,15 +6,19 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comments.dart';
 import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 
 import '../../utils/constant.dart';
+import '../profile/profile.dart';
 
 class ColoredPost extends StatefulWidget {
+  final dynamic post;
   final String avatar;
   final String first;
+
   final String name;
   final String postId;
   final String postTime;
@@ -32,6 +36,7 @@ class ColoredPost extends StatefulWidget {
   final String shares;
   const ColoredPost({
     Key? key,
+    required this.post,
     required this.avatar,
     required this.first,
     required this.name,
@@ -63,6 +68,7 @@ class _ColoredPostState extends State<ColoredPost> {
   int userLike = 0;
   List<int> reactionOnPost = [];
   List<Widget> reactionsOnPostList = [];
+  bool isLiked = false;
 
   final List<String> reactions = [
     'assets/new/gif/thumbs_up.gif',
@@ -113,11 +119,37 @@ class _ColoredPostState extends State<ColoredPost> {
   }
 
   postReactionsList() {
+    isLiked = widget.post['me_followed'] != null
+        ? widget.post['me_followed']
+        : widget.post['me_liked'];
     for (var i = 0; i < 8; i++) {
       if (widget.reactions['${i + 1}'] != null) {
         reactionOnPost.add(i);
       }
     }
+  }
+
+followOrLike() async {
+    print('+++++++++++++++++++++++++++++++++++++++++');
+    var data = {};
+    if (widget.post['publisher']['page_id'] != null) {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'like_page',
+        'user_id': loginUserId.toString(),
+        'page_id': widget.post['publisher']['page_id'],
+      };
+    } else {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'follow_user',
+        'user_id': widget.post['publisher']['user_id'],
+        'loggedin_user_id': loginUserId,
+      };
+    }
+    print(data);
+    final result = await API().postData(data);
+    print(jsonDecode(result.body));
   }
 
   @override
@@ -144,300 +176,6 @@ class _ColoredPostState extends State<ColoredPost> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: height * 0.3,
-            width: width,
-            decoration: widget.color_post_info['image'] != ''
-                ? BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        '${serverUrl}${widget.color_post_info['image']}',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        HexColor('${widget.color_post_info['color_1']}'),
-                        HexColor('${widget.color_post_info['color_2']}')
-                      ],
-                    ),
-                  ),
-            child: Stack(
-              children: [
-                Container(
-                  width: width,
-                  height: double.maxFinite,
-                  child: Center(
-                    child: Html(
-                      data: widget.postText,
-                      style: {
-                        "body": Style(
-                          fontSize: FontSize(16.0),
-                          textOverflow: TextOverflow.clip,
-                          color: HexColor(
-                            '${widget.color_post_info['text_color']}',
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 3,
-                        ),
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: spacing(
-              horizontal: 5,
-              vertical: 5,
-            ),
-            decoration: BoxDecoration(
-              color: whiteSecondary,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  decoration: BoxDecoration(
-                    color: grayLight,
-                    borderRadius: borderRadius(width),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: 0,
-                        height: 0,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: reactionOnPost.length,
-                            reverse: true,
-                            itemBuilder: (context, i) {
-                              reactionsOnPostList.add(Positioned(
-                                left: i * 12,
-                                child: Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: borderRadius(width),
-                                  ),
-                                  child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: borderRadius(width),
-                                      child: Image.asset(
-                                        reactions[reactionOnPost[i]],
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ));
-                              return Container();
-                            }),
-                      ),
-                      Container(
-                        width: 15 * reactionOnPost.length.toDouble(),
-                        height: 25,
-                        child: Stack(
-                          children: reactionsOnPostList,
-                        ),
-                      ),
-                      gap(w: 5),
-                      Text(
-                        widget.likeString,
-                        style: TextStyle(
-                          color: grayMed,
-                          fontSize: 10,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: spacing(
-                    horizontal: 15,
-                    vertical: 5,
-                  ),
-                  child: Text(
-                    "${widget.comments} Comments | ${widget.shares} Revibed",
-                    style: TextStyle(
-                      color: grayMed,
-                      fontSize: 10,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isShowReactions = !isShowReactions;
-                  });
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width * 0.03,
-                      height: width * 0.03,
-                      child: reactionValue != 0
-                          ? Image.asset(reactions[reactionValue - 1])
-                          : widget.reactions['is_reacted']
-                              ? Image.asset(reactions[
-                                  int.parse(widget.reactions['type']) - 1])
-                              : Image.asset(
-                                  'assets/new/icons/heart.png',
-                                  fit: BoxFit.cover,
-                                ),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      reactionValue != 0
-                          ? reactionsText[reactionValue - 1]
-                          : widget.reactions['is_reacted']
-                              ? reactionsText[
-                                  int.parse(widget.reactions['type']) - 1]
-                              : 'React',
-                      style: TextStyle(
-                        color: grayMed,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Comments(
-                    context: context,
-                  );
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width * 0.03,
-                      height: width * 0.03,
-                      child: Image.asset(
-                        'assets/new/icons/comment.png',
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      'Comment',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: grayMed,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Revibe(context: context);
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width * 0.03,
-                      height: width * 0.03,
-                      child: Image.asset(
-                        'assets/new/icons/revibe.png',
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      'Revibe',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: grayMed,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: height * 0.01,
-          ),
-          Container(
-            width: width * 0.95,
-            height: 2,
-            color: medGray,
-          ),
-          isShowReactions
-              ? Container(
-                  width: width * 0.74,
-                  height: width * 0.11,
-                  padding: spacing(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  margin: spacing(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                      color: white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(56, 0, 0, 0),
-                          offset: Offset.zero,
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                        ),
-                      ],
-                      borderRadius: borderRadius(5)),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: reactions.length,
-                    itemBuilder: (context, i) {
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            isShowReactions = !isShowReactions;
-                            reactionValue = i + 1;
-                          });
-                          reactOnPost();
-                        },
-                        child: Container(
-                          width: width * 0.08,
-                          height: width * 0.08,
-                          child: Image.asset(reactions[i]),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              : Container(),
-          SizedBox(
-            height: height * 0.01,
-          ),
-          SizedBox(
-            height: height * 0.01,
-          ),
-          Container(
             width: width,
             height: height * 0.08,
             margin: spacing(
@@ -449,25 +187,35 @@ class _ColoredPostState extends State<ColoredPost> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: width * 0.12,
-                      height: width * 0.12,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: borderRadius(width),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              orangePrimary,
-                              graySecondary,
-                            ],
-                          )),
-                      padding: const EdgeInsets.all(2),
-                      child: CircleAvatar(
-                        radius: width * 0.06,
-                        foregroundImage: NetworkImage(
-                          widget.avatar,
+                    InkWell(
+                      onTap: () {
+                        pushRoute(
+                            context: context,
+                            screen: Profile(
+                              user_id: widget.post['publisher']['user_id']
+                                  .toString(),
+                            ));
+                      },
+                      child: Container(
+                        width: width * 0.12,
+                        height: width * 0.12,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: borderRadius(width),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                orangePrimary,
+                                graySecondary,
+                              ],
+                            )),
+                        padding: const EdgeInsets.all(2),
+                        child: CircleAvatar(
+                          radius: width * 0.06,
+                          foregroundImage: NetworkImage(
+                            widget.avatar,
+                          ),
                         ),
                       ),
                     ),
@@ -480,14 +228,56 @@ class _ColoredPostState extends State<ColoredPost> {
                       children: [
                         Row(
                           children: [
-                            FittedBox(
-                              child: Text(
-                                widget.name,
-                                style: TextStyle(
-                                  color: blackPrimary,
-                                  overflow: TextOverflow.ellipsis,
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    pushRoute(
+                                        context: context,
+                                        screen: Profile(
+                                          user_id: widget.post['publisher']
+                                                  ['user_id']
+                                              .toString(),
+                                        ));
+                                  },
+                                  child: FittedBox(
+                                    child: Text(
+                                      widget.name,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: blackPrimary,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                gap(w: 5),
+                                widget.post['user_id'].toString() != loginUserId
+                                    ? InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            isLiked = !isLiked;
+                                          });
+                                            followOrLike();
+
+                                        },
+                                        child: Text(
+                                          widget.post['user_id'] != '0'
+                                              ? isLiked
+                                                  ? 'Following'
+                                                  : 'Follow'
+                                              : widget.post['page_id'] != '0'
+                                                  ? isLiked
+                                                      ? 'Liked'
+                                                      : 'Like'
+                                                  : 'Join',
+                                          style: TextStyle(
+                                            color: blue,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      )
+                                    : gap(),
+                              ],
                             ),
                             gap(
                               w: 5,
@@ -568,10 +358,294 @@ class _ColoredPostState extends State<ColoredPost> {
                 )
               ],
             ),
-          )
+          ),
+          Container(
+            height: height * 0.3,
+            width: width,
+            decoration: widget.color_post_info['image'] != ''
+                ? BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        '${serverUrl}${widget.color_post_info['image']}',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        HexColor('${widget.color_post_info['color_1']}'),
+                        HexColor('${widget.color_post_info['color_2']}')
+                      ],
+                    ),
+                  ),
+            child: Stack(
+              children: [
+                Container(
+                  width: width,
+                  height: double.maxFinite,
+                  child: Center(
+                    child: Html(
+                      data: widget.postText,
+                      style: {
+                        "body": Style(
+                          fontSize: FontSize(16.0),
+                          textOverflow: TextOverflow.clip,
+                          color: HexColor(
+                            '${widget.color_post_info['text_color']}',
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                        ),
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          gap(h: 10),
+          Container(
+            color: grayLight,
+            padding: spacing(
+              horizontal: 5,
+              vertical: 5,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    color: grayLight,
+                    borderRadius: borderRadius(width),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: 0,
+                        height: 0,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: reactionOnPost.length,
+                            reverse: true,
+                            itemBuilder: (context, i) {
+                              reactionsOnPostList.add(Positioned(
+                                left: i * 18,
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius(width),
+                                  ),
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: borderRadius(width),
+                                      child: Image.asset(
+                                        reactions[reactionOnPost[i]],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ));
+                              return Container();
+                            }),
+                      ),
+                      Container(
+                        width: 20 * reactionOnPost.length.toDouble(),
+                        height: 25,
+                        child: Stack(
+                          children: reactionsOnPostList,
+                        ),
+                      ),
+                      gap(w: 5),
+                      Text(
+                        widget.likeString,
+                        style: TextStyle(
+                          color: grayMed,
+                          fontSize: 10,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: spacing(
+                    horizontal: 15,
+                    vertical: 5,
+                  ),
+                  child: Text(
+                    "${widget.comments} Comments | ${widget.shares} Revibed",
+                    style: TextStyle(
+                      color: grayMed,
+                      fontSize: 10,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          gap(h: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    isShowReactions = !isShowReactions;
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: width * 0.04,
+                      height: width * 0.04,
+                      child: reactionValue != 0
+                          ? Image.asset(reactions[reactionValue - 1])
+                          : widget.reactions['is_reacted']
+                              ? Image.asset(reactions[
+                                  int.parse(widget.reactions['type']) - 1])
+                              : Image.asset(
+                                  'assets/new/icons/heart.png',
+                                  fit: BoxFit.cover,
+                                ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      reactionValue != 0
+                          ? reactionsText[reactionValue - 1]
+                          : widget.reactions['is_reacted']
+                              ? reactionsText[
+                                  int.parse(widget.reactions['type']) - 1]
+                              : 'React',
+                      style: TextStyle(
+                        color: grayMed,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  PostComments(
+                      context: context, postId: widget.post['post_id']);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: width * 0.04,
+                      height: width * 0.04,
+                      child: Image.asset(
+                        'assets/new/icons/comment.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      'Comment',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: grayMed,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Revibe(context: context);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: width * 0.04,
+                      height: width * 0.04,
+                      child: Image.asset(
+                        'assets/new/icons/revibe.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      'Revibe',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: grayMed,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          isShowReactions
+              ? Container(
+                  width: width * 0.74,
+                  height: width * 0.11,
+                  padding: spacing(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  margin: spacing(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                      color: white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(56, 0, 0, 0),
+                          offset: Offset.zero,
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                        ),
+                      ],
+                      borderRadius: borderRadius(5)),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: reactions.length,
+                    itemBuilder: (context, i) {
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            isShowReactions = !isShowReactions;
+                            reactionValue = i + 1;
+                          });
+                          reactOnPost();
+                        },
+                        child: Container(
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          child: Image.asset(reactions[i]),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : Container(),
+          SizedBox(
+            height: height * 0.01,
+          ),
+          SizedBox(
+            height: height * 0.01,
+          ),
         ],
       ),
     );
-    ;
   }
 }

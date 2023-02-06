@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:vab_tag/chat_screens/screen/profile_screen.dart';
-import 'package:vab_tag/chat_screens/screen/view_media.dart';
+import 'package:vibetag/screens/chat_screens/screen/profile_screen.dart';
+import 'package:vibetag/screens/chat_screens/screen/view_media.dart';
 
 import '../constants.dart';
+import '../model/show_group_model.dart';
+import '../model/show_list_message_model.dart';
 
-class GroupTypeMessage extends StatelessWidget {
-  const GroupTypeMessage({Key? key}) : super(key: key);
+class GroupTypeMessage extends StatefulWidget {
+   GroupTypeMessage(this.list,this.currentIndex,{key});
+  List<ShowGroup> list;
+  int currentIndex;
+
+  @override
+  State<GroupTypeMessage> createState() => _GroupTypeMessageState();
+}
+
+class _GroupTypeMessageState extends State<GroupTypeMessage> {
+  String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +35,7 @@ class GroupTypeMessage extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Row(
                     children: [
@@ -44,9 +55,16 @@ class GroupTypeMessage extends StatelessWidget {
                         clipBehavior: Clip.none,
                         alignment: Alignment.bottomRight,
                         children: [
-                          Image.asset(
-                            'assets/images/Group 76548.png',
-                            fit: BoxFit.cover,
+                          Container(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Image.network(
+                                  "$Url${ widget.list[widget.currentIndex].avatar.toString()}",
+                                height: 50,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            // backgroundColor: Colors.white10,
                           ),
                           Positioned(
                             top: -1,
@@ -66,34 +84,38 @@ class GroupTypeMessage extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Mark Henry',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                fontSize: screenWidthSize(15, context)),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            'Last Seen: Just now',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                fontSize: screenWidthSize(12, context)),
-                          ),
-                        ],
+                      Expanded(
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.list[widget.currentIndex].group_name.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  fontSize: screenWidthSize(15, context)),
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              'Last Seen: Now',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  fontSize: screenWidthSize(12, context)),
+                            ),
+                          ],
+                        ),
                       ),
-                      Spacer(),
+
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                              padding: EdgeInsets.all(9),
+                              padding: const EdgeInsets.all(9),
                               decoration: BoxDecoration(
                                   color: orangeColor.withOpacity(0.03),
                                   borderRadius: BorderRadius.circular(8),
@@ -106,7 +128,7 @@ class GroupTypeMessage extends StatelessWidget {
                             width: 7,
                           ),
                           Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   color: orangeColor.withOpacity(0.03),
                                   borderRadius: BorderRadius.circular(8),
@@ -182,9 +204,9 @@ class GroupTypeMessage extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           height: screenHeightSize(70, context),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -198,7 +220,7 @@ class GroupTypeMessage extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                   decoration: BoxDecoration(
                     color: HexColor('#F8F9FB'),
                     borderRadius: BorderRadius.circular(40),
@@ -206,7 +228,7 @@ class GroupTypeMessage extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: greyColor,
@@ -240,7 +262,7 @@ class GroupTypeMessage extends StatelessWidget {
                 width: 10,
               ),
               Container(
-                  padding: EdgeInsets.all(13),
+                  padding: const EdgeInsets.all(13),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: orangeColor,
@@ -268,11 +290,11 @@ class GroupTypeMessage extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         color: greyColor),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Icon(Icons.more_horiz,color: greyColor,)
                 ],
               ),
-              SizedBox(height: 5,),
+              const SizedBox(height: 5,),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(

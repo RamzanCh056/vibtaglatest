@@ -194,7 +194,7 @@ class _ViewMediaState extends State<ViewMedia> {
                         return Container(
                           height: 80,
                           width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 10),
+                          margin: const EdgeInsets.only(bottom: 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: const Color(0xFFF1F4FB),

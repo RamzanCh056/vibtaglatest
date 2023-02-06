@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:vab_tag/chat_screens/screen/profile_screen.dart';
+import 'package:vibetag/screens/chat_screens/screen/profile_screen.dart';
 
 import '../constants.dart';
 

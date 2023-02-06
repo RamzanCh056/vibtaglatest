@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -13,14 +14,16 @@ import 'package:vibetag/screens/groups/group.dart';
 import 'package:vibetag/screens/groups/group_old.dart';
 import 'package:vibetag/screens/groups/private_group.dart';
 
-import 'package:vibetag/screens/home/video_player.dart';
+import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/profile/profile.dart';
+import 'package:vibetag/screens/video_player/video_screen.dart';
 
 import 'package:vibetag/utils/constant.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -49,7 +52,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: HexColor('#EFEFEF'),
           fontFamily: 'HelveticalNeueLTStd',
         ),
-        home: FutureBuilder(
+        home:
+        FutureBuilder(
           future: SharedPreferences.getInstance(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,7 +72,7 @@ class MyApp extends StatelessWidget {
                 return const Login();
               } else {
                 loginUserId = userId;
-                return FrontPage();
+                return const FrontPage();
               }
             }
             return const Login();

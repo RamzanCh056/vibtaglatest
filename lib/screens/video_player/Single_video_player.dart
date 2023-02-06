@@ -5,19 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:vibetag/screens/home/video_player_landscap.dart';
+import 'package:vibetag/screens/video_player/video_player_landscap.dart';
+import 'package:vibetag/screens/video_player/video_setting.dart';
 import 'package:vibetag/utils/constant.dart';
 
 /// Stateful widget to fetch and then display video content.
-class PageVideoPlayer extends StatefulWidget {
-  final String videoUrl;
+class SingleVideoPlayer extends StatefulWidget {
+  final VideoPlayerController controller;
   bool showSlider = true;
   bool showTime = true;
   bool showFullScreen = true;
   double buttonSize = 20;
-  PageVideoPlayer({
+  SingleVideoPlayer({
     Key? key,
-    required this.videoUrl,
+    required this.controller,
     this.showSlider = true,
     this.showTime = true,
     this.showFullScreen = true,
@@ -25,12 +26,12 @@ class PageVideoPlayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PageVideoPlayerState createState() => _PageVideoPlayerState();
+  _SingleVideoPlayerState createState() => _SingleVideoPlayerState();
 }
 
-class _PageVideoPlayerState extends State<PageVideoPlayer> {
+class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
   late VideoPlayerController _controller;
-  bool isMuted = false;
+
   bool hideButtton = false;
   bool isIcreased = false;
   bool isDecreased = false;
@@ -38,19 +39,33 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      widget.videoUrl.toString(),
-    )..initialize().then(
-        (_) {
-          setState(() {});
-        },
-      );
+
+    setMic();
+  }
+
+  void setMic() {
+    isMuted
+        ? widget.controller.setVolume(0.0)
+        : widget.controller.setVolume(1.0);
+    Timer(
+      Duration(seconds: 1),
+      () {
+        widget.controller.play();
+        if (mounted) {
+          setState(() {
+            hideButtton = true;
+          });
+        }
+      },
+    );
   }
 
   void videoPlayAndPause() {
     setState(() {
       hideButtton = false;
-      _controller.value.isPlaying ? _controller.pause() : _controller.play();
+      widget.controller.value.isPlaying
+          ? widget.controller.pause()
+          : widget.controller.play();
     });
     Timer(
       Duration(seconds: 3),
@@ -65,7 +80,9 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
   void muteAndUnmute() {
     setState(() {
       isMuted = !isMuted;
-      isMuted ? _controller.setVolume(0.0) : _controller.setVolume(1.0);
+      isMuted
+          ? widget.controller.setVolume(0.0)
+          : widget.controller.setVolume(1.0);
     });
   }
 
@@ -90,10 +107,25 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
             );
           },
           child: Center(
-            child: _controller.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
+            child: widget.controller.value.isInitialized
+                ? InkWell(
+                    onTap: () {
+                      setState(() {
+                        hideButtton = false;
+                      });
+                      Timer(
+                        Duration(seconds: 3),
+                        () => {
+                          setState(() {
+                            hideButtton = true;
+                          })
+                        },
+                      );
+                    },
+                    child: AspectRatio(
+                      aspectRatio: widget.controller.value.aspectRatio,
+                      child: VideoPlayer(widget.controller),
+                    ),
                   )
                 : Container(
                     width: double.maxFinite,
@@ -129,7 +161,7 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                                 color: white,
                               )),
                           child: Icon(
-                            _controller.value.isPlaying
+                            widget.controller.value.isPlaying
                                 ? Icons.pause
                                 : Icons.play_arrow,
                             size: widget.buttonSize * 0.5,
@@ -142,6 +174,49 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
           ),
         ),
         Positioned(
+          right: 15,
+          top: 15,
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  muteAndUnmute();
+                },
+                child: Container(
+                  padding: spacing(
+                    horizontal: 2,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(50, 0, 0, 0),
+                    borderRadius: borderRadius(3),
+                  ),
+                  child: isMuted
+                      ? Icon(
+                          Icons.volume_off_outlined,
+                          color: white,
+                          size: 18,
+                        )
+                      : Icon(
+                          Icons.volume_up_outlined,
+                          color: white,
+                          size: 18,
+                        ),
+                ),
+              ),
+              gap(w: 10),
+              Container(
+                width: 15,
+                height: 15,
+                child: Image.asset(
+                  'assets/new/images/video_icons/playlist.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
           bottom: 5,
           left: 10,
           right: 10,
@@ -149,21 +224,23 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
               ? Container()
               : Column(
                   children: [
-                   widget.showSlider? Container(
-                      child: SizedBox(
-                        height: 5,
-                        child: VideoProgressIndicator(
-                          _controller,
-                          allowScrubbing: true,
-                          colors: VideoProgressColors(
-                            backgroundColor: white,
-                            bufferedColor: grayMed,
-                            playedColor: orange,
-                          ),
-                          padding: spacing(),
-                        ),
-                      ),
-                    ):SizedBox(),
+                    widget.showSlider
+                        ? Container(
+                            child: SizedBox(
+                              height: 5,
+                              child: VideoProgressIndicator(
+                                widget.controller,
+                                allowScrubbing: true,
+                                colors: VideoProgressColors(
+                                  backgroundColor: white,
+                                  bufferedColor: grayMed,
+                                  playedColor: orange,
+                                ),
+                                padding: spacing(),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
                     gap(h: 5),
                     Container(
                       child: Row(
@@ -173,7 +250,7 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                               ? Row(
                                   children: [
                                     ValueListenableBuilder(
-                                      valueListenable: _controller,
+                                      valueListenable: widget.controller,
                                       builder: (context, VideoPlayerValue value,
                                           child) {
                                         //Do Something with the value.
@@ -186,7 +263,7 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                                       },
                                     ),
                                     Text(
-                                      ' / ${_controller.value.duration.inHours}:${_controller.value.duration.inMinutes}:${_controller.value.duration.inSeconds}',
+                                      ' / ${widget.controller.value.duration.inHours}:${widget.controller.value.duration.inMinutes}:${widget.controller.value.duration.inSeconds}',
                                       style: TextStyle(
                                         color: white,
                                       ),
@@ -195,22 +272,43 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                                 )
                               : SizedBox(),
                           widget.showFullScreen
-                              ? InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            LandScapeVideoPlayer(
-                                                controller: _controller),
+                              ? Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        VideoSetting(context: context);
+                                      },
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        child: Image.asset(
+                                          'assets/new/images/video_icons/video_options.png',
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    child: Icon(
-                                      Icons.fullscreen,
-                                      color: white,
                                     ),
-                                  ),
+                                    gap(w: 10),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LandScapeVideoPlayer(
+                                                    controller:
+                                                        widget.controller),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        child: Image.asset(
+                                          'assets/new/images/video_icons/full_screen_mode.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               : SizedBox()
                         ],
@@ -223,7 +321,7 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
             ? Positioned(
                 top: 0,
                 bottom: 0,
-                child: _controller.value.isPlaying
+                child: widget.controller.value.isPlaying
                     ? Container(
                         width: width,
                         child: Row(
@@ -235,11 +333,11 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                                 setState(() {
                                   isDecreased = true;
                                 });
-                                await _controller.seekTo(
+                                await widget.controller.seekTo(
                                   Duration(
-                                    seconds:
-                                        _controller.value.position.inSeconds -
-                                            10,
+                                    seconds: widget.controller.value.position
+                                            .inSeconds -
+                                        10,
                                   ),
                                 );
                                 Timer(
@@ -269,11 +367,11 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
                                 setState(() {
                                   isIcreased = true;
                                 });
-                                await _controller.seekTo(
+                                await widget.controller.seekTo(
                                   Duration(
-                                    seconds:
-                                        _controller.value.position.inSeconds +
-                                            10,
+                                    seconds: widget.controller.value.position
+                                            .inSeconds +
+                                        10,
                                   ),
                                 );
                                 Timer(
@@ -306,11 +404,5 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
             : SizedBox(),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }

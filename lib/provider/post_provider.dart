@@ -2,141 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:vibetag/model/post_modal.dart';
 
 class PostProvider with ChangeNotifier {
-  final PostModel _postModel = PostModel(
-    id: '',
-    post_id: '',
-    user_id: '',
-    recipient_id: '',
-    postText: '',
-    page_id: '',
-    group_id: '',
-    event_id: '',
-    page_event_id: '',
-    postLink_id: '',
-    postLinkTitle: '',
-    postLinkImage: '',
-    postLinkContent: '',
-    postVimeo: '',
-    postDailyMotion: '',
-    postFacebook: '',
-    postFile: '',
-    postFileName: '',
-    postFileThumb: '',
-    postYoutube: '',
-    postVine: '',
-    postSoundCloud: '',
-    postPlayTube: '',
-    postDeepsound: '',
-    postMap: '',
-    lat_: '',
-    lng_: '',
-    postShare: '',
-    postPrivacy: '',
-    postType: '',
-    postFeeling: '',
-    postListening: '',
-    postTraveling: '',
-    postWatching: '',
-    postPlaying: '',
-    postPhoto: '',
-    time: '',
-    registered: '',
-    album_name: '',
-    multi_image: '',
-    multi_image_post: '',
-    product_id: '',
-    poll_id: '',
-    blog_id: '',
-    forum_id: '',
-    thread_id: '',
-    videoViews: '',
-    postRecord: '',
-    postSticker: '',
-    shared_from: false,
-    post_url: '',
-    parent_id: '',
-    cache: '',
-    comments_status: '',
-    blur: '',
-    color_id: '',
-    job_id: '',
-    offer_id: '',
-    fund_raise_id: '',
-    fund_id: '',
-    active: '',
-    stream_name: '',
-    agora_token: '',
-    live_time: '',
-    live_ended: '',
-    agora_resource_id: '',
-    agora_sid: '',
-    send_notify: '',
-    processing: '',
-    background_post: '',
-    background: '',
-    fontcolor: '',
-    custom_users: '',
-    reactions: '',
-    engages: '',
-    post_category: '',
-    video_meta_data: '',
-    music_category: '',
-    music_artist: '',
-    music_title: '',
-    show_music_title_on_post: '',
-    show_on_buzzin: '',
-    publisher: {},
-    limit_comments: 3,
-    limited_comments: false,
-    is_group_post: false,
-    group_recipient_exists: false,
-    group_admin: false,
-    post_is_promoted: 0,
-    postText_API: '',
-    Orginaltext: '',
-    post_time: '',
-    page: 0,
-    url: '',
-    seo_id: '',
-    via_type: '',
-    recipient_exists: false,
-    recipient: '',
-    admin: false,
-    post_share: '',
-    is_post_saved: false,
-    is_post_reported: '',
-    is_post_boosted: '',
-    is_liked: '',
-    is_wondered: '',
-    post_comments: '',
-    post_shares: '',
-    post_likes: '',
-    post_wonders: '',
-    is_post_pinned: '',
-    get_post_comments: '',
-    total_comments: '',
-    all_comments: [],
-    photo_album: [],
-    options: [],
-    voted_id: '',
-    postFile_full: '',
-    reaction: {},
-    job: [],
-    offer: [],
-    fund: [],
-    fund_data: [],
-    forum: [],
-    thread: [],
-    is_still_live: '',
-    live_sub_users: '',
-    likes_string: '',
-  );
+  List<dynamic> _postModel = [];
 
-  late List<PostModel> _posts;
-  List<PostModel> get posts => _posts;
+  List<dynamic> get posts => _postModel;
 
-  setPosts(PostModel post) {
-    // _posts.add(post);
-    // notifyListeners();
+  setPosts(List<dynamic> posts) {
+    _postModel = posts;
+    notifyListeners();
+  }
+
+  loadMorePosts(List<dynamic> posts) {
+    if (posts.length > 0) {
+      for (var i = 0; i < posts.length; i++) {
+        _postModel.add(posts[i]);
+      }
+      notifyListeners();
+    }
+  }
+
+  clearAndSet(List<dynamic> posts) {
+    _postModel = [];
+    _postModel = posts;
+    notifyListeners();
   }
 }

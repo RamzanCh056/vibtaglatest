@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:vab_tag/screens/extra-screens/create_business_page.dart';
-import 'package:vab_tag/screens/my_page_screen/suggested_page.dart';
+import 'package:vibetag/screens/my_page_screen/suggested_page.dart';
+import '../../widgets/header.dart';
+import '../../widgets/navbar.dart';
+import 'create_pages.dart';
 import 'my_page.dart';
 
-class MyPageHomeScreen extends StatelessWidget {
+class MyPageHomeScreen extends StatefulWidget {
   const MyPageHomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<MyPageHomeScreen> createState() => _MyPageHomeScreenState();
+}
+
+class _MyPageHomeScreenState extends State<MyPageHomeScreen> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -15,10 +22,21 @@ class MyPageHomeScreen extends StatelessWidget {
         backgroundColor: Colors.grey.shade300,
         body: SafeArea(
           child: Column(
+
             children: [
+              Column(
+                children: [
+                  NavBar(),
+                  Header(
+                    onTap: () {
+                      _key.currentState!.openDrawer();
+                    },
+                  )
+                ],
+              ),
               Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: TabBar(
                       indicatorColor: Colors.orange,
                       labelColor: Colors.orange,
@@ -52,10 +70,11 @@ class MyPageHomeScreen extends StatelessWidget {
                       ),
                       child: GestureDetector(
                         onTap: (){
-                          Get.to(CreateBusinessPage());
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateBusinessPage()));
+                        //  Get.to(CreateBusinessPage());
                         },
                         child: Row(
-                          children: [
+                          children: const [
                             Text(
                               "Create",
                               style: TextStyle(color: Colors.white),
@@ -75,8 +94,8 @@ class MyPageHomeScreen extends StatelessWidget {
                 ],
               ),
               Expanded(child: TabBarView(children: [
-                MyPage(),
-                SuggestedPage(),
+                const MyPage(),
+                const SuggestedPage(),
                 Container(),
               ],))
             ],

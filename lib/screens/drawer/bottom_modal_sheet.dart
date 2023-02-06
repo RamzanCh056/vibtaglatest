@@ -112,7 +112,7 @@ BottomDrawer({required BuildContext context}) {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Profile(),
+                                screen:  Profile(user_id: loginUserId,),
                               );
                             },
                             child: Text(
@@ -232,7 +232,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PageScreen(),
+                          screen: PageScreen(page_id: '1',),
                         );
                       },
                     ),
