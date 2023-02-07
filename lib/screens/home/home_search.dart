@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../model/colorspost_model.dart';
 import '../../utils/constant.dart';
 import '../../widgets/post_option.dart';
 import 'catagories/catagories_home.dart';
@@ -96,7 +97,14 @@ class _createPostState extends State<createPost> {
   final pollAnswer = TextEditingController();
 
   // var youLoc;
-
+// var colorsPostId = [];
+ List<ColorsPostModel> colorsPostId= [];
+  int maxSelectedCards = 1;
+  int currentSelectedCards = 0;
+  var selectedColor;
+  var selectedId;
+  var selectedImage;
+  var textColor;
   bool textFieldSize = false;
   File? _video;
   File? _cameraVideo;
@@ -108,7 +116,38 @@ class _createPostState extends State<createPost> {
   bool isLoad = false;
   File? imageFile;
   bool _isShow = false;
+  bool _isShowColor = false;
+ getColorsPost()async{
+   var headers = {
+     'Cookie': 'PHPSESSID=19145fc28d16e9773332b3725c704109; _us=1675848113; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-07%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+   };
+   var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+   request.fields.addAll({
+     'type': 'get_color_post_colors'
+   });
 
+   request.headers.addAll(headers);
+
+   http.StreamedResponse response = await request.send();
+
+   if (response.statusCode == 200) {
+    // print(await response.stream.bytesToString());
+     var res = await response.stream.bytesToString();
+     var body = jsonDecode(res);
+     List colorsPost = body;
+     final todo = colorsPost?.map((dynamic item) => ColorsPostModel.fromJson(item)).toList() ?? [];
+     todo;
+     colorsPostId = todo;
+     setState(() {
+
+     });
+     print("bodyy  == ${colorsPostId[0]}");
+   }
+   else {
+     print(response.reasonPhrase);
+   }
+
+ }
   createPost() async {
     setState(() {
       isLoad = true;
@@ -135,7 +174,7 @@ class _createPostState extends State<createPost> {
       'feeling_type': '',
       'feeling': '',
       'postSticker': '',
-      'post_color': '',
+      'post_color': selectedId !=null? selectedId.toString() :"",
       'postRecord': '',
       'answer[]': poll.text ?? '',
       //'answer[]': pollAnswer.text?? '',
@@ -299,6 +338,7 @@ class _createPostState extends State<createPost> {
 
                 child: GestureDetector(
                   onTap: () {
+                    getColorsPost();
                   //
                     showDialog(
                         context: context,
@@ -328,16 +368,42 @@ class _createPostState extends State<createPost> {
                                           const SizedBox(
                                             height: 17.0,
                                           ),
-                                          TextFormField(
-                                            controller: postController,
-                                            maxLines: 3,
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              hintText: "What\'s happening",
-                                              hintStyle: TextStyle(fontSize: 18.5),
-                                            ),
+                                          Container(
+
+                                            height: selectedImage  !=null ? 190 :190,
+                                            width: double.infinity,
+                                            color: selectedColor !=null ?HexColor(selectedColor): Colors.transparent,
+
+                                            child: Stack(children: [
+                                              selectedImage != null?
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            selectedImage
+                                                        ),
+                                                        fit: BoxFit.cover
+                                                    )
+                                                ),
+                                              ): Container(),
+
+                                              Positioned.fill(child: Align(
+                                                alignment: Alignment.center,
+
+                                                child: TextFormField(
+                                                  controller: postController,
+                                                  maxLines: 3,
+                                                  decoration:  InputDecoration(
+                                                    border: const OutlineInputBorder(
+                                                      borderSide: BorderSide.none,
+                                                    ),
+                                                    hintStyle: TextStyle(color:textColor!=null? HexColor(textColor.toString()) :Colors.grey , fontSize: 18.5),
+                                                    hintText: "What\'s happening",
+                                                    //hintStyle: TextStyle(fontSize: 18.5),
+                                                  ),
+                                                ),
+                                              ),)
+                                            ],)
                                           ),
                                           _video != null
                                               ?
@@ -389,7 +455,123 @@ class _createPostState extends State<createPost> {
                                                     ],
                                                   ))
                                               : Container(),
-                                          //   poll.text != ""?
+                                      Visibility(
+                                        visible: _isShowColor,
+                                        child: SizedBox(height: 50,
+                                          child: ListView.builder(
+                                              itemCount: colorsPostId.length,
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+
+                                              itemBuilder: (context, index){
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(1.0),
+                                                  child: Stack(children: [
+                                                    GestureDetector(
+                                                      onTap:(){
+                                                        setState(() {
+                                                          selectedId = colorsPostId[index].id;
+                                                          selectedColor =  colorsPostId[index].color_1;
+                                                          selectedImage = colorsPostId[index].image;
+                                                          textColor =  colorsPostId[index].text_color;
+                                                          print("id is ==${selectedId.toString()}");
+                                                          print("colror is ==${selectedColor.toString()}");
+                                                          print("colror text ==${textColor.toString()}");
+
+                                                        });
+                                                },
+                                                      child: Container(
+                                                        // margin: EdgeInsets.symmetric(vertical: 5),
+                                                          height: 50,
+                                                          width: 50,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(70),
+                                                            color:colorsPostId[index].type == "color"?
+                                                            HexColor(colorsPostId[index].color_1.toString()) : Colors.transparent,
+
+                                                          ),
+                                                          child: colorsPostId[index].type == "image"?
+
+                                                          ClipRRect(
+                                                              borderRadius: BorderRadius.circular(70),
+                                                              child: Image.network(colorsPostId[index].image.toString(), fit: BoxFit.cover,)) : Container()
+
+                                                      ),
+                                                    ),
+                                                    // Positioned.fill(child: Align(
+                                                    //   alignment: Alignment.center,
+                                                    //   child:Theme(
+                                                    //     data:
+                                                    //     Theme.of(context).copyWith(
+                                                    //       unselectedWidgetColor:
+                                                    //       Colors.transparent,
+                                                    //       disabledColor:
+                                                    //       Colors.transparent,
+                                                    //     ),
+                                                    //     child: Checkbox(
+                                                    //       focusColor:
+                                                    //       Colors.transparent,
+                                                    //       checkColor: Colors.black,
+                                                    //       activeColor:
+                                                    //       Colors.transparent,
+                                                    //       value:
+                                                    //       colorsPostId[index].isSelected!,
+                                                    //       onChanged: (value) {
+                                                    //         if(currentSelectedCards <= maxSelectedCards ){
+                                                    //           setState(() {
+                                                    //             colorsPostId[index].isSelected =
+                                                    //             !colorsPostId[index]
+                                                    //                 .isSelected!;
+                                                    //             if( colorsPostId[index].isSelected!){
+                                                    //               setState(() {
+                                                    //                 currentSelectedCards += 1;
+                                                    //               });
+                                                    //               print("curent slected card ${currentSelectedCards}");
+                                                    //             }
+                                                    //             else{
+                                                    //               setState(() {
+                                                    //                 currentSelectedCards -= 1;
+                                                    //                 !colorsPostId[index]
+                                                    //                     .isSelected!;
+                                                    //
+                                                    //               });
+                                                    //               print("curent slected card ${currentSelectedCards}");
+                                                    //             };
+                                                    //
+                                                    //
+                                                    //
+                                                    //             setState(() {});
+                                                    //           });
+                                                    //         }
+                                                    //         if(currentSelectedCards ==2){
+                                                    //           setState(() {
+                                                    //             colorsPostId[index].isSelected =false;
+                                                    //             currentSelectedCards -= 1;
+                                                    //           });
+                                                    //
+                                                    //
+                                                    //
+                                                    //           Fluttertoast.showToast(msg: "You can select max 1 ");
+                                                    //         }
+                                                    //
+                                                    //
+                                                    //
+                                                    //       },
+                                                    //     ),
+                                                    //   ),
+                                                    //
+                                                    //   // colorsPostId[index].isSelected == true?
+                                                    //   // Icon(
+                                                    //   //   Icons.gpp_good_rounded, color: Colors.black,
+                                                    //   // )
+                                                    //   //     :Container(),
+                                                    // ))
+                                                  ],),
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                          //colorPost(),
                                           Visibility(
                                             visible: _isShow,
                                             child: Column(
@@ -444,7 +626,7 @@ class _createPostState extends State<createPost> {
                                           ),
                                           //:Container(),
                                           const SizedBox(
-                                            height: 30,
+                                            height: 15,
                                           ),
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -455,7 +637,10 @@ class _createPostState extends State<createPost> {
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
-                                                        print("vido link is $_video");
+                                                        setState(() {
+                                                          _isShowColor = !_isShowColor;
+                                                        });
+
                                                       },
                                                       child: const Image(
                                                         image: AssetImage('assets/images/color_pick.png'),
@@ -505,7 +690,7 @@ class _createPostState extends State<createPost> {
                                                     ),
                                                     GestureDetector(
                                                       onTap: (){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => CatagoriesHome()));
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CatagoriesHome()));
                                                       },
                                                       child: Container(
                                                         // height: 25.0,
@@ -633,9 +818,8 @@ class _createPostState extends State<createPost> {
                                                       });
                                                     }
                                                     if (i == 8) {
-                                                      print("is load in dilouge == ${isLoad}");
-                                                      // await    showPlacePicker();
-                                                      // setState(() {});
+                                                      await    showPlacePicker();
+                                                      setState(() {});
                                                     }
 
                                                   },
@@ -724,6 +908,7 @@ class _createPostState extends State<createPost> {
                             );
                           });
                         });
+
                   },
                   child: TextFormField(
                     enabled: false,
@@ -759,4 +944,55 @@ class _createPostState extends State<createPost> {
       );
     });
   }
+  // Widget colorPost(){
+  //  return Container(height: 50,
+  //      child: ListView.builder(
+  //        itemCount: colorsPostId.length,
+  //          shrinkWrap: true,
+  //          scrollDirection: Axis.horizontal,
+  //
+  //          itemBuilder: (context, index){
+  //        return Padding(
+  //          padding: const EdgeInsets.all(1.0),
+  //          child: GestureDetector(
+  //            onTap: (){
+  //              colorsPostId[index].isSelected = !colorsPostId[index].isSelected!;
+  //              // setState(() {
+  //              //
+  //              //
+  //              // });
+  //            },
+  //            child: Stack(children: [
+  //              Container(
+  //                // margin: EdgeInsets.symmetric(vertical: 5),
+  //                  height: 40,
+  //                  width: 50,
+  //                  decoration: BoxDecoration(
+  //                    borderRadius: BorderRadius.circular(50),
+  //                    color:colorsPostId[index].type == "color"?
+  //                    HexColor(colorsPostId[index].color_1.toString()) : Colors.transparent,
+  //
+  //                  ),
+  //                  child: colorsPostId[index].type == "image"?
+  //
+  //                  ClipRRect(
+  //                      borderRadius: BorderRadius.circular(50),
+  //                      child: Image.network(colorsPostId[index].image.toString(), fit: BoxFit.cover,)) : Container()
+  //
+  //              ),
+  //               Positioned.fill(child: Align(
+  //                alignment: Alignment.center,
+  //                child:
+  //                colorsPostId[index].isSelected == true?
+  //                Icon(
+  //                    Icons.gpp_good_rounded, color: Colors.black,
+  //                )
+  //                       :Container(),
+  //              ))
+  //            ],)
+  //          ),
+  //        );
+  //      }),
+  //  );
+  // }
 }
