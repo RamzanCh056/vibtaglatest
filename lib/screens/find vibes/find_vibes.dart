@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -16,6 +14,29 @@ class FindVibes extends StatefulWidget {
 
 class _FindVibesState extends State<FindVibes> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+  List<String> images = [
+    'assets/images/findvibe/findvibOne.png',
+    'assets/images/findvibe/findvibTwo.png',
+    'assets/images/findvibe/findvibThree.png',
+    'assets/images/findvibe/findvibTwo.png',
+  ];
+  List<String> postImages = [
+    'assets/images/findvibe/postOne.png',
+    'assets/images/findvibe/postTwo.png',
+    'assets/images/findvibe/postThree.png',
+  ];
+
+  List<String> name = [
+    'Entertainment',
+    'Architecture',
+    'Asian Music',
+    'Architecture',
+  ];
+  List<String> userName = [
+    'Gwen Stacy',
+    'Gwen CH',
+    'Vib Gwen',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -23,417 +44,257 @@ class _FindVibesState extends State<FindVibes> {
     double height = deviceHeight(context: context);
     return Scaffold(
       key: _key,
-      backgroundColor: HexColor('#323232'),
+      backgroundColor: HexColor('#F1F4FB'),
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const NavBar(),
+                  Header(onTap: () {
+                    _key.currentState!.openDrawer();
+                  })
+                ],
+              ),
+              SingleChildScrollView(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    NavBar(),
-                    Header(onTap: () {
-                      _key.currentState!.openDrawer();
-                    })
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            width: width,
+                            height: height * 0.25,
+                            margin: spacing(
+                              horizontal: 5,
+                              vertical: 0,
+                            ),
+                            child: ListView.builder(
+                              itemCount: images.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: width * 0.29,
+                                  height: height * 0.25,
+                                  margin: spacing(horizontal: 5, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius(
+                                      10,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: height * 0.2,
+                                        child: ClipRRect(
+                                          borderRadius: borderRadius(
+                                            10,
+                                          ),
+                                          child: Image.asset(
+                                            images[index],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: double.maxFinite,
+                                          child: Text(
+                                            name[index],
+                                            style: TextStyle(
+                                              color: HexColor('#000000'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    ListView.builder(
+                        itemCount: postImages.length,
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: width * 0.12,
+                                            height: width * 0.12,
+                                            padding: EdgeInsets.all(
+                                              width * 0.01,
+                                            ),
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  'assets/new/images/border.png',
+                                                ),
+                                              ),
+                                            ),
+                                            child: CircleAvatar(
+                                              radius: width * 0.055,
+                                              foregroundImage: const AssetImage("assets/images/findvibe/postUser.png"),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                userName[index],
+                                                style: const TextStyle(fontSize: 14, color: Colors.black),
+                                              ),
+                                              const Text(
+                                                '1hr ago',
+                                                style: TextStyle(fontSize: 10, color: Color(0xff7D8CAC)),
+                                              )
+                                            ],
+                                          ),
+                                          const Expanded(child: Text("")),
+                                          const Icon(
+                                            Icons.more_horiz,
+                                            color: Color(0xff99A7C7),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Image.asset(postImages[index])),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            height: 45,
+                                            width: 90,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade200,
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: const [
+                                                  Icon(
+                                                    Icons.favorite_border,
+                                                    color: Color(0xff99A7C7),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Text('2.3k', style: TextStyle(fontSize: 10, color: Color(0xff99A7C7)))
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                            height: 45,
+                                            width: 90,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade200,
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: const [
+                                                  Icon(
+                                                    Icons.message,
+                                                    color: Color(0xff99A7C7),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Text('2.3k', style: TextStyle(fontSize: 10, color: Color(0xff99A7C7)))
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const Expanded(child: Text("")),
+                                          Container(
+                                              height: 45,
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade200,
+                                                borderRadius: BorderRadius.circular(100),
+                                              ),
+                                              child: const Center(
+                                                child: Icon(Icons.share, color: Color(0xff99A7C7)),
+                                              ))
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                            ],
+                          );
+                        }),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    const AppFooter()
                   ],
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  width: width,
-                  height: height * 0.87,
-                  margin: spacing(
-                    horizontal: 5,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        Container(
-                          margin: spacing(
-                            horizontal: 5,
-                            vertical: 0,
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Trending Vibes',
-                            style: TextStyle(
-                              color: HexColor('#BEBEBE'),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: width,
-                          height: height * 0.25,
-                          margin: spacing(
-                            horizontal: 5,
-                            vertical: 0,
-                          ),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                width: width * 0.25,
-                                height: height * 0.25,
-                                margin: spacing(horizontal: 5, vertical: 5),
-                                decoration: BoxDecoration(
-                                  borderRadius: borderRadius(
-                                    10,
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: height * 0.2,
-                                      child: ClipRRect(
-                                        borderRadius: borderRadius(
-                                          10,
-                                        ),
-                                        child: Image.asset(
-                                          'assets/images/streamer.jpg',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: height * 0.01,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      width: double.maxFinite,
-                                      child: Text(
-                                        'Ilizabat Bab',
-                                        style: TextStyle(
-                                          color: HexColor('#BEBEBE'),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: spacing(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Beauty',
-                                style: TextStyle(
-                                  color: HexColor('#A1A1A1'),
-                                ),
-                              ),
-                              Text(
-                                'Show all',
-                                style: TextStyle(
-                                  color: HexColor('#0000FF'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              width: double.maxFinite,
-                              height: height * 0.15,
-                              margin: spacing(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: HexColor('#333333'),
-                                borderRadius: borderRadius(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 25,
-                                          height: 25,
-                                          decoration: BoxDecoration(
-                                            color: HexColor('#151515'),
-                                            borderRadius: borderRadius(20),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          'Lucille Mcmalan',
-                                          style: TextStyle(
-                                            color: HexColor('#A1A1A1'),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.thumb_up,
-                                  color: Colors.orange,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Must Watch',
-                                  style: TextStyle(
-                                    color: HexColor('#A1A1A1'),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                const Icon(
-                                  Icons.thumb_up,
-                                  color: Colors.orange,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              width: double.maxFinite,
-                              height: height * 0.15,
-                              margin: spacing(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: HexColor('#333333'),
-                                borderRadius: borderRadius(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 25,
-                                          height: 25,
-                                          decoration: BoxDecoration(
-                                            color: HexColor('#151515'),
-                                            borderRadius: borderRadius(20),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          'Lucille Mcmalan',
-                                          style: TextStyle(
-                                            color: HexColor('#A1A1A1'),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.favorite,
-                                  color: Colors.green,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'British Revert G...',
-                                  style: TextStyle(
-                                    color: HexColor('#A1A1A1'),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              width: double.maxFinite,
-                              height: height * 0.15,
-                              margin: spacing(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: HexColor('#333333'),
-                                borderRadius: borderRadius(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 25,
-                                          height: 25,
-                                          decoration: BoxDecoration(
-                                            color: HexColor('#151515'),
-                                            borderRadius: borderRadius(20),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          'Lucille Mcmalan',
-                                          style: TextStyle(
-                                            color: HexColor('#A1A1A1'),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Text(
-                              'Why I converted to ',
-                              style: TextStyle(
-                                color: HexColor('#A1A1A1'),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          width: width,
-                          height: height * 0.25,
-                          padding: spacing(
-                            horizontal: width * 0.05,
-                            vertical: height * 0.03,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: Colors.orange,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: width * 0.25,
-                                    child: const Text(
-                                      'Market Place Terms',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width * 0.2,
-                                    child: const Text(
-                                      'Your Wishlist',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: width * 0.2,
-                                    child: const Text(
-                                      'Refund Policy',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width * 0.2,
-                                    child: const Text(
-                                      'On Sale Items',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: width * 0.2,
-                                    child: const Text(
-                                      'Start Selling',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width * 0.2,
-                                    child: const Text(
-                                      'Find Help & support',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        AppFooter()
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

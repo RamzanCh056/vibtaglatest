@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 double deviceWidth({required BuildContext context}) {
   return MediaQuery.of(context).size.width;
@@ -27,9 +28,9 @@ Color lightBg = Color.fromARGB(51, 0, 0, 0);
 Color lightGrayNew = HexColor('#C8D1E5');
 Color lightGrayNew2 = HexColor('#F1F4FB');
 Color darkGrayNew = HexColor('#434950');
-
 //New Design Color
 
+Color orangeLight = HexColor('#ff9200;');
 Color orangePrimary = HexColor('#FF9200');
 Color orangeSecondary = HexColor('#FDBA31');
 Color blackPrimary = HexColor('#212121');
@@ -53,6 +54,9 @@ double textXSm = 14.0;
 double iconMax = 32.0;
 double iconMed = 28.0;
 double iconMin = 26.0;
+
+//Video Player Control
+bool isMuted = true;
 
 String API_Url = 'https://vibetag.com/app_api.php';
 final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
@@ -172,3 +176,38 @@ final List<String> reactionsText = [
   'Cry',
   'Heartbroken'
 ];
+
+String readTimestamp(int timestamp) {
+  var now = DateTime.now();
+  var format = DateFormat.Hm();
+  var date = DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
+  var diff = date.difference(now);
+  var time = '';
+
+  if (diff.inSeconds <= 0 ||
+      diff.inSeconds > 0 && diff.inMinutes == 0 ||
+      diff.inMinutes > 0 && diff.inHours == 0 ||
+      diff.inHours > 0 && diff.inDays == 0) {
+    time = format.format(date);
+  } else {
+    if (diff.inDays == 1) {
+      time = diff.inDays.toString() + 'DAY AGO';
+    } else {
+      time = diff.inDays.toString() + 'DAYS AGO';
+    }
+  }
+
+  return time;
+}
+Widget titleForDialog(BuildContext context, String title) {
+  return Container(
+    color: Theme.of(context).primaryColor,
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+    child: Center(
+      child: Text(title,
+          style:
+          const TextStyle(color: Colors.white, fontSize: 17, height: 1.55),
+          textAlign: TextAlign.center),
+    ),
+  );
+}

@@ -7,9 +7,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
-import 'package:vibetag/screens/page/page_video_player.dart';
-import 'package:vibetag/screens/page/photo_tab.dart';
-import 'package:vibetag/screens/page/post_tab.dart';
+import 'package:vibetag/screens/video_player/page_video_player.dart';
+import 'package:vibetag/screens/profile/photo_tab.dart';
+import 'package:vibetag/screens/page/post_tab_page.dart';
+import 'package:vibetag/screens/profile/post_tab_profile.dart';
 import 'package:vibetag/screens/page/review_tab.dart';
 import 'package:vibetag/screens/page/shop_tab.dart';
 import 'package:vibetag/screens/page/videos_tab.dart';
@@ -37,16 +38,16 @@ class _PageScreenState extends State<PageScreen> {
     ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           width: width,
           height: height,
           child: SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  NavBar(),
+                  const NavBar(),
                   Header(),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     height: height * 0.875,
                     child: SingleChildScrollView(
@@ -75,7 +76,7 @@ class _PageScreenState extends State<PageScreen> {
                                   child: Center(
                                     child: CircleAvatar(
                                       radius: width * 0.15,
-                                      foregroundImage: AssetImage(
+                                      foregroundImage: const AssetImage(
                                           'assets/new/images/user.png'),
                                     ),
                                   ),
@@ -286,8 +287,8 @@ class _PageScreenState extends State<PageScreen> {
                                   ),
                                   HomeTabBar(),
                                   gap(h: 10),
-                                  HomeSearchBar(user: user),
-                                  gap(h: 10),
+                                  createPost(user),
+                                  //HomeSearchBar(user: user),
                                   gap(h: 10),
                                   Container(
                                     child: DefaultTabController(
@@ -303,11 +304,11 @@ class _PageScreenState extends State<PageScreen> {
                                                   unselectedLabelColor:
                                                       blackLight,
                                                   labelColor: orangePrimary,
-                                                  labelStyle: TextStyle(
+                                                  labelStyle: const TextStyle(
                                                     fontSize: 14,
                                                   ),
                                                   unselectedLabelStyle:
-                                                      TextStyle(
+                                                     const TextStyle(
                                                     fontSize: 14,
                                                   ),
                                                   tabs: const [
@@ -333,9 +334,9 @@ class _PageScreenState extends State<PageScreen> {
                                                 width: double.maxFinite,
                                                 height: height * 0.7,
                                                 child: TabBarView(children: [
-                                                  PostTab(context: context),
-                                                  VideoTab(context: context),
-                                                  PhotoTab(context: context),
+                                                  PostTabPage(),
+                                                 VideoTab(),
+                                                PhotoTab(),
                                                   ShopTab(context: context),
                                                   ReviewTab(context: context),
                                                 ]),

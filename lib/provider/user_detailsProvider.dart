@@ -9,6 +9,9 @@ class UsersDetailsProvider with ChangeNotifier {
     followers_count: '',
     groups_count: '',
     likes_count: '',
+    mutual_friends_count: 0,
+    video_views: '',
+    total_reactions: 0,
   );
 
   UserDetails get userDetails => _userDetails;

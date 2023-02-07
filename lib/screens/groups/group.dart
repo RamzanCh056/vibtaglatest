@@ -7,11 +7,12 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
+import 'package:vibetag/screens/groups/post_tab_group.dart';
 import 'package:vibetag/screens/home/home_search.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
-import 'package:vibetag/screens/page/page_video_player.dart';
-import 'package:vibetag/screens/page/photo_tab.dart';
-import 'package:vibetag/screens/page/post_tab.dart';
+import 'package:vibetag/screens/video_player/page_video_player.dart';
+import 'package:vibetag/screens/profile/photo_tab.dart';
+import 'package:vibetag/screens/profile/post_tab_profile.dart';
 import 'package:vibetag/screens/page/review_tab.dart';
 import 'package:vibetag/screens/page/shop_tab.dart';
 import 'package:vibetag/screens/page/videos_tab.dart';
@@ -256,7 +257,8 @@ class _GroupScreenState extends State<GroupScreen> {
                                   ),
                                   HomeTabBar(),
                                   gap(h: 10),
-                                  HomeSearchBar(user: user),
+                                  createPost(user),
+                                  //HomeSearchBar(user: user),
                                   gap(h: 10),
                                   Container(
                                     child: SingleChildScrollView(
@@ -265,7 +267,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Container(
-                                            child: PostTab(context: context),
+                                            child: PostTabGroup(),
                                           ),
                                           Padding(
                                             padding: spacing(horizontal: 10),

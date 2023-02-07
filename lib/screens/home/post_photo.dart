@@ -1,51 +1,28 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/feelingWidet.dart';
+import 'package:vibetag/screens/home/post_product.dart';
 import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
-import 'package:path/path.dart' as p;
+import 'package:vibetag/screens/profile/profile.dart';
 
 import '../../utils/constant.dart';
 
 class Post extends StatefulWidget {
-  final String avatar;
-  final String first;
-  final String name;
-  final String postId;
-  final String postTime;
-  final String postText;
-  final String postFile;
-  final int videoViews;
-  final Map<String, dynamic> reactions;
-  final String feelings;
-  final String location;
-  final String comments;
-  final String likes;
-  final String likeString;
-
-  final String shares;
+  final dynamic post;
 
   const Post({
     Key? key,
-    required this.avatar,
-    required this.first,
-    required this.name,
-    required this.postId,
-    required this.postTime,
-    required this.postText,
-    required this.postFile,
-    required this.videoViews,
-    required this.reactions,
-    required this.feelings,
-    required this.location,
-    required this.comments,
-    required this.likes,
-    required this.likeString,
-    required this.shares,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -89,13 +66,13 @@ class _PostState extends State<Post> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id': widget.post['post_id'].toString(),
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
     final result = await API().postData(data);
     final response = jsonDecode(result.body)['status'];
-    if (response == 200 && !(widget.reactions['is_reacted'])) {
+    if (response == 200 && !(widget.post['reaction']['is_reacted'])) {
       userLike = 1;
     }
     setState(() {
@@ -112,7 +89,7 @@ class _PostState extends State<Post> {
 
   postReactionsList() {
     for (var i = 0; i < 8; i++) {
-      if (widget.reactions['${i + 1}'] != null) {
+      if (widget.post['reaction']['${i + 1}'] != null) {
         reactionOnPost.add(i);
       }
     }
@@ -122,8 +99,9 @@ class _PostState extends State<Post> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
-    String fileExtension = p.extension(widget.postFile);
+    totalLikes =
+        int.parse(widget.post['reaction']['count'].toString()) + userLike;
+    String fileExtension = p.extension(widget.post['postFile']);
     bool isAudio = fileExtension == '.mp3' || fileExtension == '.wave';
 
     return Container(
@@ -143,9 +121,58 @@ class _PostState extends State<Post> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          widget.post['photo_album'].length > 2
+              ? Container(
+                  width: double.infinity,
+                  height: height * 0.35,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.post['photo_album'].length,
+                      itemBuilder: (context, i) {
+                        return Container(
+                          margin: spacing(horizontal: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius(7),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: borderRadius(7),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  widget.post['photo_album'][i]['image'],
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  right: 10,
+                                  top: 10,
+                                  child: Container(
+                                    padding: spacing(
+                                      horizontal: 7,
+                                      vertical: 3,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: borderRadius(2.5),
+                                      color: const Color.fromARGB(54, 0, 0, 0),
+                                    ),
+                                    child: Text(
+                                      '${i + 1}/${widget.post['photo_album'].length}',
+                                      style: TextStyle(
+                                        color: white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                )
+              : gap(),
           postFile(
-            file: widget.postFile,
+            file: widget.post['postFile'],
             context: context,
+            thumbnail: widget.post['postFileThumb'],
           ),
           Container(
             padding: spacing(
@@ -205,13 +232,21 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       gap(w: 5),
-                    widget.videoViews != 0? gap(): Text(
-                        widget.likeString,
-                        style: TextStyle(
-                          color: grayMed,
-                          fontSize: 10,
-                        ),
-                      )
+                      int.parse(widget.post['videoViews'].toString()) != 0
+                          ? Text(
+                              widget.post['reaction']['count'].toString(),
+                              style: TextStyle(
+                                color: grayMed,
+                                fontSize: 10,
+                              ),
+                            )
+                          : Text(
+                              widget.post['likes_string'],
+                              style: TextStyle(
+                                color: grayMed,
+                                fontSize: 10,
+                              ),
+                            )
                     ],
                   ),
                 ),
@@ -223,24 +258,26 @@ class _PostState extends State<Post> {
                   child: Row(
                     children: [
                       Text(
-                        "${widget.comments} Comments | ${widget.shares} Revibed",
+                        "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                         style: TextStyle(
                           color: grayMed,
                           fontSize: 10,
                         ),
                       ),
-                      widget.videoViews != 0 ? gap(w: 10) : gap(),
-                      widget.videoViews != 0
+                      int.parse(widget.post['videoViews'].toString()) != 0
+                          ? gap(w: 10)
+                          : gap(),
+                      int.parse(widget.post['videoViews'].toString()) != 0
                           ? isAudio
                               ? Text(
-                                  '${getInK(number: widget.videoViews)} listen',
+                                  '${getInK(number: int.parse(widget.post['videoViews'].toString()))} listen',
                                   style: TextStyle(
                                     color: grayMed,
                                     fontSize: 10,
                                   ),
                                 )
                               : Text(
-                                  '${getInK(number: widget.videoViews)} views',
+                                  '${getInK(number: int.parse(widget.post['videoViews']))} views',
                                   style: TextStyle(
                                     color: grayMed,
                                     fontSize: 10,
@@ -273,9 +310,10 @@ class _PostState extends State<Post> {
                       height: width * 0.03,
                       child: reactionValue != 0
                           ? Image.asset(reactions[reactionValue - 1])
-                          : widget.reactions['is_reacted']
+                          : widget.post['reaction']['is_reacted']
                               ? Image.asset(reactions[
-                                  int.parse(widget.reactions['type']) - 1])
+                                  int.parse(widget.post['reaction']['type']) -
+                                      1])
                               : Image.asset(
                                   'assets/new/icons/heart.png',
                                   fit: BoxFit.cover,
@@ -287,9 +325,10 @@ class _PostState extends State<Post> {
                     Text(
                       reactionValue != 0
                           ? reactionsText[reactionValue - 1]
-                          : widget.reactions['is_reacted']
+                          : widget.post['reaction']['is_reacted']
                               ? reactionsText[
-                                  int.parse(widget.reactions['type']) - 1]
+                                  int.parse(widget.post['reaction']['type']) -
+                                      1]
                               : 'React',
                       style: TextStyle(
                         color: grayMed,
@@ -419,7 +458,7 @@ class _PostState extends State<Post> {
               right: 10,
             ),
             child: Html(
-              data: widget.postText,
+              data: widget.post['postText'],
               style: {
                 "body": Style(
                   fontSize: FontSize(12.0),
@@ -433,6 +472,123 @@ class _PostState extends State<Post> {
           SizedBox(
             height: height * 0.01,
           ),
+          widget.post['parent_id'] != '0'
+              ? Container(
+                  width: width,
+                  height: height * 0.08,
+                  margin: spacing(
+                    horizontal: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen: const Profile(),
+                              );
+                            },
+                            child: Container(
+                              width: width * 0.12,
+                              height: width * 0.12,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: borderRadius(width),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      orangePrimary,
+                                      graySecondary,
+                                    ],
+                                  )),
+                              padding: const EdgeInsets.all(2),
+                              child: CircleAvatar(
+                                radius: width * 0.06,
+                                foregroundImage: NetworkImage(
+                                  widget.post['post_owner_data']['avatar'],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: width * 0.25,
+                                child: Text(
+                                  widget.post['post_owner_data']['name'],
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              gap(h: 5),
+                              Row(
+                                children: [
+                                  Text(
+                                    readTimestamp(int.parse(widget
+                                        .post['post_owner_data']['time'])),
+                                    style: TextStyle(
+                                      color: grayMed,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  widget.post['postMap'] != ''
+                                      ? Row(
+                                          children: [
+                                            gap(
+                                              w: 5,
+                                            ),
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 16,
+                                              color: graySecondary,
+                                            ),
+                                            gap(
+                                              w: 5,
+                                            ),
+                                            Container(
+                                              width: width * 0.5,
+                                              child: Text(
+                                                '${widget.post['postMap']}',
+                                                style: TextStyle(
+                                                    color: graySecondary,
+                                                    fontSize: 12,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      Container(
+                        width: width * 0.08,
+                        height: width * 0.08,
+                        child: Image.asset(
+                          'assets/new/icons/more_h.png',
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : gap(),
           Container(
             width: width,
             height: height * 0.08,
@@ -445,25 +601,33 @@ class _PostState extends State<Post> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: width * 0.12,
-                      height: width * 0.12,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: borderRadius(width),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              orangePrimary,
-                              graySecondary,
-                            ],
-                          )),
-                      padding: const EdgeInsets.all(2),
-                      child: CircleAvatar(
-                        radius: width * 0.06,
-                        foregroundImage: NetworkImage(
-                          widget.avatar,
+                    InkWell(
+                      onTap: () {
+                        pushRoute(
+                          context: context,
+                          screen: const Profile(),
+                        );
+                      },
+                      child: Container(
+                        width: width * 0.12,
+                        height: width * 0.12,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: borderRadius(width),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                orangePrimary,
+                                graySecondary,
+                              ],
+                            )),
+                        padding: const EdgeInsets.all(2),
+                        child: CircleAvatar(
+                          radius: width * 0.06,
+                          foregroundImage: NetworkImage(
+                            widget.post['publisher']['avatar'],
+                          ),
                         ),
                       ),
                     ),
@@ -476,53 +640,67 @@ class _PostState extends State<Post> {
                       children: [
                         Row(
                           children: [
-                            FittedBox(
+                            Container(
+                              width: width * 0.25,
                               child: Text(
-                                widget.name,
+                                widget.post['publisher']['name'] ?? '${widget.post['publisher']['first_name']} ${widget.post['publisher']['last_name']}',
                                 style: TextStyle(
                                   color: blackPrimary,
                                   overflow: TextOverflow.ellipsis,
+                                  fontSize: 12,
                                 ),
                               ),
                             ),
                             gap(
                               w: 5,
                             ),
-                            widget.feelings != ''
-                                ? Row(
-                                    children: [
-                                      Container(
-                                        width: 5,
-                                        height: 5,
-                                        decoration: BoxDecoration(
-                                            color: blackPrimary,
-                                            borderRadius: borderRadius(width)),
-                                      ),
-                                      gap(
-                                        w: 5,
-                                      ),
-                                      Text(
-                                        'is feeling ${widget.feelings}',
-                                        style: TextStyle(
-                                          color: graySecondary,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                    ],
+                            widget.post['photo_album'].length > 0
+                                ? postFeeling(
+                                    width: width,
+                                    feeling: 'created an Album',
+                                    start: '',
                                   )
-                                : Container(),
+                                : gap(),
+                            widget.post['parent_id'] != '0'
+                                ? postFeeling(
+                                    width: width,
+                                    feeling: 'Revibed a post',
+                                    start: '',
+                                  )
+                                : gap(),
+                            postFeeling(
+                                width: width,
+                                start: 'is feeling',
+                                feeling: widget.post['postFeeling']),
+                            postFeeling(
+                                width: width,
+                                start: 'is listening',
+                                feeling: widget.post['postListening']),
+                            postFeeling(
+                                width: width,
+                                start: 'is Traveling',
+                                feeling: widget.post['postTraveling']),
+                            postFeeling(
+                                width: width,
+                                start: 'is watching',
+                                feeling: widget.post['postWatching']),
+                            postFeeling(
+                                width: width,
+                                start: 'is playing',
+                                feeling: widget.post['postPlaying']),
                           ],
                         ),
+                        gap(h: 5),
                         Row(
                           children: [
                             Text(
-                              widget.postTime,
+                              widget.post['post_time'],
                               style: TextStyle(
                                 color: grayMed,
-                                fontSize: 12,
+                                fontSize: 10,
                               ),
                             ),
-                            widget.location != ''
+                            widget.post['postMap'] != ''
                                 ? Row(
                                     children: [
                                       gap(
@@ -539,7 +717,7 @@ class _PostState extends State<Post> {
                                       Container(
                                         width: width * 0.5,
                                         child: Text(
-                                          '${widget.location}',
+                                          '${widget.post['postMap']}',
                                           style: TextStyle(
                                               color: graySecondary,
                                               fontSize: 12,

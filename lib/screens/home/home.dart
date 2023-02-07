@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:core';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/auth_method.dart';
@@ -36,12 +37,14 @@ import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/story/add_story.dart';
+import 'package:video_player/video_player.dart';
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
 import '../livestream/create stream/live.dart';
 import '../../widgets/post_option.dart';
 import '../shop/market/market.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -63,6 +66,7 @@ class _HomeState extends State<Home> {
   int postsLength = 0;
   bool isAlreadyLoading = false;
   ScrollController scrollController = ScrollController();
+
 
   @override
   void initState() {
@@ -225,11 +229,13 @@ class _HomeState extends State<Home> {
                                       children: [
                                         HomeTabBar(),
                                         HomeStory(user: user),
-                                        HomeSearchBar(user: user),
+                                        createPost(user)
+                                        //HomeSearchBar(user: user),
                                       ],
                                     );
                                   } else if (i > 0 && i < (posts.length - 1)) {
                                     if (posts[i - 1]['poll_id'] != '0') {
+                                      return Container();
                                       return PoolPost(
                                         postId: posts[i - 1]['post_id'],
                                         avatar: posts[i - 1]['publisher']
@@ -268,6 +274,7 @@ class _HomeState extends State<Home> {
                                         reactions: posts[i - 1]['reaction'],
                                         postText: posts[i - 1]['postText'],
                                         blog: posts[i - 1]['blog'],
+                                        parent_id: posts[i - 1]['parent_id'],
                                         likes: posts[i - 1]['reaction']['count']
                                             .toString(),
                                         comments: posts[i - 1]['post_comments'],
@@ -299,35 +306,10 @@ class _HomeState extends State<Home> {
                                         shares: posts[i - 1]['post_shares'],
                                       );
                                     } else if (posts[i - 1]['user_id'] != '0' &&
-                                        posts[i - 1]['color_id'] == '0') {
+                                        posts[i - 1]['color_id'] == '0' &&
+                                        posts[i - 1]['product_id'] == '0') {
                                       return Post(
-                                        postId: posts[i - 1]['post_id'],
-                                        avatar: posts[i - 1]['publisher']
-                                            ['avatar'],
-                                        name: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']} ${posts[i - 1]['publisher']['last_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        first: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        postTime: posts[i - 1]['post_time'],
-                                        feelings: posts[i - 1]['postFeeling'],
-                                        location: posts[i - 1]['postMap'],
-                                        reactions: posts[i - 1]['reaction'],
-                                        postText: posts[i - 1]['postText'],
-                                        postFile: posts[i - 1]['postFile'],
-                                        videoViews: int.parse(
-                                            posts[i - 1]['videoViews']),
-                                        comments: posts[i - 1]['post_comments'],
-                                        likes: posts[i - 1]['reaction']['count']
-                                            .toString(),
-                                        shares: posts[i - 1]['post_shares'],
-                                        likeString: posts[i - 1]
-                                            ['likes_string'],
+                                        post: posts[i - 1],
                                       );
                                     } else if (posts[i - 1]['color_id'] !=
                                         '0') {
@@ -366,62 +348,15 @@ class _HomeState extends State<Home> {
                                         posts[i - 1]['product_id'] == '0' &&
                                         posts[i - 1]['color_id'] == '0') {
                                       return Post(
-                                        postId: posts[i - 1]['post_id'],
-                                        avatar: posts[i - 1]['publisher']
-                                            ['avatar'],
-                                        name: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']} ${posts[i - 1]['publisher']['last_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        first: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']}"
-                                            : "${posts[i - 1]['publisher']['page_name']}",
-                                        postTime: posts[i - 1]['post_time'],
-                                        feelings: posts[i - 1]['postFeeling'],
-                                        location: posts[i - 1]['postMap'],
-                                        reactions: posts[i - 1]['reaction'],
-                                        postText: posts[i - 1]['postText'],
-                                        postFile: posts[i - 1]['postFile'],
-                                        videoViews: int.parse(
-                                            posts[i - 1]['videoViews']),
-                                        comments: posts[i - 1]['post_comments'],
-                                        likes: posts[i - 1]['reaction']['count']
-                                            .toString(),
-                                        shares: posts[i - 1]['post_shares'],
-                                        likeString: posts[i - 1]
-                                            ['likes_string'],
+                                        post: posts[i - 1],
                                       );
                                     } else {
-                                      return PostProduct(
-                                        postId: posts[i - 1]['post_id'],
-                                        name: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']} ${posts[i - 1]['publisher']['last_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        productName: posts[i - 1]['product']
-                                            ['name'],
-                                        description: posts[i - 1]['product']
-                                            ['description'],
-                                        avatar: posts[i - 1]['publisher']
-                                            ['avatar'],
-                                        postTime: posts[i - 1]['post_time'],
-                                        productImage: posts[i - 1]['product']
-                                            ['images'],
-                                        price: posts[i - 1]['product']
-                                            ['price_max'],
-                                        likes: posts[i - 1]['reaction']['count']
-                                            .toString(),
-                                        comments: posts[i - 1]['post_comments'],
-                                        shares: posts[i - 1]['post_shares'],
-                                        stock_amount: posts[i - 1]['product']
-                                            ['amount_stock'],
-                                        location: posts[i - 1]['product']
-                                            ['location'],
-                                      );
+                                      if (posts[i - 1]['product_id'] != '0') {
+                                        return PostProduct(
+                                          post: posts[i - 1],
+                                        );
+                                      }
+                                      return Container();
                                     }
                                   }
 

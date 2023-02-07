@@ -5,6 +5,7 @@ import 'package:vibetag/screens/chat/chat_bar.dart';
 import 'package:vibetag/screens/home/options.dart';
 import 'package:vibetag/screens/home/search.dart';
 
+import '../screens/chat_screens/screen/bottom_sheet_button_screen.dart';
 import '../utils/constant.dart';
 
 class Header extends StatefulWidget {
@@ -102,9 +103,8 @@ class _HeaderState extends State<Header> {
             children: [
               InkWell(
                 onTap: () {
-                  ChatBar(
-                    context: context,
-                  );
+
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const BottomSheetButtonScreen()));
                 },
                 child: Container(
                   width: height * 0.05,

@@ -28,12 +28,15 @@ import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
+import '../my_articles/my_article.dart';
+import '../my_articles/my_article_main_screen.dart';
+import '../my_page_screen/browse_event_screen.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
   return showBarModalBottomSheet(
-    barrierColor: Color.fromARGB(0, 255, 255, 255),
+    barrierColor: const Color.fromARGB(0, 255, 255, 255),
     elevation: 0,
     topControl: Container(),
     shape: RoundedRectangleBorder(
@@ -41,17 +44,17 @@ BottomDrawer({required BuildContext context}) {
     ),
     context: context,
     builder: (context) {
-      return Container(
+      return SizedBox(
         height: height * 0.88,
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: height * 0.3,
               width: double.maxFinite,
               child: Stack(
                 children: [
                   Positioned(
-                    child: Container(
+                    child: SizedBox(
                       width: double.maxFinite,
                       height: height * 0.15,
                       child: Image.asset(
@@ -65,7 +68,7 @@ BottomDrawer({required BuildContext context}) {
                     right: 0,
                     top: height * 0.075,
                     child: Center(
-                      child: Container(
+                      child: SizedBox(
                         width: width * 0.25,
                         height: width * 0.25,
                         child: Center(
@@ -131,7 +134,7 @@ BottomDrawer({required BuildContext context}) {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               height: height * 0.58,
               child: SingleChildScrollView(
                 child: Column(
@@ -143,7 +146,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Cart(),
+                          screen: const Cart(),
                         );
                       },
                     ),
@@ -154,7 +157,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Album(),
+                          screen: const Album(),
                         );
                       },
                     ),
@@ -165,7 +168,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: SavedPost(),
+                          screen: const SavedPost(),
                         );
                       },
                     ),
@@ -176,7 +179,19 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Nudge(),
+                          screen: const Nudge(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                      title: 'Pages',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen:const MyPageHomeScreen(),
+                          //PageScreen(),
                         );
                       },
                     ),
@@ -187,7 +202,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PlayLists(),
+                          screen: const PlayLists(),
                         );
                       },
                     ),
@@ -198,7 +213,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Gift(),
+                          screen: const Gift(),
                         );
                       },
                     ),
@@ -210,7 +225,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Activities(),
+                          screen: const Activities(),
                         );
                       },
                     ),
@@ -221,7 +236,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Groups(),
+                          screen: const Groups(),
                         );
                       },
                     ),
@@ -232,7 +247,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PageScreen(),
+                          screen: const PageScreen(),
                         );
                       },
                     ),
@@ -241,9 +256,10 @@ BottomDrawer({required BuildContext context}) {
                       title: 'Blog',
                       notifications: 0,
                       onTap: () {
+
                         pushReplacement(
                           context: context,
-                          screen: Blog(),
+                          screen: const Blog(),
                         );
                       },
                     ),
@@ -253,8 +269,10 @@ BottomDrawer({required BuildContext context}) {
                       notifications: 0,
                       onTap: () {
                         pushReplacement(
+
                           context: context,
-                          screen: MyArticles(context: context),
+                          screen:const MyArticleHomeSceen(),
+                          //MyArticles(context: context),
                         );
                       },
                     ),
@@ -265,7 +283,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Shop(),
+                          screen: const Shop(),
                         );
                       },
                     ),
@@ -276,7 +294,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: MyProducts(),
+                          screen: const MyProducts(),
                         );
                       },
                     ),
@@ -287,7 +305,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Explore(),
+                          screen: const Explore(),
                         );
                       },
                     ),
@@ -298,7 +316,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: FindVibes(),
+                          screen: const FindVibes(),
                         );
                       },
                     ),
@@ -309,7 +327,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Blogs(),
+                          screen: const Blogs(),
                         );
                       },
                     ),
@@ -321,7 +339,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Events(),
+                          screen: const Events(),
                         );
                       },
                     ),

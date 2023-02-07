@@ -21,6 +21,7 @@ class BlogPost extends StatefulWidget {
   final String first;
   final Map<String, dynamic> reactions;
 
+  final String parent_id;
   final String likes;
   final String comments;
   final String shares;
@@ -36,6 +37,7 @@ class BlogPost extends StatefulWidget {
     required this.about,
     required this.first,
     required this.reactions,
+    required this.parent_id,
     required this.likes,
     required this.comments,
     required this.shares,
@@ -439,14 +441,115 @@ class _BlogPostState extends State<BlogPost> {
                   "body": Style(
                     textOverflow: TextOverflow.ellipsis,
                     fontSize: FontSize(12.0),
-                
-                  color: Colors.black54,
+                    color: Colors.black54,
                     maxLines: 3,
                   ),
                 },
               ),
             ),
             gap(h: 10),
+            widget.parent_id != '0'
+                ? Container(
+                    width: width,
+                    height: height * 0.08,
+                    margin: spacing(
+                      horizontal: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: width * 0.12,
+                              height: width * 0.12,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: borderRadius(width),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      orangePrimary,
+                                      graySecondary,
+                                    ],
+                                  )),
+                              padding: const EdgeInsets.all(2),
+                              child: CircleAvatar(
+                                radius: width * 0.06,
+                                foregroundImage: NetworkImage(
+                                  widget.blog['author']['avatar'],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${widget.blog['author']['first_name']} ${widget.blog['author']['last_name']}',
+                                      style: TextStyle(
+                                        color: blackPrimary,
+                                      ),
+                                    ),
+                                    widget.parent_id != '0'
+                                        ? Row(
+                                            children: [
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Text(
+                                                'created a new article',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: grayMed,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : gap(),
+                                  ],
+                                ),
+                                Text(
+                                  widget.postTime,
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        Container(
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          child: Image.asset(
+                            'assets/new/icons/more_h.png',
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : gap(),
             Container(
               width: width,
               height: height * 0.08,
@@ -496,21 +599,41 @@ class _BlogPostState extends State<BlogPost> {
                                   color: blackPrimary,
                                 ),
                               ),
-                              gap(
-                                w: 5,
-                              ),
+                              widget.parent_id != '0'
+                                  ? Row(
+                                      children: [
+                                        gap(
+                                          w: 5,
+                                        ),
+                                        Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            borderRadius: borderRadius(width),
+                                            color: grayMed,
+                                          ),
+                                        ),
+                                        gap(
+                                          w: 5,
+                                        ),
+                                        Text(
+                                          'Revibed a post',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: grayMed,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : gap(),
                             ],
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                widget.postTime,
-                                style: TextStyle(
-                                  color: grayMed,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            widget.postTime,
+                            style: TextStyle(
+                              color: grayMed,
+                              fontSize: 12,
+                            ),
                           )
                         ],
                       )
@@ -525,9 +648,6 @@ class _BlogPostState extends State<BlogPost> {
                   )
                 ],
               ),
-            ),
-            SizedBox(
-              height: height * 0.02,
             ),
           ],
         ),

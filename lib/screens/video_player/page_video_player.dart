@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:vibetag/screens/home/video_player_landscap.dart';
+import 'package:vibetag/screens/video_player/video_player_landscap.dart';
 import 'package:vibetag/utils/constant.dart';
 
 /// Stateful widget to fetch and then display video content.
@@ -30,7 +30,7 @@ class PageVideoPlayer extends StatefulWidget {
 
 class _PageVideoPlayerState extends State<PageVideoPlayer> {
   late VideoPlayerController _controller;
-  bool isMuted = false;
+
   bool hideButtton = false;
   bool isIcreased = false;
   bool isDecreased = false;
@@ -42,9 +42,14 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
       widget.videoUrl.toString(),
     )..initialize().then(
         (_) {
+          setMic();
           setState(() {});
         },
       );
+  }
+
+  void setMic() {
+    isMuted ? _controller.setVolume(0.0) : _controller.setVolume(1.0);
   }
 
   void videoPlayAndPause() {
@@ -149,21 +154,23 @@ class _PageVideoPlayerState extends State<PageVideoPlayer> {
               ? Container()
               : Column(
                   children: [
-                   widget.showSlider? Container(
-                      child: SizedBox(
-                        height: 5,
-                        child: VideoProgressIndicator(
-                          _controller,
-                          allowScrubbing: true,
-                          colors: VideoProgressColors(
-                            backgroundColor: white,
-                            bufferedColor: grayMed,
-                            playedColor: orange,
-                          ),
-                          padding: spacing(),
-                        ),
-                      ),
-                    ):SizedBox(),
+                    widget.showSlider
+                        ? Container(
+                            child: SizedBox(
+                              height: 5,
+                              child: VideoProgressIndicator(
+                                _controller,
+                                allowScrubbing: true,
+                                colors: VideoProgressColors(
+                                  backgroundColor: white,
+                                  bufferedColor: grayMed,
+                                  playedColor: orange,
+                                ),
+                                padding: spacing(),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
                     gap(h: 5),
                     Container(
                       child: Row(

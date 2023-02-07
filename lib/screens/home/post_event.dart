@@ -11,6 +11,7 @@ import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
+import '../profile/profile.dart';
 
 class PostEvent extends StatefulWidget {
   final String avatar;
@@ -408,25 +409,33 @@ class _PostEventState extends State<PostEvent> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: width * 0.12,
-                        height: width * 0.12,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius(width),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                orangePrimary,
-                                graySecondary,
-                              ],
-                            )),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.06,
-                          foregroundImage: NetworkImage(
-                            widget.avatar,
+                     InkWell(
+                            onTap: () {
+                              pushRoute(
+                                context: context,
+                                screen: const Profile(),
+                              );
+                            },
+                        child: Container(
+                          width: width * 0.12,
+                          height: width * 0.12,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: borderRadius(width),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  orangePrimary,
+                                  graySecondary,
+                                ],
+                              )),
+                          padding: const EdgeInsets.all(2),
+                          child: CircleAvatar(
+                            radius: width * 0.06,
+                            foregroundImage: NetworkImage(
+                              widget.avatar,
+                            ),
                           ),
                         ),
                       ),

@@ -28,10 +28,10 @@ class _BlogState extends State<Blog> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Scaffold(
-      drawer: DrawerMenu(),
+      drawer: const DrawerMenu(),
       key: _key,
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           width: width,
           height: height,
           child: SingleChildScrollView(
@@ -40,7 +40,7 @@ class _BlogState extends State<Blog> {
               children: [
                 Column(
                   children: [
-                    NavBar(),
+                    const NavBar(),
                     Header(
                       onTap: () {
                         _key.currentState!.openDrawer();
@@ -48,7 +48,7 @@ class _BlogState extends State<Blog> {
                     )
                   ],
                 ),
-                Container(
+                SizedBox(
                   width: width,
                   height: height * 0.79,
                   child: SingleChildScrollView(
@@ -79,14 +79,14 @@ class _BlogState extends State<Blog> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       width: width * 0.2,
                                       child: CircleAvatar(
                                         backgroundColor: darkGray,
                                         radius: width * 0.07,
                                       ),
                                     ),
-                                    Container(
+                                    SizedBox(
                                       width: width * 0.65,
                                       child: Column(
                                         children: [
@@ -126,12 +126,10 @@ class _BlogState extends State<Blog> {
                                                       const SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Container(
-                                                        child: Text(
-                                                          'Follow',
-                                                          style: TextStyle(
-                                                            color: blue,
-                                                          ),
+                                                      Text(
+                                                        'Follow',
+                                                        style: TextStyle(
+                                                          color: blue,
                                                         ),
                                                       )
                                                     ],
@@ -152,9 +150,9 @@ class _BlogState extends State<Blog> {
                                               )
                                             ],
                                           ),
-                                          Container(
+                                          const SizedBox(
                                             width: double.maxFinite,
-                                            child: const Text(
+                                            child: Text(
                                               'UFO hearing: Number of \"Unidentified Aerial Phenomenon\" sighting rising, US says',
                                               style: TextStyle(
                                                 fontSize: 12,
@@ -164,7 +162,7 @@ class _BlogState extends State<Blog> {
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          Container(
+                                          SizedBox(
                                             width: double.maxFinite,
                                             child: Row(
                                               children: [
@@ -224,7 +222,7 @@ class _BlogState extends State<Blog> {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           width: 30,
                                           child: Image.asset(
                                             'assets/icons/like1.png',
@@ -256,7 +254,7 @@ class _BlogState extends State<Blog> {
                                     ),
                                     Row(
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           width: 30,
                                           child: Image.asset(
                                             'assets/icons/comment1.png',
@@ -288,7 +286,7 @@ class _BlogState extends State<Blog> {
                                     ),
                                     Row(
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           width: 30,
                                           child: Image.asset(
                                             'assets/icons/revibe1.png',

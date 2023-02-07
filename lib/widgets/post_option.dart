@@ -26,16 +26,17 @@ class postOption extends StatelessWidget {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Container(
-      width: width * 0.2,
+      width: width * 0.1,
       height: height * 0.1,
-      padding: spacing(
-        horizontal: width * 0.01,
-        vertical: 7,
-      ),
+      // padding: spacing(
+      //   horizontal: width * 0.01,
+      //   vertical: 7,
+      // ),
       decoration: BoxDecoration(
         color: HexColor('#F0F0F0'),
         borderRadius: BorderRadius.circular(
-          width * 0.03,
+          20
+         // width * 0.03,
         ),
       ),
       child: Row(

@@ -6,8 +6,17 @@ import '../../utils/constant.dart';
 import '../home/comment.dart';
 import '../home/revibe.dart';
 
-Widget PostTab({required BuildContext context}) {
-  double width = deviceWidth(context: context);
+class PostTabGroup extends StatefulWidget {
+  const PostTabGroup({super.key});
+
+  @override
+  State<PostTabGroup> createState() => _PostTabGroupState();
+}
+
+class _PostTabGroupState extends State<PostTabGroup> {
+  @override
+  Widget build(BuildContext context) {
+    double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
   return Container(
     width: double.maxFinite,
@@ -289,4 +298,6 @@ Widget PostTab({required BuildContext context}) {
       ),
     ),
   );
+  }
 }
+

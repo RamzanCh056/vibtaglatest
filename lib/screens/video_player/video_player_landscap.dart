@@ -1,63 +1,81 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:vibetag/screens/home/video_player_landscap.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/src/widgets/basic.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:vibetag/utils/constant.dart';
+import '../../utils/constant.dart';
 
-/// Stateful widget to fetch and then display video content.
-class VideoMediaPlayer extends StatefulWidget {
-  final String videoUrl;
-  const VideoMediaPlayer({
-    Key? key,
-    required this.videoUrl,
-  }) : super(key: key);
+class LandScapeVideoPlayer extends StatefulWidget {
+  final VideoPlayerController controller;
+  const LandScapeVideoPlayer({super.key, required this.controller});
 
   @override
-  _VideoMediaPlayerState createState() => _VideoMediaPlayerState();
+  State<LandScapeVideoPlayer> createState() => _LandScapeVideoPlayerState();
 }
 
-class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
-  late VideoPlayerController _controller;
-  bool isMuted = false;
+class _LandScapeVideoPlayerState extends State<LandScapeVideoPlayer> {
   bool hideButtton = false;
   bool isIcreased = false;
   bool isDecreased = false;
+  Future landScapMode() async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      widget.videoUrl.toString(),
-    )..initialize().then(
-        (_) {
-          setState(() {});
-        },
-      );
+    landScapMode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    setAllOrientations();
+  }
+
+  Future setAllOrientations() async {
+    muteAndUnmute();
+    await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
   void videoPlayAndPause() {
     setState(() {
       hideButtton = false;
-      _controller.value.isPlaying ? _controller.pause() : _controller.play();
+      widget.controller.value.isPlaying
+          ? widget.controller.pause()
+          : widget.controller.play();
     });
     Timer(
       Duration(seconds: 3),
       () => {
         setState(() {
+          setMic();
           hideButtton = true;
         })
       },
     );
   }
 
+  void setMic() {
+    isMuted
+        ? widget.controller.setVolume(0.0)
+        : widget.controller.setVolume(1.0);
+  }
+
   void muteAndUnmute() {
     setState(() {
       isMuted = !isMuted;
-      isMuted ? _controller.setVolume(0.0) : _controller.setVolume(1.0);
+      isMuted
+          ? widget.controller.setVolume(0.0)
+          : widget.controller.setVolume(1.0);
     });
   }
 
@@ -82,10 +100,10 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
             );
           },
           child: Center(
-            child: _controller.value.isInitialized
+            child: widget.controller.value.isInitialized
                 ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
+                    aspectRatio: widget.controller.value.aspectRatio,
+                    child: VideoPlayer(widget.controller),
                   )
                 : Container(
                     width: double.maxFinite,
@@ -94,6 +112,17 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                       child: loadingSpinner(),
                     ),
                   ),
+          ),
+        ),
+        Positioned(
+          top: 100,
+          left: 100,
+          child: Center(
+            child: Container(
+              width: 100,
+              height: 100,
+              color: orange,
+            ),
           ),
         ),
         Positioned(
@@ -118,7 +147,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                             color: Color.fromARGB(54, 0, 0, 0),
                           ),
                           child: Icon(
-                            _controller.value.isPlaying
+                            widget.controller.value.isPlaying
                                 ? Icons.pause
                                 : Icons.play_arrow,
                             size: 48,
@@ -130,7 +159,6 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
             ),
           ),
         ),
-        
         Positioned(
           bottom: 5,
           left: 10,
@@ -143,7 +171,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                       child: SizedBox(
                         height: 5,
                         child: VideoProgressIndicator(
-                          _controller,
+                          widget.controller,
                           allowScrubbing: true,
                           colors: VideoProgressColors(
                             backgroundColor: white,
@@ -162,7 +190,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                           Row(
                             children: [
                               ValueListenableBuilder(
-                                valueListenable: _controller,
+                                valueListenable: widget.controller,
                                 builder:
                                     (context, VideoPlayerValue value, child) {
                                   //Do Something with the value.
@@ -175,7 +203,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                                 },
                               ),
                               Text(
-                                ' / ${_controller.value.duration.inHours}:${_controller.value.duration.inMinutes}:${_controller.value.duration.inSeconds}',
+                                ' / ${widget.controller.value.duration.inHours}:${widget.controller.value.duration.inMinutes}:${widget.controller.value.duration.inSeconds}',
                                 style: TextStyle(
                                   color: white,
                                 ),
@@ -187,7 +215,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => LandScapeVideoPlayer(
-                                      controller: _controller),
+                                      controller: widget.controller),
                                 ),
                               );
                             },
@@ -207,37 +235,39 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
         Positioned(
           right: 25,
           bottom: height * 0.1,
-          child: hideButtton? const SizedBox(): InkWell(
-            onTap: () {
-              muteAndUnmute();
-            },
-            child: Container(
-              padding: spacing(
-                horizontal: 10,
-                vertical: 5,
-              ),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(50, 0, 0, 0),
-                borderRadius: borderRadius(3),
-              ),
-              child: isMuted
-                  ? Icon(
-                      Icons.volume_off_outlined,
-                      color: white,
-                      size: 32,
-                    )
-                  : Icon(
-                      Icons.volume_up_outlined,
-                      color: white,
-                      size: 32,
+          child: hideButtton
+              ? const SizedBox()
+              : InkWell(
+                  onTap: () {
+                    muteAndUnmute();
+                  },
+                  child: Container(
+                    padding: spacing(
+                      horizontal: 10,
+                      vertical: 5,
                     ),
-            ),
-          ),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      borderRadius: borderRadius(3),
+                    ),
+                    child: isMuted
+                        ? Icon(
+                            Icons.volume_off_outlined,
+                            color: white,
+                            size: 32,
+                          )
+                        : Icon(
+                            Icons.volume_up_outlined,
+                            color: white,
+                            size: 32,
+                          ),
+                  ),
+                ),
         ),
         Positioned(
           top: 0,
           bottom: 0,
-          child: _controller.value.isPlaying
+          child: widget.controller.value.isPlaying
               ? Container(
                   width: width,
                   child: Row(
@@ -249,10 +279,11 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                           setState(() {
                             isDecreased = true;
                           });
-                          await _controller.seekTo(
+                          await widget.controller.seekTo(
                             Duration(
                               seconds:
-                                  _controller.value.position.inSeconds - 10,
+                                  widget.controller.value.position.inSeconds -
+                                      10,
                             ),
                           );
                           Timer(
@@ -282,10 +313,11 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                           setState(() {
                             isIcreased = true;
                           });
-                          await _controller.seekTo(
+                          await widget.controller.seekTo(
                             Duration(
                               seconds:
-                                  _controller.value.position.inSeconds + 10,
+                                  widget.controller.value.position.inSeconds +
+                                      10,
                             ),
                           );
                           Timer(
@@ -317,11 +349,5 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
         )
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }

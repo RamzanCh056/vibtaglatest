@@ -2,47 +2,24 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:svg_icon/svg_icon.dart';
+
+import 'package:hexcolor/hexcolor.dart';
+
 import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/feelingWidet.dart';
+import 'package:vibetag/screens/home/product_features.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
+import '../profile/profile.dart';
 
 class PostProduct extends StatefulWidget {
-  final String name;
-  final String productName;
-  final String description;
-  final String postId;
-  final String stock_amount;
-  final String location;
-  final String avatar;
-  final String postTime;
-  final List<dynamic> productImage;
-  final String price;
-  final String likes;
-  final String comments;
-  final String shares;
+  final dynamic post;
 
   const PostProduct({
     Key? key,
-    required this.name,
-    required this.productName,
-    required this.description,
-    required this.postId,
-    required this.stock_amount,
-    required this.location,
-    required this.avatar,
-    required this.postTime,
-    required this.productImage,
-    required this.price,
-    required this.likes,
-    required this.comments,
-    required this.shares,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -51,29 +28,29 @@ class PostProduct extends StatefulWidget {
 
 class _PostProductState extends State<PostProduct> {
   int currentImage = 0;
-  void imageSliderRight() {
-    if (widget.productImage.length - 1 == currentImage) {
-      setState(() {
-        currentImage = 0;
-      });
-    } else {
-      setState(() {
-        currentImage += 1;
-      });
-    }
-  }
+  // void imageSliderRight() {
+  //   if (widget.post['product']['images'].length - 1 == currentImage) {
+  //     setState(() {
+  //       currentImage = 0;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       currentImage += 1;
+  //     });
+  //   }
+  // }
 
-  void imageSliderLeft() {
-    if (currentImage == 0) {
-      setState(() {
-        currentImage = widget.productImage.length - 1;
-      });
-    } else {
-      setState(() {
-        currentImage -= 1;
-      });
-    }
-  }
+  // void imageSliderLeft() {
+  //   if (currentImage == 0) {
+  //     setState(() {
+  //       currentImage = widget.post['product']['images'].length - 1;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       currentImage -= 1;
+  //     });
+  //   }
+  // }
 
   bool isShowReactions = false;
   bool isAdded = false;
@@ -100,7 +77,7 @@ class _PostProductState extends State<PostProduct> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id': widget.post['post_id'],
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
@@ -118,11 +95,11 @@ class _PostProductState extends State<PostProduct> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
-    print(widget.productImage);
+    totalLikes =
+        int.parse(widget.post['reaction']['count'].toString()) + userLike;
     return Container(
       margin: spacing(
-        vertical: 10,
+        vertical: 5,
       ),
       padding: const EdgeInsets.only(
         bottom: 10,
@@ -148,28 +125,32 @@ class _PostProductState extends State<PostProduct> {
               height: height * 0.45,
               width: double.maxFinite,
               child: ListView.builder(
-                itemCount: widget.productImage.length,
+                itemCount: widget.post['product']['images'].length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return Container(
-                    width: widget.productImage.length > 1 ? width * 0.9 : width,
+                    width: widget.post['product']['images'].length > 1
+                        ? width * 0.9
+                        : width,
                     margin: spacing(
-                      horizontal: widget.productImage.length > 1 ? 10 : 0,
+                      horizontal:
+                          widget.post['product']['images'].length > 1 ? 10 : 0,
                       vertical: 0,
                     ),
                     height: double.maxFinite,
                     child: Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: widget.productImage.length > 1
-                              ? borderRadius(7)
-                              : borderRadius(0),
+                          borderRadius:
+                              widget.post['product']['images'].length > 1
+                                  ? borderRadius(7)
+                                  : borderRadius(0),
                           child: Image.network(
-                            widget.productImage[i]['image'],
+                            widget.post['product']['images'][i]['image'],
                             fit: BoxFit.cover,
                           ),
                         ),
-                        widget.productImage.length > 1
+                        widget.post['product']['images'].length > 1
                             ? Positioned(
                                 top: 10,
                                 right: 10,
@@ -183,7 +164,7 @@ class _PostProductState extends State<PostProduct> {
                                     color: lightBg,
                                   ),
                                   child: Text(
-                                    '${i + 1}/${widget.productImage.length}',
+                                    '${i + 1}/${widget.post['product']['images'].length}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: white,
@@ -198,195 +179,162 @@ class _PostProductState extends State<PostProduct> {
                 },
               ),
             ),
-            gap(h: 10),
+            widget.post['is_offer_product'] != null
+                ? Container(
+                    width: double.infinity,
+                    height: height * 0.04,
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(100, 255, 146, 0),
+                    ),
+                    padding: spacing(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${widget.post['is_offer_product']['text']}',
+                          style: TextStyle(
+                            color: orangePrimary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${widget.post['is_offer_product']['expiry']}',
+                          style: TextStyle(
+                            color: grayMed,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : gap(),
             Container(
               padding: spacing(
+                vertical: 5,
                 horizontal: 10,
-                vertical: 0,
-              ),
-              width: double.maxFinite,
-              child: Text(
-                widget.productName,
-                style: TextStyle(
-                  fontSize: textSm,
-                ),
-              ),
-            ),
-            Padding(
-              padding: spacing(
-                horizontal: 10,
-                vertical: 0,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${widget.location}'),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: accent,
-                        borderRadius: borderRadius(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
                   Container(
-                    width: width * 0.43,
-                    child: Text(
-                      '${widget.stock_amount} In stock',
-                      style: TextStyle(
-                        color: accent,
-                        fontSize: 12,
-                      ),
+                    width: width * 0.6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.maxFinite,
+                          child: Text(
+                            widget.post['product']['name'],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: spacing(
+                            vertical: 3,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                '${widget.post['product']['location']}',
+                                style: TextStyle(
+                                  color: grayMed,
+                                  fontSize: 10,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 7,
+                              ),
+                              Center(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 4,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: grayMed,
+                                    borderRadius: borderRadius(10),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 7,
+                              ),
+                              Container(
+                                child: Text(
+                                  '${widget.post['product']['amount_stock']} In stock',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '\£${widget.post['product']['sale_price']}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      gap(h: 2),
+                      Text(
+                        '${widget.post['product']['sale_price']}\% \£${widget.post['product']['price']}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: grayMed,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
+            gap(h: 15),
+            Container(
+              height: height * 0.08,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    ProductFeature(
+                      title: 'Condition',
+                      text: widget.post['product']['type'] != '0'
+                          ? 'Used'
+                          : 'New',
+                    ),
+                    ProductFeature(
+                        title: 'Returnable',
+                        text: '${widget.post['product']['returnable']}'),
+                    ProductFeature(
+                        title: 'Standard Delivery', text: '2 - 5 Days'),
+                    ProductFeature(
+                        title: 'Model Number',
+                        text: '${widget.post['product']['model_number']}'),
+                    ProductFeature(
+                        title: 'Stock',
+                        text: '${widget.post['product']['amount_stock']}'),
+                  ],
+                ),
+              ),
             ),
+            gap(h: 15),
             Container(
               width: double.maxFinite,
               height: 1,
               color: darkGray,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: spacing(
-                horizontal: 10,
-                vertical: 0,
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/product/bookmark.svg',
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text('Contact seller')
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/product/bookmark3.svg',
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text('Price ${widget.price} (GBP)')
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/product/bookmark.svg',
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text('Type New')
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/product/fast-delivery.svg',
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text('Standard Delivery | 7 - 10 Days')
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/product/fast-delivery.svg',
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        width: width * 0.75,
-                        child: const Text(
-                          'A lovely set of art pens, pencils and paint And much more',
-                          style: TextStyle(
-                            overflow: TextOverflow.clip,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.05,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        width: width * 0.75,
-                        child: Html(
-                          data: widget.description,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: double.maxFinite,
-                    height: height * 0.05,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: orange,
-                    ),
-                    child: Text(
-                      'View details',
-                      style: TextStyle(
-                        color: white,
-                        fontSize: textSm,
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ),
             const SizedBox(
               height: 10,
@@ -434,7 +382,7 @@ class _PostProductState extends State<PostProduct> {
                       vertical: 5,
                     ),
                     child: Text(
-                      "${widget.comments} Comments | ${widget.shares} Revibed",
+                      "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                       style: TextStyle(
                         color: grayMed,
                         fontSize: 10,
@@ -590,9 +538,134 @@ class _PostProductState extends State<PostProduct> {
                     ),
                   )
                 : Container(),
+            widget.post['parent_id'] != '0'
+                ? Container(
+                    width: width,
+                    height: height * 0.08,
+                    margin: spacing(
+                      horizontal: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: width * 0.12,
+                              height: width * 0.12,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: borderRadius(width),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      orangePrimary,
+                                      graySecondary,
+                                    ],
+                                  )),
+                              padding: const EdgeInsets.all(2),
+                              child: CircleAvatar(
+                                radius: width * 0.06,
+                                foregroundImage: NetworkImage(
+                                  widget.post['post_owner_data']['avatar'],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: width * 0.25,
+                                      child: Text(
+                                        widget.post['post_owner_data']['name'],
+                                        style: TextStyle(
+                                          color: blackPrimary,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    postFeeling(
+                                        width: width,
+                                        feeling: 'Added a product for sale',
+                                        start: '')
+                                  ],
+                                ),
+                                gap(h: 5),
+                                Row(
+                                  children: [
+                                    Text(
+                                      readTimestamp(int.parse(widget
+                                          .post['post_owner_data']['time'])),
+                                      style: TextStyle(
+                                        color: grayMed,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        Container(
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          child: Image.asset(
+                            'assets/new/icons/more_h.png',
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : gap(),
             gap(
               h: 10,
             ),
+            widget.post['parent_id'] != '0'
+                ? Row(
+                    children: [
+                      Container(
+                        width: width * 0.5,
+                        height: height * 0.04,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: HexColor('#FFF5E7'),
+                        ),
+                        child: Text(
+                          'Contact Now',
+                          style: TextStyle(
+                            color: orange,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: width * 0.5,
+                        height: height * 0.04,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: orange,
+                        ),
+                        child: Text(
+                          'View More',
+                          style: TextStyle(
+                            color: white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : gap(),
             Container(
               width: width,
               height: height * 0.08,
@@ -605,25 +678,32 @@ class _PostProductState extends State<PostProduct> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: width * 0.12,
-                        height: width * 0.12,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius(width),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                orangePrimary,
-                                graySecondary,
-                              ],
-                            )),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.06,
-                          foregroundImage: NetworkImage(
-                            widget.avatar,
+                      InkWell(
+                        onTap: () {
+                          pushRoute(
+                            context: context,
+                            screen: const Profile(),
+                          );
+                        },
+                        child: Container(
+                          width: width * 0.12,
+                          height: width * 0.12,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: borderRadius(width),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  orangePrimary,
+                                  graySecondary,
+                                ],
+                              )),
+                          padding: const EdgeInsets.all(2),
+                          child: CircleAvatar(
+                            radius: width * 0.06,
+                            foregroundImage: NetworkImage(
+                                widget.post['publisher']['avatar']),
                           ),
                         ),
                       ),
@@ -639,7 +719,9 @@ class _PostProductState extends State<PostProduct> {
                               Container(
                                 width: width * 0.25,
                                 child: Text(
-                                  widget.name,
+                                  widget.post['publisher']['name'] != null
+                                      ? widget.post['publisher']['name']
+                                      : '${widget.post['publisher']['first_name']} ${widget.post['publisher']['last_name']}',
                                   style: TextStyle(
                                     color: blackPrimary,
                                     overflow: TextOverflow.ellipsis,
@@ -649,49 +731,56 @@ class _PostProductState extends State<PostProduct> {
                               gap(
                                 w: 4,
                               ),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 5,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                        color: blackPrimary,
-                                        borderRadius: borderRadius(width)),
-                                  ),
-                                  gap(w: 4),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Like',
-                                        style: TextStyle(
-                                          color: blue,
-                                          fontSize: 10,
+                              widget.post['parent_id'] != '0'
+                                  ? postFeeling(
+                                      width: width,
+                                      feeling: 'Revibed a post',
+                                      start: '')
+                                  : Row(
+                                      children: [
+                                        Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                              color: grayMed,
+                                              borderRadius:
+                                                  borderRadius(width)),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Container(
-                                        width: width * 0.3,
-                                        child: Text(
-                                          'Added products for sale',
-                                          style: TextStyle(
-                                            color: darkGray,
-                                            fontSize: 10,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                        gap(w: 4),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Like',
+                                              style: TextStyle(
+                                                color: blue,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 4,
+                                            ),
+                                            Container(
+                                              width: width * 0.3,
+                                              child: Text(
+                                                'Added products for sale',
+                                                style: TextStyle(
+                                                  color: darkGray,
+                                                  fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
+                                      ],
+                                    )
                             ],
                           ),
                           Row(
                             children: [
                               Text(
-                                widget.postTime,
+                                widget.post['post_time'],
                                 style: TextStyle(
                                   color: grayMed,
                                   fontSize: 12,
@@ -713,9 +802,43 @@ class _PostProductState extends State<PostProduct> {
                 ],
               ),
             ),
-            SizedBox(
-              height: height * 0.02,
-            ),
+            widget.post['parent_id'] == '0'
+                ? Row(
+                    children: [
+                      Container(
+                        width: width * 0.5,
+                        height: height * 0.05,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: HexColor('#FFF5E7'),
+                        ),
+                        child: Text(
+                          'Contact Now',
+                          style: TextStyle(
+                            color: orange,
+                            fontSize: textSm,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: width * 0.5,
+                        height: height * 0.05,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: orange,
+                        ),
+                        child: Text(
+                          'View More',
+                          style: TextStyle(
+                            color: white,
+                            fontSize: textSm,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : gap(),
+            gap(h: 10)
           ],
         ),
       ),

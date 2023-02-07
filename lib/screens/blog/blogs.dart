@@ -10,6 +10,8 @@ import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/search_bar.dart';
 
 import '../../utils/constant.dart';
+import '../my_articles/most_popular.dart';
+import '../my_articles/most_recent.dart';
 
 class Blogs extends StatefulWidget {
   const Blogs({super.key});
@@ -71,7 +73,7 @@ class _BlogsState extends State<Blogs> {
                             ),
                           ),
                           child: DefaultTabController(
-                            length: 5,
+                            length: 4,
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
@@ -92,14 +94,12 @@ class _BlogsState extends State<Blogs> {
                                         fontSize: 14,
                                       ),
                                       tabs: const [
-                                        Tab(
-                                          text: 'Liked',
-                                        ),
+
                                         Tab(
                                           text: 'Most recent',
                                         ),
                                         Tab(
-                                          text: 'Most viewed',
+                                          text: 'Most Popular',
                                         ),
                                         Tab(
                                           text: 'Most searched',
@@ -113,11 +113,12 @@ class _BlogsState extends State<Blogs> {
                                   Container(
                                     width: width,
                                     height: height * 0.8,
-                                    child: const TabBarView(
+                                    child:  const TabBarView(
                                       children: [
-                                        MostRecent(),
-                                        MostRecent(),
-                                        MostRecent(),
+
+
+                                        MostRecentBlogs(),
+                                        MostPopular(),
                                         MostRecent(),
                                         MostRecent(),
                                       ],
