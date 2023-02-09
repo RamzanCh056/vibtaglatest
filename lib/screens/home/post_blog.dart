@@ -3,44 +3,22 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:vibetag/screens/home/feelingWidet.dart';
 
-import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comments.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
+import '../profile/profile.dart';
 
 class BlogPost extends StatefulWidget {
-  final String avatar;
-  final String name;
-  final String postId;
-  final String postTime;
-  final String postText;
-  final dynamic blog;
-  final String about;
-  final String first;
-  final Map<String, dynamic> reactions;
-
-  final String parent_id;
-  final String likes;
-  final String comments;
-  final String shares;
+  final dynamic post;
 
   const BlogPost({
     Key? key,
-    required this.avatar,
-    required this.name,
-    required this.postId,
-    required this.postTime,
-    required this.postText,
-    required this.blog,
-    required this.about,
-    required this.first,
-    required this.reactions,
-    required this.parent_id,
-    required this.likes,
-    required this.comments,
-    required this.shares,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -54,6 +32,7 @@ class _BlogPostState extends State<BlogPost> {
   String responseData = '';
   int totalLikes = 0;
   int userLike = 0;
+  bool isLiked = false;
   List<int> reactionOnPost = [];
 
   final List<String> reactions = [
@@ -74,7 +53,7 @@ class _BlogPostState extends State<BlogPost> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id': widget.post['post_id'],
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
@@ -95,18 +74,45 @@ class _BlogPostState extends State<BlogPost> {
   }
 
   postReactionsList() {
+    isLiked = widget.post['me_followed'] != null
+        ? widget.post['me_followed']
+        : widget.post['me_liked'];
     for (var i = 0; i < 8; i++) {
-      if (widget.reactions['${i + 1}'] != null) {
+      if (widget.post['reaction']['${i + 1}'] != null) {
         reactionOnPost.add(i);
       }
     }
+  }
+
+  followOrLike() async {
+    print('+++++++++++++++++++++++++++++++++++++++++');
+    var data = {};
+    if (widget.post['publisher']['page_id'] != null) {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'like_page',
+        'user_id': loginUserId.toString(),
+        'page_id': widget.post['publisher']['page_id'],
+      };
+    } else {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'follow_user',
+        'user_id': widget.post['publisher']['user_id'],
+        'loggedin_user_id': loginUserId,
+      };
+    }
+    print(data);
+    final result = await API().postData(data);
+    print(jsonDecode(result.body));
   }
 
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
+    totalLikes =
+        int.parse(widget.post['reaction']['count'].toString()) + userLike;
 
     return Container(
       margin: spacing(
@@ -130,11 +136,335 @@ class _BlogPostState extends State<BlogPost> {
         ),
         child: Column(
           children: [
+            Container(
+              width: width,
+              height: height * 0.08,
+              margin: spacing(
+                horizontal: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          pushRoute(
+                              context: context,
+                              screen: Profile(
+                                user_id: widget.post['publisher']['user_id']
+                                    .toString(),
+                              ));
+                        },
+                        child: Container(
+                          width: width * 0.1,
+                          height: width * 0.1,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: borderRadius(width),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  orangePrimary,
+                                  graySecondary,
+                                ],
+                              )),
+                          padding: const EdgeInsets.all(2),
+                          child: CircleAvatar(
+                            radius: width * 0.06,
+                            foregroundImage: NetworkImage(
+                              widget.post['publisher']['avatar'],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: width * 0.8,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        pushRoute(
+                                            context: context,
+                                            screen: Profile(
+                                              user_id: widget.post['publisher']
+                                                      ['user_id']
+                                                  .toString(),
+                                            ));
+                                      },
+                                      child: Text(
+                                        widget.post['publisher']['name'],
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: blackPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    widget.post['parent_id'] != '0'
+                                        ? Row(
+                                            children: [
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Text(
+                                                'Revibed a post',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: grayMed,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : Row(
+                                            children: [
+                                              gap(w: 5),
+                                              postFeeling(
+                                                width: width,
+                                                feeling: 'Created an article',
+                                                start: '',
+                                              ),
+                                            ],
+                                          ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    widget.post['user_id'].toString() !=
+                                            loginUserId
+                                        ? InkWell(
+                                            onTap: () {
+                                              followOrLike();
+
+                                              setState(() {
+                                                isLiked = !isLiked;
+                                              });
+                                            },
+                                            child: Container(
+                                              padding: spacing(
+                                                horizontal: 15,
+                                                vertical: 7,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  color: isLiked
+                                                      ? grayLight
+                                                      : white,
+                                                  borderRadius: borderRadius(5),
+                                                  border: Border.all(
+                                                      width: isLiked ? 0 : 1,
+                                                      color: grayMed)),
+                                              child: Text(
+                                                widget.post['user_id'] != '0'
+                                                    ? isLiked
+                                                        ? 'Following'
+                                                        : 'Follow'
+                                                    : widget.post['page_id'] !=
+                                                            '0'
+                                                        ? isLiked
+                                                            ? 'Liked'
+                                                            : 'Like'
+                                                        : 'Join',
+                                                style: TextStyle(
+                                                  color: grayMed,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : gap(),
+                                    gap(w: 5),
+                                    Container(
+                                      width: width * 0.06,
+                                      height: width * 0.06,
+                                      child: Image.asset(
+                                        'assets/new/icons/more_h.png',
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          Text(
+                            widget.post['post_time'],
+                            style: TextStyle(
+                              color: grayMed,
+                              fontSize: 12,
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            widget.post['parent_id'] != '0'
+                ? Container(
+                    width: width,
+                    height: height * 0.08,
+                    margin: spacing(
+                      horizontal: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                pushRoute(
+                                  context: context,
+                                  screen: Profile(
+                                    user_id: widget.post['post_owner_data']
+                                            ['user_id']
+                                        .toString(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: width * 0.1,
+                                height: width * 0.1,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius: borderRadius(width),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        orangePrimary,
+                                        graySecondary,
+                                      ],
+                                    )),
+                                padding: const EdgeInsets.all(2),
+                                child: CircleAvatar(
+                                  radius: width * 0.06,
+                                  foregroundImage: NetworkImage(
+                                    widget.post['blog']['author']['avatar'],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        pushRoute(
+                                          context: context,
+                                          screen: Profile(
+                                            user_id: widget
+                                                .post['post_owner_data']
+                                                    ['user_id']
+                                                .toString(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        '${widget.post['blog']['author']['first_name']} ${widget.post['blog']['author']['last_name']}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: blackPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    widget.post['parent_id'] != '0'
+                                        ? Row(
+                                            children: [
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              gap(
+                                                w: 5,
+                                              ),
+                                              Text(
+                                                'created a new article',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: grayMed,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : gap(),
+                                  ],
+                                ),
+                                Text(
+                                  widget.post['post_time'],
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                : gap(),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10,
+              ),
+              child: Html(
+                data: widget.post['blog']['title'],
+                style: {
+                  "body": Style(
+                    textOverflow: TextOverflow.ellipsis,
+                    fontSize: FontSize(12.0),
+                    color: Colors.black54,
+                    maxLines: 3,
+                  ),
+                },
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Image.network(
-                  widget.blog['thumbnail'],
+                  widget.post['blog']['thumbnail'],
                   fit: BoxFit.fill,
                 ),
                 Container(
@@ -147,7 +477,7 @@ class _BlogPostState extends State<BlogPost> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Html(
-                        data: widget.blog['title'],
+                        data: widget.post['blog']['title'],
                         style: {
                           "body": Style(
                               fontSize: FontSize(14.0),
@@ -158,7 +488,7 @@ class _BlogPostState extends State<BlogPost> {
                         },
                       ),
                       Html(
-                        data: widget.blog['description'],
+                        data: widget.post['blog']['description'],
                         style: {
                           "body": Style(
                             fontSize: FontSize(12.0),
@@ -174,13 +504,12 @@ class _BlogPostState extends State<BlogPost> {
                 gap(h: 5),
               ],
             ),
+            gap(h: 10),
             Container(
+              color: grayLight,
               padding: spacing(
                 horizontal: 15,
                 vertical: 5,
-              ),
-              decoration: BoxDecoration(
-                color: whiteSecondary,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,50 +538,35 @@ class _BlogPostState extends State<BlogPost> {
                               reverse: true,
                               itemBuilder: (context, i) {
                                 return Container(
-                                    width: 35,
-                                    height: 35,
-                                    padding: spacing(
-                                      horizontal: 5,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
+                                  width: 35,
+                                  height: 35,
+                                  padding: spacing(
+                                    horizontal: 5,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius(width),
+                                  ),
+                                  child: Center(
+                                    child: ClipRRect(
                                       borderRadius: borderRadius(width),
-                                    ),
-                                    child: Center(
-                                      child: ClipRRect(
-                                        borderRadius: borderRadius(width),
-                                        child: Image.asset(
-                                          reactions[reactionOnPost[i]],
-                                          fit: BoxFit.cover,
-                                        ),
+                                      child: Image.asset(
+                                        reactions[reactionOnPost[i]],
+                                        fit: BoxFit.cover,
                                       ),
-                                    ));
+                                    ),
+                                  ),
+                                );
                               }),
                         ),
                         gap(w: 2),
-                        widget.reactions['is_reacted']
-                            ? totalLikes > 1
-                                ? Text(
-                                    "You and ${totalLikes - 1} other(s)",
-                                    style: TextStyle(
-                                      color: grayMed,
-                                      fontSize: 10,
-                                    ),
-                                  )
-                                : Text(
-                                    "You, ${widget.first}",
-                                    style: TextStyle(
-                                      color: grayMed,
-                                      fontSize: 10,
-                                    ),
-                                  )
-                            : Text(
-                                '${totalLikes}',
-                                style: TextStyle(
-                                  color: grayMed,
-                                  fontSize: 10,
-                                ),
-                              ),
+                        Text(
+                          '${totalLikes}',
+                          style: TextStyle(
+                            color: grayMed,
+                            fontSize: 10,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -262,7 +576,7 @@ class _BlogPostState extends State<BlogPost> {
                       vertical: 5,
                     ),
                     child: Text(
-                      "${widget.comments} Comments | ${widget.shares} Revibed",
+                      "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                       style: TextStyle(
                         fontSize: 10,
                         color: grayMed,
@@ -272,11 +586,10 @@ class _BlogPostState extends State<BlogPost> {
                 ],
               ),
             ),
-            SizedBox(
-              height: height * 0.02,
-            ),
+            gap(h: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 InkWell(
                   onTap: () {
@@ -288,13 +601,14 @@ class _BlogPostState extends State<BlogPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: reactionValue != 0
                             ? Image.asset(reactions[reactionValue - 1])
-                            : widget.reactions['is_reacted']
+                            : widget.post['reaction']['is_reacted']
                                 ? Image.asset(reactions[
-                                    int.parse(widget.reactions['type']) - 1])
+                                    int.parse(widget.post['reaction']['type']) -
+                                        1])
                                 : Image.asset(
                                     'assets/new/icons/heart.png',
                                     fit: BoxFit.cover,
@@ -306,9 +620,10 @@ class _BlogPostState extends State<BlogPost> {
                       Text(
                         reactionValue != 0
                             ? reactionsText[reactionValue - 1]
-                            : widget.reactions['is_reacted']
+                            : widget.post['reaction']['is_reacted']
                                 ? reactionsText[
-                                    int.parse(widget.reactions['type']) - 1]
+                                    int.parse(widget.post['reaction']['type']) -
+                                        1]
                                 : 'React',
                         style: TextStyle(
                           fontSize: 12,
@@ -320,18 +635,18 @@ class _BlogPostState extends State<BlogPost> {
                 ),
                 InkWell(
                   onTap: () {
-                    Comments(
-                      context: context,
-                    );
+                    PostComments(
+                        context: context, postId: widget.post['post_id']);
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(
@@ -355,10 +670,11 @@ class _BlogPostState extends State<BlogPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(
@@ -375,14 +691,6 @@ class _BlogPostState extends State<BlogPost> {
                   ),
                 )
               ],
-            ),
-            SizedBox(
-              height: height * 0.01,
-            ),
-            Container(
-              width: width * 0.95,
-              height: 2,
-              color: medGray,
             ),
             isShowReactions
                 ? Container(
@@ -430,225 +738,6 @@ class _BlogPostState extends State<BlogPost> {
                   )
                 : Container(),
             gap(h: 10),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-                right: 10,
-              ),
-              child: Html(
-                data: widget.postText,
-                style: {
-                  "body": Style(
-                    textOverflow: TextOverflow.ellipsis,
-                    fontSize: FontSize(12.0),
-                    color: Colors.black54,
-                    maxLines: 3,
-                  ),
-                },
-              ),
-            ),
-            gap(h: 10),
-            widget.parent_id != '0'
-                ? Container(
-                    width: width,
-                    height: height * 0.08,
-                    margin: spacing(
-                      horizontal: 10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: width * 0.12,
-                              height: width * 0.12,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: borderRadius(width),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      orangePrimary,
-                                      graySecondary,
-                                    ],
-                                  )),
-                              padding: const EdgeInsets.all(2),
-                              child: CircleAvatar(
-                                radius: width * 0.06,
-                                foregroundImage: NetworkImage(
-                                  widget.blog['author']['avatar'],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${widget.blog['author']['first_name']} ${widget.blog['author']['last_name']}',
-                                      style: TextStyle(
-                                        color: blackPrimary,
-                                      ),
-                                    ),
-                                    widget.parent_id != '0'
-                                        ? Row(
-                                            children: [
-                                              gap(
-                                                w: 5,
-                                              ),
-                                              Container(
-                                                width: 4,
-                                                height: 4,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      borderRadius(width),
-                                                  color: grayMed,
-                                                ),
-                                              ),
-                                              gap(
-                                                w: 5,
-                                              ),
-                                              Text(
-                                                'created a new article',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: grayMed,
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        : gap(),
-                                  ],
-                                ),
-                                Text(
-                                  widget.postTime,
-                                  style: TextStyle(
-                                    color: grayMed,
-                                    fontSize: 12,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        Container(
-                          width: width * 0.08,
-                          height: width * 0.08,
-                          child: Image.asset(
-                            'assets/new/icons/more_h.png',
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                : gap(),
-            Container(
-              width: width,
-              height: height * 0.08,
-              margin: spacing(
-                horizontal: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.12,
-                        height: width * 0.12,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius(width),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                orangePrimary,
-                                graySecondary,
-                              ],
-                            )),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.06,
-                          foregroundImage: NetworkImage(
-                            widget.avatar,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                widget.name,
-                                style: TextStyle(
-                                  color: blackPrimary,
-                                ),
-                              ),
-                              widget.parent_id != '0'
-                                  ? Row(
-                                      children: [
-                                        gap(
-                                          w: 5,
-                                        ),
-                                        Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: BoxDecoration(
-                                            borderRadius: borderRadius(width),
-                                            color: grayMed,
-                                          ),
-                                        ),
-                                        gap(
-                                          w: 5,
-                                        ),
-                                        Text(
-                                          'Revibed a post',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: grayMed,
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  : gap(),
-                            ],
-                          ),
-                          Text(
-                            widget.postTime,
-                            style: TextStyle(
-                              color: grayMed,
-                              fontSize: 12,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    child: Image.asset(
-                      'assets/new/icons/more_h.png',
-                    ),
-                  )
-                ],
-              ),
-            ),
           ],
         ),
       ),

@@ -16,7 +16,7 @@ import '../widgets/reusable_listtile.dart';
 import 'package:http/http.dart' as http;
 
 import 'Groups/group_list.dart';
-import 'group_type_message.dart';
+import 'Groups/group_type_message.dart';
 
 class BottomSheetButtonScreen extends StatefulWidget {
   const BottomSheetButtonScreen({super.key});

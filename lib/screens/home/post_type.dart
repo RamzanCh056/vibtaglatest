@@ -8,7 +8,10 @@ import '../../utils/constant.dart';
 
 Widget postFile(
     {required String file,
-    required BuildContext context,required String thumbnail}) {
+    required BuildContext context,
+    required String thumbnail,
+    required String post_id,
+    bool isAds = false}) {
   final ex = p.extension(file);
   if (file == '') {
     return Container();
@@ -21,6 +24,8 @@ Widget postFile(
       return VideoMediaPlayer(
         videoUrl: file,
         thumbnail: thumbnail,
+        isAds: isAds,
+        post_id: post_id,
       );
     } else {
       String url = serverUrl + file;
@@ -28,6 +33,8 @@ Widget postFile(
       return VideoMediaPlayer(
         videoUrl: url,
         thumbnail: thumbnail,
+        isAds: isAds,
+        post_id: post_id,
 
       );
     }
@@ -57,10 +64,13 @@ Widget postFile(
     }
   } else if (ex == '.mp3' || ex == '.wave') {
     if ((file.contains(serverUrl))) {
-      return AudioMediaPlayer(url: file,);
+      return AudioMediaPlayer(
+        url: file,
+        audioThumbnail: thumbnail,
+      );
     } else {
       String url = serverUrl + file;
-      return AudioMediaPlayer(url: url);
+      return AudioMediaPlayer(url: url,audioThumbnail: thumbnail,);
     }
   } else {
     return Container();

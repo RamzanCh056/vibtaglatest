@@ -199,6 +199,7 @@ String readTimestamp(int timestamp) {
 
   return time;
 }
+
 Widget titleForDialog(BuildContext context, String title) {
   return Container(
     color: Theme.of(context).primaryColor,
@@ -206,8 +207,29 @@ Widget titleForDialog(BuildContext context, String title) {
     child: Center(
       child: Text(title,
           style:
-          const TextStyle(color: Colors.white, fontSize: 17, height: 1.55),
+              const TextStyle(color: Colors.white, fontSize: 17, height: 1.55),
           textAlign: TextAlign.center),
     ),
   );
 }
+
+List<String> relationship = [
+  'none',
+  'Single',
+  'In a relationship',
+  'Married',
+  'Engaged',
+];
+
+List<String> aboutIcons = [
+  'assets/new/icons/man.png',
+  'assets/new/icons/height.png',
+  '',
+  '',
+  '',
+  'assets/icons/smoke.png',
+  'assets/icons/baby.png',
+  'assets/icons/paws.png',
+  'assets/icons/college-graduation.png',
+  '',
+];

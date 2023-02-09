@@ -50,7 +50,7 @@ Options({required BuildContext context}) {
           iconPadding: EdgeInsets.zero,
           content: Container(
             width: width * 0.18,
-            height: height * 0.35,
+            height: height * 0.3,
             decoration: BoxDecoration(
               color: whitePrimary,
               borderRadius: const BorderRadius.only(

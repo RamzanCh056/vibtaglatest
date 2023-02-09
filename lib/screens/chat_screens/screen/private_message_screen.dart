@@ -252,7 +252,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size(double.maxFinite, screenHeightSize(80, context)),
+          preferredSize: Size(double.maxFinite, screenHeightSize(70, context)),
           child: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0.0,
@@ -286,18 +286,15 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           clipBehavior: Clip.none,
                           alignment: Alignment.bottomRight,
                           children: [
-                            Container(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(30),
-                                child: Image.network(
-                                  loginUserId != widget.list[widget.currentIndex].rec_id
-                                      ? widget.list[widget.currentIndex].rec_pic.toString()
-                                      : widget.list[widget.currentIndex].sen_pic.toString(),
-                                  height: 45,
-                                  fit: BoxFit.fill,
-                                ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Image.network(
+                                loginUserId != widget.list[widget.currentIndex].rec_id
+                                    ? widget.list[widget.currentIndex].rec_pic.toString()
+                                    : widget.list[widget.currentIndex].sen_pic.toString(),
+                                height: 45,
+                                fit: BoxFit.fill,
                               ),
-                              // backgroundColor: Colors.white10,
                             ),
                             widget.list[widget.currentIndex].online_status == "online"
                                 ? Positioned(
@@ -572,255 +569,267 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                             );
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Row(
+                            padding: const EdgeInsets.only(right: 10.0, left: 10),
+                            child: Column(
+
                               children: [
                                 loginUserId != User[index].rec_id
-                                    ? Card(
+                                    ? Row(
+
+                                      children: [
+                                        Card(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                   ),
                                   elevation: 3,
                                   child: Container(
-                                    margin: const EdgeInsets.symmetric(vertical: 5),
-                                    width: 280,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xEBEFFB),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 15,
+                                        margin: const EdgeInsets.symmetric(vertical: 5),
+                                        width: 280,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xEBEFFB),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
-                                        User[index].attachment_url == ""
-                                            ? Center(
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                  child:
-                                                  // User[index].message != ""
-                                                  //     ?
-                                                  Text(User[index].message.toString())
+                                        child: Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            User[index].attachment_url == ""
+                                                ? Center(
+                                                child: Row(
+                                                  children: [
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Expanded(
+                                                      child:
+                                                      // User[index].message != ""
+                                                      //     ?
+                                                      Text(User[index].message.toString())
 
 
 
-                                                ),
-                                                Text(
-                                                  DateFormat('hh:mm a').format(
-                                                      DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                                        User[index].sent_time.toString(),
-                                                      ) *
-                                                          1000)),
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade400,
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                              ],
-                                            ))
-                                            : Center(
-                                            child: Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                User[index].attachment_url != "" &&
-                                                    User[index].message != "" &&
-                                                    User[index].is_map != "1"
-                                                    ? Expanded(
-                                                  child: Column(
-                                                    children: [
-                                                      Image.network(Url +
-                                                          User[index].attachment_url.toString()),
-                                                      const SizedBox(
-                                                        height: 10,
+                                                    ),
+                                                    Text(
+                                                      DateFormat('hh:mm a').format(
+                                                          DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                                            User[index].sent_time.toString(),
+                                                          ) *
+                                                              1000)),
+                                                      style: TextStyle(
+                                                        color: Colors.grey.shade400,
+                                                        fontSize: 12.0,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
-                                                      Text(User[index].message.toString()
-                                                        // style: TextStyle(color: Colors.grey),
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                  ],
+                                                ))
+                                                : Center(
+                                                child: Row(
+                                                  children: [
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    User[index].attachment_url != "" &&
+                                                        User[index].message != "" &&
+                                                        User[index].is_map != "1"
+                                                        ? Expanded(
+                                                      child: Column(
                                                         children: [
-                                                          Text(
-                                                            DateFormat('hh:mm a').format(DateTime
-                                                                .fromMillisecondsSinceEpoch(
-                                                                int.parse(
-                                                                  User[index]
-                                                                      .sent_time
-                                                                      .toString(),
-                                                                ) *
-                                                                    1000)),
-                                                            style: TextStyle(
-                                                              color: Colors.grey.shade400,
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
+                                                          Image.network(Url +
+                                                              User[index].attachment_url.toString()),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(User[index].message.toString()
+                                                            // style: TextStyle(color: Colors.grey),
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              Text(
+                                                                DateFormat('hh:mm a').format(DateTime
+                                                                    .fromMillisecondsSinceEpoch(
+                                                                    int.parse(
+                                                                      User[index]
+                                                                          .sent_time
+                                                                          .toString(),
+                                                                    ) *
+                                                                        1000)),
+                                                                style: TextStyle(
+                                                                  color: Colors.grey.shade400,
+                                                                  fontSize: 12.0,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                )
-                                                    : Container(),
-                                                const SizedBox(
-                                                  width: 10,
+                                                    )
+                                                        : Container(),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                  ],
+                                                )),
+                                            User[index].attachment_type == "audio/mp4" ?
+                                                 AudioPlay(
+                                              time: User[index].sent_time.toString(),
+                                              pathh: Url + User[index].attachment_url.toString(),
+                                            )
+                                                : Container(),
+                                            User[index].is_map == "1"
+                                                ? Container(
+                                              height: 300.0,
+                                              width: double.infinity,
+                                              alignment: Alignment.center,
+                                              child: GoogleMap(
+                                                zoomGesturesEnabled: false,
+                                                initialCameraPosition: CameraPosition(
+                                                  target: LatLng(
+                                                      double.parse(
+                                                        User[index].lat!,
+                                                      ),
+                                                      double.parse(
+                                                        User[index].lng!,
+                                                      )),
+                                                  //showLocation,
+
+                                                  zoom: 15.151926040649414, //initial zoom level
                                                 ),
-                                              ],
-                                            )),
-                                        User[index].attachment_type == "audio/mp4" ?
-                                             AudioPlay(
-                                          time: User[index].sent_time.toString(),
-                                          pathh: Url + User[index].attachment_url.toString(),
-                                        )
-                                            : Container(),
-                                        User[index].is_map == "1"
-                                            ? Container(
-                                          height: 300.0,
-                                          width: double.infinity,
-                                          alignment: Alignment.center,
-                                          child: GoogleMap(
-                                            zoomGesturesEnabled: false,
-                                            initialCameraPosition: CameraPosition(
-                                              target: LatLng(
-                                                  double.parse(
-                                                    User[index].lat!,
-                                                  ),
-                                                  double.parse(
-                                                    User[index].lng!,
-                                                  )),
-                                              //showLocation,
+                                                markers: getmarkers(), //Icon for Marker
 
-                                              zoom: 15.151926040649414, //initial zoom level
+                                                onMapCreated: (controller) =>
+                                                _googleMapController = controller,
+                                              ),
+                                            )
+                                                : Container(),
+                                            const SizedBox(height: 10,),
+                                            User[index].attachment_type == "image/png" || User[index].attachment_type == "application/octet-st"?
+                                            Image.network(
+                                              Url+User[index].attachment_url.toString(),
+                                            ): Container(),
+                                            const SizedBox(
+                                              height: 15,
                                             ),
-                                            markers: getmarkers(), //Icon for Marker
-
-                                            onMapCreated: (controller) =>
-                                            _googleMapController = controller,
-                                          ),
-                                        )
-                                            : Container(),
-                                        const SizedBox(height: 10,),
-                                        User[index].attachment_type == "image/png" || User[index].attachment_type == "application/octet-st"?
-                                        Image.network(
-                                          Url+User[index].attachment_url.toString(),
-                                        ): Container(),
-                                        const SizedBox(
-                                          height: 15,
+                                          ],
                                         ),
-                                      ],
-                                    ),
                                   ),
-                                )
+                                ),
+                                      ],
+                                    )
                                     :
 
 
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 5),
-                                  width: 220,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFF9200),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 15,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.topRight,
+                                      margin: const EdgeInsets.symmetric(vertical: 5),
+                                      width: 220,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffFF9200),
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                      User[index].attachment_url == ""
-                                          ? Center(
-                                          child: Row(
-                                            children: [
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: User[index].message != ""
-                                                    ? Text(
-                                                  User[index].message.toString(),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          User[index].attachment_url == ""
+                                              ? Center(
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(
+                                                    width: 10,
                                                   ),
-                                                )
-                                                    :
-                                                Image.network(
-                                                  Url + User[index].attachment_url.toString(),
-                                                ),
-                                              ),
-                                              Text(
-                                                DateFormat('hh:mm a').format(
-                                                    DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                                      User[index].sent_time.toString(),
-                                                    ) *
-                                                        1000)),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                            ],
-                                          ))
-                                          : Center(
-                                          child: Row(
-                                            children: [
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: Column(
-                                                  children: [
-                                                    Image.network(
-                                                        Url + User[index].attachment_url.toString()),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
+                                                  Expanded(
+                                                    child: User[index].message != ""
+                                                        ? Text(
                                                       User[index].message.toString(),
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                       ),
+                                                    )
+                                                        :
+                                                    Image.network(
+                                                      Url + User[index].attachment_url.toString(),
                                                     ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                  ),
+                                                  Text(
+                                                    DateFormat('hh:mm a').format(
+                                                        DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                                          User[index].sent_time.toString(),
+                                                        ) *
+                                                            1000)),
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12.0,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                ],
+                                              ))
+                                              : Center(
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
                                                       children: [
+                                                        Image.network(
+                                                            Url + User[index].attachment_url.toString()),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
                                                         Text(
-                                                          DateFormat('hh:mm a').format(DateTime
-                                                              .fromMillisecondsSinceEpoch(int.parse(
-                                                            User[index].sent_time.toString(),
-                                                          ) *
-                                                              1000)),
+                                                          User[index].message.toString(),
                                                           style: const TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 12.0,
-                                                            fontWeight: FontWeight.bold,
                                                           ),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: [
+                                                            Text(
+                                                              DateFormat('hh:mm a').format(DateTime
+                                                                  .fromMillisecondsSinceEpoch(int.parse(
+                                                                User[index].sent_time.toString(),
+                                                              ) *
+                                                                  1000)),
+                                                              style: const TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                            ],
-                                          )),
-                                      const SizedBox(
-                                        height: 15,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                ],
+                                              )),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -907,33 +916,19 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               Icons.send,
                               color: Colors.white,
                             )),
+
                       ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      imageFileList = [];
-                      comaSepread='';
-                  // var empty ;
-                  // //empty = imageFileList!.length.isEmpty;
-                     print("Image List Length: == " + imageFileList!.length.toString());
-                  //     for (int i = 0; i < imageFileList!.length; i++) {
-                  //       empty=  imageFileList = null;
-                  //       print("Image Length: == " + empty.toString());
-                  //   }
+                  SizedBox(width: 10,)
 
-                    },
-                    icon: const Icon(
-                      Icons.mic,
-                      size: 35,
-                      color: Color(0xff9E9E9E),
-                    ),
-                  )
                 ],
               ),
+
             ),
           ],
-        ));
+        )
+    );
   }
 
   final ImagePicker imagePicker = ImagePicker();

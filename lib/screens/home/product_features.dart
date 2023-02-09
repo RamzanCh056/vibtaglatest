@@ -7,7 +7,6 @@ Widget ProductFeature({required String text, required String title}) {
   return Container(
     padding: spacing(
       horizontal: 15,
-      vertical: 5,
     ),
     margin: spacing(
       horizontal: 10,
@@ -31,7 +30,7 @@ Widget ProductFeature({required String text, required String title}) {
             fontSize: 12,
           ),
         ),
-        gap(h: 10),
+        gap(h: 2.5),
         Text(
           text,
           style: TextStyle(

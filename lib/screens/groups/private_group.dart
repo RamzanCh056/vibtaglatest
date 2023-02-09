@@ -249,8 +249,7 @@ class _PrivateGroupState extends State<PrivateGroup> {
                                   ),
                                   HomeTabBar(),
                                   gap(h: 10),
-                                  createPost(user),
-                                //  HomeSearchBar(user: user),
+                                  HomeSearchBar(user: user),
                                   gap(h: 10),
                                   Container(
                                     child: SingleChildScrollView(

@@ -1,31 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/model/user_details.dart';
-import 'package:vibetag/provider/userProvider.dart';
 
-import 'package:vibetag/provider/user_detailsProvider.dart';
-import 'package:vibetag/screens/article/article.dart';
-import 'package:vibetag/screens/auth/add_photo.dart';
-import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
-import 'package:vibetag/screens/compaign/boost.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
-import 'package:vibetag/screens/page/page.dart';
-import 'package:vibetag/screens/profile/profile.dart';
-import 'package:vibetag/screens/profile/profile_old.dart';
-import 'package:vibetag/screens/shop/market/explore.dart';
+
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/screens/trending/trending.dart';
-import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
-import 'package:vibetag/widgets/navbar.dart';
+
 import 'package:vibetag/screens/drawer/drawer.dart';
-import 'package:vibetag/screens/story/add_story.dart';
 import '../../utils/constant.dart';
 import '../../widgets/post_option.dart';
 import 'screens/home/home.dart';
@@ -134,7 +120,7 @@ class _FrontPageState extends State<FrontPage> {
                         color: whiteSecondary,
                       ),
                       child: Container(
-                        height: height * 0.894,
+                        height: height * 0.93,
                         child: page[currentIndex],
                       ),
                     ),
@@ -143,13 +129,13 @@ class _FrontPageState extends State<FrontPage> {
               ),
       ),
       bottomNavigationBar: Container(
-        height: height * 0.1,
+        height: height * 0.07,
         decoration: BoxDecoration(
           color: white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
+          // borderRadius: const BorderRadius.only(
+          //   topLeft: Radius.circular(20),
+          //   topRight: Radius.circular(20),
+          // ),
           boxShadow: const [
             BoxShadow(
               offset: Offset.zero,
@@ -176,7 +162,7 @@ class _FrontPageState extends State<FrontPage> {
                 child: Column(
                   children: [
                     Container(
-                      height: height * 0.035,
+                      height: height * 0.02,
                       child: SvgIcon(
                         'assets/new/svg/home.svg',
                         color: currentIndex == 0 ? orangePrimary : grayMed,
@@ -187,7 +173,7 @@ class _FrontPageState extends State<FrontPage> {
                       'Home',
                       style: TextStyle(
                         color: currentIndex == 0 ? orangePrimary : grayMed,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     )
                   ],
@@ -202,7 +188,7 @@ class _FrontPageState extends State<FrontPage> {
                 child: Column(
                   children: [
                     Container(
-                      height: height * 0.035,
+                      height: height * 0.02,
                       child: SvgIcon(
                         'assets/new/svg/trending.svg',
                         color: currentIndex == 1 ? orangePrimary : grayMed,
@@ -213,7 +199,7 @@ class _FrontPageState extends State<FrontPage> {
                       'Trending',
                       style: TextStyle(
                         color: currentIndex == 1 ? orangePrimary : grayMed,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     )
                   ],
@@ -228,7 +214,7 @@ class _FrontPageState extends State<FrontPage> {
                 child: Column(
                   children: [
                     Container(
-                      height: height * 0.035,
+                      height: height * 0.02,
                       child: SvgIcon(
                         'assets/new/svg/buzzin.svg',
                         color: currentIndex == 2 ? orangePrimary : grayMed,
@@ -239,7 +225,7 @@ class _FrontPageState extends State<FrontPage> {
                       'Buzzin',
                       style: TextStyle(
                         color: currentIndex == 2 ? orangePrimary : grayMed,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     )
                   ],
@@ -254,7 +240,7 @@ class _FrontPageState extends State<FrontPage> {
                 child: Column(
                   children: [
                     Container(
-                      height: height * 0.035,
+                      height: height * 0.02,
                       child: SvgIcon(
                         'assets/new/svg/shopping.svg',
                         color: currentIndex == 3 ? orangePrimary : grayMed,
@@ -265,7 +251,7 @@ class _FrontPageState extends State<FrontPage> {
                       'Store',
                       style: TextStyle(
                         color: currentIndex == 3 ? orangePrimary : grayMed,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     )
                   ],
@@ -281,7 +267,7 @@ class _FrontPageState extends State<FrontPage> {
                 child: Column(
                   children: [
                     Container(
-                      height: height * 0.035,
+                      height: height * 0.02,
                       child: SvgIcon(
                         'assets/new/svg/category.svg',
                         color: currentIndex == 4 ? orangePrimary : grayMed,
@@ -292,7 +278,7 @@ class _FrontPageState extends State<FrontPage> {
                       'More',
                       style: TextStyle(
                         color: currentIndex == 4 ? orangePrimary : grayMed,
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                     )
                   ],
@@ -530,7 +516,7 @@ class _FrontPageState extends State<FrontPage> {
                                       width: width * 0.05,
                                     ),
                                     SizedBox(
-                                      width: width * 0.025,
+                                      width: width * 0.02,
                                     ),
                                     SvgPicture.asset(
                                       'assets/svg/post/at-sign.svg',
@@ -538,7 +524,7 @@ class _FrontPageState extends State<FrontPage> {
                                       width: width * 0.05,
                                     ),
                                     SizedBox(
-                                      width: width * 0.025,
+                                      width: width * 0.02,
                                     ),
                                     SvgPicture.asset(
                                       'assets/svg/post/smile1.svg',

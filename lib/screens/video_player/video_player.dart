@@ -2,21 +2,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:vibetag/screens/video_player/video_screen.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'package:vibetag/screens/video_player/video_player_landscap.dart';
+import 'package:vibetag/screens/video_player/video_screen.dart';
 import 'package:vibetag/utils/constant.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 /// Stateful widget to fetch and then display video content.
 class VideoMediaPlayer extends StatefulWidget {
+  final String post_id;
   final String videoUrl;
   final String thumbnail;
-  const VideoMediaPlayer({
+  bool isAds = false;
+  VideoMediaPlayer({
     Key? key,
+    required this.post_id,
     required this.videoUrl,
     required this.thumbnail,
+    this.isAds = false,
   }) : super(key: key);
 
   @override
@@ -82,36 +86,39 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
       children: [
         InkWell(
           onTap: () {
-            setState(() {
-              hideButtton = false;
-            });
-            Timer(
-              Duration(seconds: 3),
-              () => {
-                setState(() {
-                  hideButtton = true;
-                })
-              },
-            );
+            if (mounted) {
+              setState(() {
+                hideButtton = false;
+              });
+              Timer(
+                Duration(seconds: 3),
+                () => {
+                  setState(() {
+                    hideButtton = true;
+                  })
+                },
+              );
+            }
           },
           child: VisibilityDetector(
             key: Key('Video-Player'),
             onVisibilityChanged: (info) {
-              var isVisible = info.visibleFraction.toInt();
-              Future.delayed(const Duration(seconds: 1), () {
+              var isVisible = info.visibleFraction;
+              Future.delayed(const Duration(milliseconds: 1), () {
                 if (mounted) {
-                  if (isVisible != 0) {
-                    if (_controller.value.isInitialized) {
+                  if (isVisible > 0.6) {
+                    if (_controller.value.isInitialized &&
+                        !_controller.value.isPlaying) {
                       _controller.play();
                       setState(() {
                         isFocused = true;
                       });
                     }
                   } else {
-                    if (mounted) {
+                    if (_controller.value.isPlaying) {
                       _controller.pause();
                       setState(() {
-                        isFocused = false;
+                        isFocused = true;
                       });
                     }
                   }
@@ -122,7 +129,6 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
               child: !isFocused
                   ? Container(
                       width: double.maxFinite,
-                      height: height * 0.3,
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/new/gif/image_loading1.gif',
                         image: videoThumbnail,
@@ -133,21 +139,15 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                   : _controller.value.isInitialized
                       ? InkWell(
                           onTap: () {
-                            setState(() {
-                              hideButtton = false;
-                            });
-                            Timer(
-                              Duration(seconds: 3),
-                              () => {
-                                setState(() {
-                                  hideButtton = true;
-                                })
-                              },
-                            );
-                            // pushRoute(
-                            //   context: context,
-                            //   screen: const VideoScreen(),
-                            // );
+                            if (!(widget.isAds)) {
+                              pushRoute(
+                                context: context,
+                                screen: VideoScreen(
+                                  post_id: widget.post_id,
+                                  controller: _controller,
+                                ),
+                              );
+                            }
                           },
                           child: AspectRatio(
                             aspectRatio: _controller.value.aspectRatio,
@@ -167,9 +167,11 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                                 placeholderFit: BoxFit.fitWidth,
                               ),
                             ),
-                            Center(
-                              child: CircularProgressIndicator(
-                                color: orangeLight,
+                            Positioned(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: orangeLight,
+                                ),
                               ),
                             )
                           ],

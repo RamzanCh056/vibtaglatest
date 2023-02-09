@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'dart:core';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/auth_method.dart';
@@ -22,8 +22,9 @@ import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/home/home_search.dart';
 import 'package:vibetag/screens/home/home_story.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
+import 'package:vibetag/screens/home/post_ads.dart';
 import 'package:vibetag/screens/home/post_blog.dart';
-import 'package:vibetag/screens/home/comment.dart';
+import 'package:vibetag/screens/home/post_comment_bar.dart';
 import 'package:vibetag/screens/home/post_colored.dart';
 import 'package:vibetag/screens/home/post_poll.dart';
 import 'package:vibetag/screens/home/post_photo.dart';
@@ -37,14 +38,13 @@ import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/story/add_story.dart';
-import 'package:video_player/video_player.dart';
 import '../../methods/api.dart';
+import '../../methods/post_methods.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
 import '../livestream/create stream/live.dart';
 import '../../widgets/post_option.dart';
 import '../shop/market/market.dart';
-import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -62,11 +62,10 @@ class _HomeState extends State<Home> {
   bool isLoading = false;
   late ModelUser user;
   late UserDetails userDetails;
-  late List<dynamic> posts;
+  List<dynamic> posts = [];
   int postsLength = 0;
   bool isAlreadyLoading = false;
   ScrollController scrollController = ScrollController();
-
 
   @override
   void initState() {
@@ -74,15 +73,19 @@ class _HomeState extends State<Home> {
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
-        setState(() {
-          isScrollDown = true;
-        });
+        if (!isScrollDown) {
+          setState(() {
+            isScrollDown = true;
+          });
+        }
       }
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
-        setState(() {
-          isScrollDown = false;
-        });
+        if (isScrollDown) {
+          setState(() {
+            isScrollDown = false;
+          });
+        }
       }
     });
     setUser();
@@ -92,30 +95,29 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = true;
     });
-    await AuthMethod().setUser(
-      context: context,
-      userId: loginUserId,
-    );
-
-    final result = await API().postData({
-      'type': 'get_home_posts',
-      'user_id': loginUserId,
-    });
-    posts = jsonDecode(result.body)['posts_data'];
-    // for (var i = 0; i < posts.length; i++) {
-    //   Map<String, dynamic> post = posts[i];
-    //   Provider.of<PostProvider>(context,listen: false).setPosts(PostModel.fromMap(post));
-    // }
-
-    postsLength = posts.length + 2;
-
-    setState(() {
-      isLoading = false;
-    });
     user = Provider.of<UserProvider>(
       context,
       listen: false,
     ).user;
+
+    if (user.user_id == '') {
+      await AuthMethod().setUser(
+        context: context,
+        userId: loginUserId,
+      );
+      user = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).user;
+    }
+
+    posts = Provider.of<PostProvider>(context, listen: false).posts;
+    if (posts.length == 0) {
+      await PostMethods().getPosts(context: context);
+    }
+    setState(() {
+      isLoading = false;
+    });
 
     userDetails = Provider.of<UsersDetailsProvider>(
       context,
@@ -152,19 +154,22 @@ class _HomeState extends State<Home> {
     setState(() {
       loadingMore = true;
     });
-    final data = {
-      'type': 'load_more_home_posts',
-      'after_post_id': lastPostId,
-      'user_id': loginUserId,
-    };
-    final result = await API().postData(data);
-    final newPosts = jsonDecode(result.body)['posts_data'];
-    if (newPosts.length > 0) {
-      for (var i = 0; i < newPosts.length; i++) {
-        posts.add(newPosts[i]);
-      }
-      postsLength = posts.length + 2;
+    bool isFindId = false;
 
+    for (var i = 0; i < posts.length; i++) {
+      if (!isFindId) {
+        if (posts[(posts.length - (1 + i))]['post_id'] != null) {
+          lastPostId = posts[(posts.length - (1 + i))]['post_id'].toString();
+          isFindId = true;
+        }
+      }
+    }
+
+    await PostMethods().loadMorePosts(
+      context: context,
+      lastPostId: lastPostId.toString(),
+    );
+    if (mounted) {
       setState(() {
         loadingMore = false;
       });
@@ -179,9 +184,10 @@ class _HomeState extends State<Home> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
 
+    posts = Provider.of<PostProvider>(context).posts;
+
     return Scaffold(
       key: _key,
-      drawer: DrawerMenu(),
       backgroundColor: blackPrimary,
       body: SafeArea(
         child: isLoading
@@ -195,18 +201,14 @@ class _HomeState extends State<Home> {
                       child: Column(
                         children: [
                           isScrollDown ? Container() : NavBar(),
-                          Header(
-                            onTap: () {
-                              _key.currentState!.openDrawer();
-                            },
-                          ),
+                          Header(),
                         ],
                       ),
                     ),
                     Container(
                       alignment: Alignment.topCenter,
                       width: width,
-                      height: height * 0.8,
+                      height: height * 0.85,
                       decoration: BoxDecoration(
                         color: whiteSecondary,
                       ),
@@ -217,26 +219,34 @@ class _HomeState extends State<Home> {
                           children: [
                             Container(
                               width: double.maxFinite,
-                              color: grayLight,
-                              height: height * 0.82,
+                              color: HexColor('#dee5f6'),
+                              height: height,
                               child: ListView.builder(
                                 controller: scrollController,
                                 itemCount: posts.length + 2,
                                 itemBuilder: (constext, i) {
                                   postsLength = postsLength;
+
                                   if (i == 0) {
                                     return Column(
                                       children: [
                                         HomeTabBar(),
                                         HomeStory(user: user),
-                                        createPost(user)
-                                        //HomeSearchBar(user: user),
+                                        HomeSearchBar(user: user),
                                       ],
                                     );
                                   } else if (i > 0 && i < (posts.length - 1)) {
+                                    if (posts[i - 1]['ad_media'] != '' &&
+                                        posts[i - 1]['headline'] != null) {
+                                      print(posts[i - 1]['ad_media']);
+                                      return PostAds(
+                                        post: posts[i - 1],
+                                      );
+                                    }
                                     if (posts[i - 1]['poll_id'] != '0') {
                                       return Container();
                                       return PoolPost(
+                                        post: posts[i - 1],
                                         postId: posts[i - 1]['post_id'],
                                         avatar: posts[i - 1]['publisher']
                                             ['avatar'],
@@ -255,34 +265,12 @@ class _HomeState extends State<Home> {
                                       );
                                     } else if (posts[i - 1]['blog_id'] != '0') {
                                       return BlogPost(
-                                        postId: posts[i - 1]['post_id'],
-                                        avatar: posts[i - 1]['publisher']
-                                            ['avatar'],
-                                        name: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']} ${posts[i - 1]['publisher']['last_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        about:
-                                            "${posts[i - 1]['publisher']['about']}}",
-                                        first: posts[i - 1]['publisher']
-                                                    ['first_name'] !=
-                                                null
-                                            ? "${posts[i - 1]['publisher']['first_name']}"
-                                            : "${posts[i - 1]['publisher']['page_title']}",
-                                        postTime: posts[i - 1]['post_time'],
-                                        reactions: posts[i - 1]['reaction'],
-                                        postText: posts[i - 1]['postText'],
-                                        blog: posts[i - 1]['blog'],
-                                        parent_id: posts[i - 1]['parent_id'],
-                                        likes: posts[i - 1]['reaction']['count']
-                                            .toString(),
-                                        comments: posts[i - 1]['post_comments'],
-                                        shares: posts[i - 1]['post_shares'],
+                                        post: posts[i - 1],
                                       );
                                     } else if (posts[i - 1]['page_event_id'] !=
                                         '0') {
                                       return PostEvent(
+                                        post: posts[i - 1],
                                         postId: posts[i - 1]['post_id'],
                                         avatar: posts[i - 1]['publisher']
                                             ['avatar'],
@@ -306,14 +294,21 @@ class _HomeState extends State<Home> {
                                         shares: posts[i - 1]['post_shares'],
                                       );
                                     } else if (posts[i - 1]['user_id'] != '0' &&
-                                        posts[i - 1]['color_id'] == '0' &&
-                                        posts[i - 1]['product_id'] == '0') {
+                                            posts[i - 1]['color_id'] == '0' &&
+                                            posts[i - 1]['product_id'] == '0' ||
+                                        posts[i - 1]['group_id'] != '0') {
                                       return Post(
+                                        post: posts[i - 1],
+                                      );
+                                    } else if (posts[i - 1]['ad_media'] != '' &&
+                                        posts[i - 1]['headline'] != null) {
+                                      return PostAds(
                                         post: posts[i - 1],
                                       );
                                     } else if (posts[i - 1]['color_id'] !=
                                         '0') {
                                       return ColoredPost(
+                                        post: posts[i - 1],
                                         postId: posts[i - 1]['post_id'],
                                         avatar: posts[i - 1]['publisher']
                                             ['avatar'],
@@ -359,10 +354,6 @@ class _HomeState extends State<Home> {
                                       return Container();
                                     }
                                   }
-
-                                  lastPostId = posts[posts.length - 1]
-                                          ['post_id']
-                                      .toString();
                                   if (i > posts.length) {
                                     Future.delayed(
                                         const Duration(

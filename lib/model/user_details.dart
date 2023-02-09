@@ -8,7 +8,6 @@ class UserDetails {
   final String followers_count;
   final String groups_count;
   final String likes_count;
-  final int mutual_friends_count;
   final String video_views;
   final int total_reactions;
   UserDetails({
@@ -18,7 +17,6 @@ class UserDetails {
     required this.followers_count,
     required this.groups_count,
     required this.likes_count,
-    required this.mutual_friends_count,
     required this.video_views,
     required this.total_reactions,
   });
@@ -34,7 +32,6 @@ class UserDetails {
       'followers_count': followers_count,
       'groups_count': groups_count,
       'likes_count': likes_count,
-      'mutual_friends_count': mutual_friends_count,
       'video_views': video_views,
       'total_reactions': total_reactions,
     };
@@ -48,7 +45,6 @@ class UserDetails {
       followers_count: map['followers_count'] as String,
       groups_count: map['groups_count'] as String,
       likes_count: map['likes_count'] as String,
-      mutual_friends_count: map['mutual_friends_count'] as int,
       video_views: map['video_views'] as String,
       total_reactions: map['total_reactions'] as int,
     );

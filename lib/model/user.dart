@@ -38,6 +38,7 @@ class ModelUser {
   final String? email_code;
   final String? following_number;
   final String? src;
+  final String? verified;
   ModelUser({
     required this.first_name,
     required this.last_name,
@@ -75,6 +76,7 @@ class ModelUser {
     required this.email_code,
     this.following_number,
     required this.src,
+    this.verified,
   });
 
 
@@ -116,6 +118,7 @@ class ModelUser {
       'email_code': email_code,
       'following_number': following_number,
       'src': src,
+      'verified': verified,
     };
   }
 
@@ -157,6 +160,7 @@ class ModelUser {
       email_code: map['email_code'] != null ? map['email_code'] as String : null,
       following_number: map['following_number'] != null ? map['following_number'] as String : null,
       src: map['src'] != null ? map['src'] as String : null,
+      verified: map['verified'] != null ? map['verified'] as String : null,
     );
   }
 
