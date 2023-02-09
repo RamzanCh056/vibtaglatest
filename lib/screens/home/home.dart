@@ -1,16 +1,9 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/auth_method.dart';
-import 'package:vibetag/model/post_modal.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/post_provider.dart';
@@ -24,26 +17,17 @@ import 'package:vibetag/screens/home/home_story.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
 import 'package:vibetag/screens/home/post_ads.dart';
 import 'package:vibetag/screens/home/post_blog.dart';
-import 'package:vibetag/screens/home/post_comment_bar.dart';
 import 'package:vibetag/screens/home/post_colored.dart';
 import 'package:vibetag/screens/home/post_poll.dart';
 import 'package:vibetag/screens/home/post_photo.dart';
 import 'package:vibetag/screens/home/post_event.dart';
 import 'package:vibetag/screens/home/post_product.dart';
-import 'package:vibetag/screens/home/post_type.dart';
-import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/screens/shop/shop.dart';
-import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
-import 'package:vibetag/screens/drawer/drawer.dart';
-import 'package:vibetag/screens/story/add_story.dart';
-import '../../methods/api.dart';
 import '../../methods/post_methods.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
-import '../livestream/create stream/live.dart';
-import '../../widgets/post_option.dart';
 import '../shop/market/market.dart';
 
 class Home extends StatefulWidget {
