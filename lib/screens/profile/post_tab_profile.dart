@@ -127,7 +127,8 @@ class _PostTabProfileState extends State<PostTabProfile> {
                               HomeTabBar(),
                               gap(h: 10),
                               widget.user_id == loginUserId
-                                  ? HomeSearchBar(user: widget.user)
+                                  ?  createPost( widget.user)
+                              //HomeSearchBar(user: widget.user)
                                   : gap(),
                               gap(h: 10),
                             ],

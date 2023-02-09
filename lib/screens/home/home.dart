@@ -216,7 +216,7 @@ class _HomeState extends State<Home> {
                                       children: [
                                         HomeTabBar(),
                                         HomeStory(user: user),
-                                        HomeSearchBar(user: user),
+                                        createPost(user)
                                       ],
                                     );
                                   } else if (i > 0 && i < (posts.length - 1)) {
