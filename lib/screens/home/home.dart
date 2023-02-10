@@ -8,7 +8,6 @@ import 'package:vibetag/model/user.dart';
 import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
-
 import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';

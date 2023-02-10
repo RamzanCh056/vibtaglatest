@@ -11,6 +11,7 @@ import 'package:vibetag/screens/profile/profile.dart';
 
 import '../../utils/constant.dart';
 import '../groups/group.dart';
+import '../hast_tag/tred_screen.dart';
 
 class SearchBarPop extends StatefulWidget {
   const SearchBarPop({super.key});
@@ -523,22 +524,29 @@ class _SearchBarPopState extends State<SearchBarPop> {
                                       child: ListView.builder(
                                           itemCount: search['hash'].length,
                                           itemBuilder: (context, i) {
-                                            return Container(
-                                              margin: spacing(
-                                                horizontal: 7,
-                                              ),
-                                              child: Html(
-                                                data:
-                                                    '#${search['hash'][i]['tag']}',
-                                                style: {
-                                                  "body": Style(
-                                                    fontSize: FontSize(12.0),
-                                                    textOverflow:
-                                                        TextOverflow.ellipsis,
-                                                    color: Colors.black54,
-                                                    maxLines: 2,
-                                                  ),
-                                                },
+                                            return InkWell(
+                                              onTap: () {
+                                                pushRoute(
+                                                    context: context,
+                                                    screen: HashTrend(hashTag: '${search['hash'][i]['tag']}',),);
+                                              },
+                                              child: Container(
+                                                margin: spacing(
+                                                  horizontal: 7,
+                                                ),
+                                                child: Html(
+                                                  data:
+                                                      '#${search['hash'][i]['tag']}',
+                                                  style: {
+                                                    "body": Style(
+                                                      fontSize: FontSize(12.0),
+                                                      textOverflow:
+                                                          TextOverflow.ellipsis,
+                                                      color: Colors.black54,
+                                                      maxLines: 2,
+                                                    ),
+                                                  },
+                                                ),
                                               ),
                                             );
                                           }),

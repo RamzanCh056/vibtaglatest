@@ -14,6 +14,7 @@ import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/groups/group.dart';
 import 'package:vibetag/screens/groups/group_old.dart';
 import 'package:vibetag/screens/groups/private_group.dart';
+import 'package:vibetag/screens/hast_tag/tred_screen.dart';
 
 import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:vibetag/screens/page/page.dart';
@@ -57,31 +58,31 @@ class MyApp extends StatelessWidget {
           backgroundColor: HexColor('#EFEFEF'),
           fontFamily: 'HelveticalNeueLTStd',
         ),
-        home: FutureBuilder(
-          future: SharedPreferences.getInstance(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('Some Issue has occurred!'),
-              );
-            }
-            if (snapshot.hasData) {
-              SharedPreferences preferences = snapshot.data!;
-              final userId = preferences.getString('userId');
-              if (userId == null) {
-                return const Login();
-              } else {
-                loginUserId = userId;
-                return const FrontPage();
-              }
-            }
-            return const Login();
-          },
-        ),
+        home:  FutureBuilder(
+                future: SharedPreferences.getInstance(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Some Issue has occurred!'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    SharedPreferences preferences = snapshot.data!;
+                    final userId = preferences.getString('userId');
+                    if (userId == null) {
+                      return const Login();
+                    } else {
+                      loginUserId = userId;
+                      return const FrontPage();
+                    }
+                  }
+                  return const Login();
+                },
+              ),
       ),
     );
   }

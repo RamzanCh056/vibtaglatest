@@ -85,7 +85,6 @@ class _BlogPostState extends State<BlogPost> {
   }
 
   followOrLike() async {
-    print('+++++++++++++++++++++++++++++++++++++++++');
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {
