@@ -11,6 +11,7 @@ import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/home/home_search.dart';
+import 'package:vibetag/screens/home/home_search_field.dart';
 import 'package:vibetag/screens/home/home_story.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
 import 'package:vibetag/screens/home/post_ads.dart';
@@ -201,6 +202,8 @@ class _HomeState extends State<Home> {
                           children: [
                             HomeTabBar(),
                             HomeStory(user: user),
+                            // HomeSearchBar(user: user),
+                            createPost(user),
                             Column(
                               children: postWidgets,
                             ),

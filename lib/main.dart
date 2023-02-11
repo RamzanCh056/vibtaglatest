@@ -59,31 +59,31 @@ class MyApp extends StatelessWidget {
           backgroundColor: HexColor('#EFEFEF'),
           fontFamily: 'HelveticalNeueLTStd',
         ),
-        home:true? Funding() : FutureBuilder(
-                future: SharedPreferences.getInstance(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Some Issue has occurred!'),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    SharedPreferences preferences = snapshot.data!;
-                    final userId = preferences.getString('userId');
-                    if (userId == null) {
-                      return const Login();
-                    } else {
-                      loginUserId = userId;
-                      return const FrontPage();
-                    }
-                  }
-                  return const Login();
-                },
-              ),
+        home: FutureBuilder(
+          future: SharedPreferences.getInstance(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('Some Issue has occurred!'),
+              );
+            }
+            if (snapshot.hasData) {
+              SharedPreferences preferences = snapshot.data!;
+              final userId = preferences.getString('userId');
+              if (userId == null) {
+                return const Login();
+              } else {
+                loginUserId = userId;
+                return const FrontPage();
+              }
+            }
+            return const Login();
+          },
+        ),
       ),
     );
   }
