@@ -1,19 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 import 'package:vibetag/screens/blog/recent.dart';
+import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
-import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/search_bar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
 
 import '../../utils/constant.dart';
 
 class Blog extends StatefulWidget {
-  const Blog({super.key});
+  final Map<String, dynamic> post;
+  const Blog({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
 
   @override
   State<Blog> createState() => _BlogState();
@@ -39,14 +46,7 @@ class _BlogState extends State<Blog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  children: [
-                    const NavBar(),
-                    Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
-                    )
-                  ],
+                  children: [const NavBar(), Header()],
                 ),
                 SizedBox(
                   width: width,
@@ -74,7 +74,6 @@ class _BlogState extends State<Blog> {
                                   horizontal: 10,
                                   vertical: 10,
                                 ),
-                                height: height * 0.16,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,13 +149,19 @@ class _BlogState extends State<Blog> {
                                               )
                                             ],
                                           ),
-                                          const SizedBox(
+                                          SizedBox(
                                             width: double.maxFinite,
-                                            child: Text(
-                                              'UFO hearing: Number of \"Unidentified Aerial Phenomenon\" sighting rising, US says',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                              ),
+                                            child: Html(
+                                              data: widget.post['postText'],
+                                              style: {
+                                                "body": Style(
+                                                  fontSize: FontSize(12.0),
+                                                  textOverflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black54,
+                                                  maxLines: 3,
+                                                ),
+                                              },
                                             ),
                                           ),
                                           const SizedBox(

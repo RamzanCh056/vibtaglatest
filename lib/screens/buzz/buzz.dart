@@ -183,9 +183,8 @@ class _BuzzinState extends State<Buzzin> {
                                   Container(
                                     width: width * 0.08,
                                     height: width * 0.08,
-                                    child: Image.asset(
-                                      'assets/new/images/back.png',
-                                    ),
+                                    child: SvgPicture.asset(
+                                        'assets/new/svg/buzzin/back.svg'),
                                   ),
                                   Row(
                                     children: [
@@ -193,13 +192,10 @@ class _BuzzinState extends State<Buzzin> {
                                         width: width * 0.08,
                                         height: width * 0.08,
                                         decoration: BoxDecoration(
-                                          color: white,
                                           borderRadius: borderRadius(width),
                                         ),
-                                        child: Image.asset(
-                                          'assets/new/icons/search.png',
-                                          color: grayPrimary,
-                                        ),
+                                        child: SvgPicture.asset(
+                                            'assets/new/svg/buzzin/search.svg'),
                                       ),
                                       const SizedBox(
                                         width: 10,
@@ -344,11 +340,8 @@ class _BuzzinState extends State<Buzzin> {
                               children: [
                                 Container(
                                   width: width * 0.07,
-                                  child: Image.asset(
-                                    'assets/new/icons/heart.png',
-                                    color: whitePrimary,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: SvgPicture.asset(
+                                      'assets/new/svg/buzzin/heart.svg'),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -364,11 +357,8 @@ class _BuzzinState extends State<Buzzin> {
                                 ),
                                 Container(
                                   width: width * 0.07,
-                                  child: Image.asset(
-                                    'assets/new/icons/chat_t.png',
-                                    color: whitePrimary,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: SvgPicture.asset(
+                                      'assets/new/svg/buzzin/Iconly/Light-Outline/Chat.svg'),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -384,11 +374,8 @@ class _BuzzinState extends State<Buzzin> {
                                 ),
                                 Container(
                                   width: width * 0.06,
-                                  child: Image.asset(
-                                    'assets/new/icons/revibe.png',
-                                    color: whitePrimary,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: SvgPicture.asset(
+                                      'assets/new/svg/buzzin/share.svg'),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -403,10 +390,8 @@ class _BuzzinState extends State<Buzzin> {
                                   height: 40,
                                 ),
                                 Container(
-                                  child: Image.asset(
-                                    'assets/new/icons/more_h.png',
-                                    color: whitePrimary,
-                                  ),
+                                  child: SvgPicture.asset(
+                                      'assets/new/svg/buzzin/more_h.svg'),
                                 ),
                                 const SizedBox(
                                   height: 40,

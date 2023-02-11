@@ -111,6 +111,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/new/
+    - assets/new/svg/buzzin/
+    - assets/new/svg/buzzin/Iconly/
+    - assets/new/svg/buzzin/Iconly/Bold/
+    - assets/new/svg/buzzin/Iconly/Light-Outline/
     - assets/app_icon/
     - assets/
     - assets/new/images/

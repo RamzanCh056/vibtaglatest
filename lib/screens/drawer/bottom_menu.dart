@@ -253,7 +253,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Blog(),
+                          screen: Blogs(),
                         );
                       },
                     ),

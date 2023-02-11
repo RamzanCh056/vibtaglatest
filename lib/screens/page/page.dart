@@ -47,6 +47,7 @@ class _PageScreenState extends State<PageScreen> {
   }
 
   getPageData() async {
+   
     setState(() {
       isLoading = true;
     });
@@ -66,8 +67,6 @@ class _PageScreenState extends State<PageScreen> {
   }
 
   addAboutItems() {
-    print('+++++++++++++++++++++++++++++++++');
-    print(widget.page_id);
     aboutItems.add(
       AboutItems(
         context: context,
@@ -398,7 +397,7 @@ class _PageScreenState extends State<PageScreen> {
                                         gap(h: 10),
                                         Container(
                                           child: DefaultTabController(
-                                              initialIndex: 0,
+                                              initialIndex: 1,
                                               length: 6,
                                               child: SingleChildScrollView(
                                                 child: Column(

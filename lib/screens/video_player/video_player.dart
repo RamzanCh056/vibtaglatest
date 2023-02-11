@@ -41,6 +41,9 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
       widget.videoUrl.toString(),
     )..initialize().then(
         (_) {
+          if (mounted) {
+            _controller.play();
+          }
           setMic();
           setState(() {
             hideButtton = true;

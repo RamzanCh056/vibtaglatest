@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
 import 'package:vibetag/screens/album/album.dart';
 import 'package:vibetag/screens/article/widgets.dart';
@@ -32,6 +35,7 @@ import '../../utils/constant.dart';
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
+  ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
   return showBarModalBottomSheet(
     barrierColor: Color.fromARGB(0, 255, 255, 255),
     elevation: 0,
@@ -54,8 +58,8 @@ BottomDrawer({required BuildContext context}) {
                     child: Container(
                       width: double.maxFinite,
                       height: height * 0.15,
-                      child: Image.asset(
-                        'assets/images/cover.jpg',
+                      child: Image.network(
+                        user.cover!,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -70,8 +74,8 @@ BottomDrawer({required BuildContext context}) {
                         height: width * 0.25,
                         child: Center(
                           child: CircleAvatar(
-                            foregroundImage: const AssetImage(
-                              'assets/images/streamer.jpg',
+                            foregroundImage: NetworkImage(
+                              user.avatar!,
                             ),
                             radius: width * 0.125,
                           ),
@@ -93,8 +97,8 @@ BottomDrawer({required BuildContext context}) {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               gap(w: 20),
-                              const Text(
-                                'Illizabat Bab',
+                              Text(
+                                '${user.first_name} ${user.last_name}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -102,17 +106,21 @@ BottomDrawer({required BuildContext context}) {
                               gap(
                                 w: 10,
                               ),
-                              const Icon(
-                                Icons.verified,
-                                color: Colors.cyan,
-                              ),
+                              user.verified != '0'
+                                  ? const Icon(
+                                      Icons.verified,
+                                      color: Colors.cyan,
+                                    )
+                                  : gap(),
                             ],
                           ),
                           InkWell(
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen:  Profile(user_id: loginUserId,),
+                                screen: Profile(
+                                  user_id: loginUserId,
+                                ),
                               );
                             },
                             child: Text(
@@ -232,7 +240,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PageScreen(page_id: '1',),
+                          screen: PageScreen(page_id: loginUserId),
                         );
                       },
                     ),
@@ -243,7 +251,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Blog(),
+                          screen: Blogs(),
                         );
                       },
                     ),

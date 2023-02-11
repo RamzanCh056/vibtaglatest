@@ -34,7 +34,6 @@ class PostMethods {
     };
     final result = await API().postData(data);
     List<dynamic> newPosts = jsonDecode(result.body)['posts_data'];
-    print(newPosts);
     Provider.of<PostProvider>(context, listen: false).loadMorePosts(newPosts);
   }
 
@@ -49,20 +48,20 @@ class PostMethods {
             ));
           }
           if (posts[i]['poll_id'] != '0') {
-            _posts.add(PoolPost(
-              post: posts[i],
-              postId: posts[i]['post_id'],
-              avatar: posts[i]['publisher']['avatar'],
-              name: posts[i]['publisher']['first_name'] != null
-                  ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
-                  : "${posts[i]['publisher']['page_title']}",
-              postTime: posts[i]['post_time'],
-              postText: posts[i]['postText'],
-              poolOptions: posts[i]['options'],
-              likes: posts[i]['reaction']['count'].toString(),
-              comments: posts[i]['post_comments'],
-              shares: posts[i]['post_shares'],
-            ));
+            // _posts.add(PoolPost(
+            //   post: posts[i],
+            //   postId: posts[i]['post_id'],
+            //   avatar: posts[i]['publisher']['avatar'],
+            //   name: posts[i]['publisher']['first_name'] != null
+            //       ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
+            //       : "${posts[i]['publisher']['page_title']}",
+            //   postTime: posts[i]['post_time'],
+            //   postText: posts[i]['postText'],
+            //   poolOptions: posts[i]['options'],
+            //   likes: posts[i]['reaction']['count'].toString(),
+            //   comments: posts[i]['post_comments'],
+            //   shares: posts[i]['post_shares'],
+            // ));
           } else if (posts[i]['blog_id'] != '0') {
             _posts.add(BlogPost(
               post: posts[i],
@@ -142,8 +141,11 @@ class PostMethods {
           } else {
             if (posts[i]['product_id'] != '0') {
               _posts.add(
-                PostProduct(
-                  post: posts[i],
+              InkWell(
+                onTap: (){},
+                  child: PostProduct(
+                    post: posts[i],
+                  ),
                 ),
               );
             }
