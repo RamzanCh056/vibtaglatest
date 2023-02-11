@@ -191,6 +191,9 @@ class _HomeState extends State<Home> {
                         color: whiteSecondary,
                       ),
                       child: SingleChildScrollView(
+                        physics: ScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
                         controller: scrollController,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -198,7 +201,6 @@ class _HomeState extends State<Home> {
                           children: [
                             HomeTabBar(),
                             HomeStory(user: user),
-                            HomeSearchBar(user: user),
                             Column(
                               children: postWidgets,
                             ),

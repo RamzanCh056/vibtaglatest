@@ -392,7 +392,8 @@ class _PageScreenState extends State<PageScreen> {
                                         HomeTabBar(),
                                         gap(h: 10),
                                         widget.page_id == loginUserId
-                                            ? HomeSearchBar(user: user)
+                                            ?  createPost(user)
+                                        //HomeSearchBar(user: user)
                                             : gap(),
                                         gap(h: 10),
                                         Container(
