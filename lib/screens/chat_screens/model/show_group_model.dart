@@ -4,7 +4,7 @@ class ShowGroup {
   String? sent_time;
   String? message;
   String? avatar;
-  String? groupId;
+  String? group_id;
 
 
 
@@ -14,7 +14,7 @@ class ShowGroup {
     this.avatar,
     this.group_name,
     this.last_seen,
-    this.groupId,
+    this.group_id,
 
   });
 
@@ -25,7 +25,7 @@ class ShowGroup {
       "avatar": this.avatar,
       "group_name": this.group_name,
       "last_seen": this.last_seen,
-      "groupId": this.groupId,
+      "group_id": this.group_id,
 
     };
   }
@@ -37,7 +37,7 @@ class ShowGroup {
       avatar: json["avatar"] ?? "",
       group_name: json["group_name"] ?? "",
       last_seen: json["last_seen"] ?? "",
-      groupId: json["groupId"] ?? "",
+      group_id: json["group_id"] ?? "",
 
 
     );

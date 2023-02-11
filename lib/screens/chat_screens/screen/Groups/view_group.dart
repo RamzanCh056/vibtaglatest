@@ -1,22 +1,38 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:vibetag/screens/chat_screens/screen/pages/change_theme.dart';
+import 'package:vibetag/screens/chat_screens/screen/call_history.dart';
+import 'package:vibetag/screens/chat_screens/widgets/reusable_listtile.dart';
 
-import '../constants.dart';
-import '../widgets/reusable_listtile.dart';
-import 'call_history.dart';
-
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({key});
+import '../../constants.dart';
+import '../pages/change_theme.dart';
+class ViewGroup extends StatefulWidget {
+  const ViewGroup({Key? key}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ViewGroup> createState() => _ViewGroupState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ViewGroupState extends State<ViewGroup> {
   bool value = false;
+  List<String> images= [
+    "assets/you.png",
+    "assets/anothergroup.png",
+    "assets/3rdgroup.png",
+    "assets/grouppic.png",
+    "assets/mygroup.png",
+    "assets/mygroup.png",
 
+  ];
+  List<String> names= [
+    "Ramzan",
+    "Imran khan",
+    "Nawaz sharef",
+    "Waqas",
+    "azam swati",
+
+
+
+  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -225,26 +241,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           ReusableListTile(
                             image: "assets/images/Group 75662.png",
-                            title: "Share contact",
+                            title: "Invite people",
                             handler: () {},
                           ),
                           const SizedBox(
                             height: 10,
                           ),
-                          ReusableListTile(
-                            image: "assets/images/3 Friends.png",
-                            title: "Create Group with Mark",
-                            handler: () {},
-                          ),
+
                         ],
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
+
+                    const Divider(color: Colors.grey),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 15),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                        mainAxisExtent: 182,
+
+                      ),
+                      itemCount: images.length,
+                      itemBuilder: buildListItem,
+
+                    ),
+
+                    const SizedBox(height: 10,),
                   ],
                 ),
               ),
+
 
               // Profile picture
               Positioned(
@@ -270,4 +303,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+  Widget buildListItem(BuildContext context, int index) {
+    return GestureDetector(
+      onTap: (){
+        index ==5?
+            Container():
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.white,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+          ),
+          builder: (BuildContext context) {
+            return Container(
+              height: 350,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(),
+              child: Column(
+
+                children:  [
+                  const SizedBox(height: 10,),
+                    const Text("Remove Member"),
+                  const SizedBox(height: 10,),
+                  const Text("Are you sure you want to remove William Chills from this Group?", style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.blue,
+
+                    backgroundImage:  AssetImage(images[index]),
+
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(names[index]),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  const Text("@mark_h01", style: TextStyle(fontSize: 12),),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 5,),
+                    Expanded(
+
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          height: 60,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                              border: Border.all(color: Colors.grey)
+                          ),
+                          child: const Center(child: Text('Cancle')),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: const Color(0xffFD4585)
+                        ),
+                        child: const Center(child: Text('Yes', style: TextStyle(color: Colors.white),),),
+                      ),
+                    ),
+                      const SizedBox(width: 5,),
+
+
+
+
+
+
+                  ],)
+
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: const Color(0xFFF1F4FB),
+        ),
+        //color: Colors.red,
+
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, ),
+            child: Column(
+              children: [
+                const SizedBox( height: 10,),
+                index ==0?
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: const [
+                    Text("Admin", style: TextStyle(color: Color(0xff49C658)),
+                      textAlign: TextAlign.end,
+
+                    ),
+                  ],
+                ):Container(),
+                index ==5?
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Color(0xff99A7C7),
+                  child: Text("24", style: TextStyle(color: Colors.white),),
+
+                ):
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.blue,
+
+                  backgroundImage:  AssetImage(images[index]),
+
+                ),
+                const SizedBox(height: 10,),
+
+             index ==5?  const Text("See all"):   Text(names[index]),
+                const SizedBox(height: 2,),
+                index ==5? Container(): const Text("@mark_h01", style: TextStyle(fontSize: 12),),
+                const SizedBox( height: 10,),
+
+
+              ],),
+          ),
+        ),
+
+
+      ),
+    );
+  }
+
 }

@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vibetag/utils/constant.dart';
 
 import '../../constants.dart';
 import '../../model/show_group_model.dart';
-import '../group_type_message.dart';
+import 'group_type_message.dart';
 import 'package:http/http.dart' as http;
 class GroupShow extends StatefulWidget {
   const GroupShow({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class _GroupShowState extends State<GroupShow> {
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'update_messages_list',
-      'user_id': '1724097'
+      'user_id': loginUserId.toString()
     });
 
     request.headers.addAll(headers);

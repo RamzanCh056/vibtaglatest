@@ -6,8 +6,6 @@ import 'package:vibetag/screens/chat_screens/screen/pages/page_message.dart';
 import '../../../utils/constant.dart';
 import '../constants.dart';
 import '../model/page_model.dart';
-import '../model/show_list_message_model.dart';
-import '../widgets/custom_list_tile.dart';
 import 'package:http/http.dart' as http;
 class PageChatShow extends StatefulWidget {
   const PageChatShow({Key? key}) : super(key: key);
