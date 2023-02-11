@@ -57,6 +57,7 @@ dependencies:
   percent_indicator: ^4.2.2
   progresso: ^0.3.0
   provider: ^6.0.5
+
   rating_dialog: ^2.0.0
   readmore: ^2.2.0
   shared_preferences: ^2.0.15

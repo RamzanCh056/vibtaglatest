@@ -1,288 +1,323 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/screens/groups/add_new_group.dart';
+import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/utils/constant.dart';
-import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
-import 'package:vibetag/widgets/input_field.dart';
-import 'package:vibetag/widgets/my_sugested.dart';
-import 'package:vibetag/widgets/navbar.dart';
-import 'package:vibetag/screens/page/add_page.dart';
-import 'package:vibetag/screens/drawer/drawer.dart';
-import 'package:vibetag/widgets/secondary_footer.dart';
+import 'package:dotted_border/dotted_border.dart';
 
-class CreateFunding extends StatefulWidget {
-  const CreateFunding({super.key});
+class CreateFundingRequest extends StatefulWidget {
+  const CreateFundingRequest({super.key});
 
   @override
-  State<CreateFunding> createState() => _CreateFundingState();
+  State<CreateFundingRequest> createState() => _CreateFundingRequestState();
 }
 
-class _CreateFundingState extends State<CreateFunding> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
-  TextEditingController title = TextEditingController();
-
+class _CreateFundingRequestState extends State<CreateFundingRequest> {
+  TextEditingController currency = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      key: _key,
-      drawer: DrawerMenu(),
-      body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    NavBar(),
-                    Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
-                    )
-                  ],
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 5,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+            color: white,
+            borderRadius: borderRadius(15),
+            boxShadow: [
+              BoxShadow(
+                offset: Offset.zero,
+                color: Color.fromARGB(70, 0, 0, 0),
+                blurRadius: 4,
+                spreadRadius: 1,
+              )
+            ]),
+        height: height * 0.9,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                padding: spacing(horizontal: 10, vertical: 25),
+                child: Text(
+                  'Create a funding request',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Container(
-                  height: height * 0.8,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          height: height * 0.08,
-                          width: width,
-                          child: Card(
-                            color: backgroundColor,
-                            child: Padding(
-                              padding: spacing(
-                                horizontal: 10,
-                                vertical: 0,
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: spacing(
-                                      horizontal: 0,
-                                      vertical: 12,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {},
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: Container(
-                                                  width: width * 0.07,
-                                                  height: width * 0.07,
-                                                  padding: spacing(
-                                                    horizontal: 5,
-                                                    vertical: 5,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: orange,
-                                                    borderRadius:
-                                                        borderRadius(20),
-                                                  ),
-                                                  child: SvgIcon(
-                                                    'assets/svg/post/image1.svg',
-                                                    width: width * 0.04,
-                                                    color: white,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                'Create new funding request',
-                                                style: TextStyle(
-                                                  fontSize: textSm,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          width: width * 0.95,
-                          child: Column(
+              ),
+              Container(
+                margin: spacing(
+                  horizontal: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: grayLight,
+                  borderRadius: borderRadius(15),
+                ),
+                child: DottedBorder(
+                  color: grayMed,
+                  dashPattern: [8, 4],
+                  strokeWidth: 2,
+                  child: Container(
+                    padding: spacing(vertical: 25),
+                    height: height * 0.2,
+                    width: double.infinity,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              InputField(
-                                title: 'Title',
-                                hintText: 'Title here',
-                                controller: title,
-                                textColor: '#000000',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              InputField(
-                                title:
-                                    'How many money you would like to receive?',
-                                hintText: 'Title here',
-                                controller: title,
-                                textColor: '#000000',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              InputField(
-                                title: 'Description',
-                                hintText: 'Write here',
-                                controller: title,
-                                textColor: '#000000',
-                                maxLine: 10,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: width * 0.95,
-                                child: Text(
-                                  'Image',
-                                  style: TextStyle(
-                                    fontSize: textMed,
-                                  ),
+                              Image.asset('assets/images/Image-2.png'),
+                              gap(w: 10),
+                              Text(
+                                'Tap to Upload Image',
+                                style: TextStyle(
+                                  color: grayMed,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: height * 0.3,
-                                width: width * 0.95,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      HexColor('#FFFFFF'),
-                                      HexColor('#D2D2D2'),
-                                    ],
-                                    begin: const FractionalOffset(
-                                      0.0,
-                                      0.0,
-                                    ),
-                                    end: const FractionalOffset(
-                                      0.0,
-                                      0.8,
-                                    ),
-                                    stops: [0.0, 1.0],
-                                    tileMode: TileMode.clamp,
-                                  ),
-                                  borderRadius: borderRadius(15),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      bottom: 15,
-                                      left: 0,
-                                      right: 0,
-                                      child: Text(
-                                        'Drop Image Here or Browse to upload',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: white,
-                                          fontSize: textSm,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 40,
-                                      left: 0,
-                                      right: 0,
-                                      child: Icon(
-                                        Icons.photo,
-                                        color: white,
-                                        size: 50,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: width * 0.9,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.keyboard_arrow_left_outlined,
-                                            size: 32,
-                                            color: blue,
-                                          ),
-                                          Text(
-                                            'Go Back',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: blue,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: height * 0.06,
-                                      width: width * 0.35,
-                                      decoration: BoxDecoration(
-                                        color: Colors.orange,
-                                        borderRadius: borderRadius(10),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'Publish',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 40,
-                              ),
+                              )
                             ],
                           ),
-                        )
-                      ],
+                          gap(h: 5),
+                          Text(
+                            'Select from computer or drag & drop the image',
+                            style: TextStyle(
+                              color: grayMed,
+                              fontSize: 12,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                SecondaryFooter(),
-                AppFooter(),
-              ],
-            ),
+              ),
+              gap(h: 30),
+              Container(
+                margin: spacing(
+                  horizontal: 25,
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Title',
+                  style: TextStyle(
+                    color: blackPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              gap(h: 5),
+              Container(
+                width: double.infinity,
+                margin: spacing(
+                  horizontal: 15,
+                ),
+                child: Container(
+                  height: 50,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Enter here',
+                      hintStyle: TextStyle(
+                        color: grayMed,
+                      ),
+                      contentPadding: spacing(
+                        vertical: 5,
+                        horizontal: 15,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: grayMed,
+                        ),
+                        borderRadius: borderRadius(15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              gap(h: 15),
+              Container(
+                margin: spacing(
+                  horizontal: 25,
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'How much money you would like to receive?',
+                  style: TextStyle(
+                    color: blackPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              gap(h: 5),
+              Container(
+                width: double.infinity,
+                margin: spacing(
+                  horizontal: 15,
+                ),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 50,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Enter here',
+                          hintStyle: TextStyle(
+                            color: grayMed,
+                          ),
+                          contentPadding: spacing(
+                            vertical: 5,
+                            horizontal: 15,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: grayMed,
+                            ),
+                            borderRadius: borderRadius(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      top: 0,
+                      child: Container(
+                        width: width * 0.4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: 2,
+                              height: 40,
+                              color: grayMed,
+                            ),
+                            Container(
+                              width: width * 0.2,
+                              child: DropDownList(
+                                bgColor: white,
+                                textColor: grayMed,
+                                items: ['Dollar', 'PKR', 'Pound'],
+                                controller: currency,
+                                first: 'Dollar',
+                                fieldHeight: 0.05,
+                                isUnderline: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              gap(h: 15),
+              Container(
+                margin: spacing(
+                  horizontal: 25,
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Description',
+                  style: TextStyle(
+                    color: blackPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              gap(h: 5),
+              Container(
+                width: double.infinity,
+                margin: spacing(
+                  horizontal: 15,
+                ),
+                child: Container(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Enter here',
+                      hintStyle: TextStyle(
+                        color: grayMed,
+                      ),
+                      contentPadding: spacing(
+                        vertical: 15,
+                        horizontal: 15,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: grayMed,
+                        ),
+                        borderRadius: borderRadius(15),
+                      ),
+                    ),
+                    maxLines: 8,
+                  ),
+                ),
+              ),
+              gap(h: 15),
+              Container(
+                margin: spacing(horizontal: 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: spacing(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        color: grayLight,
+                        borderRadius: borderRadius(10),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: grayPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: spacing(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft,
+                          colors: [
+                            HexColor('#FF9200'),
+                            HexColor('#FDBA31'),
+                          ],
+                        ),
+                        borderRadius: borderRadius(10),
+                      ),
+                      child: Text(
+                        'Send Now',
+                        style: TextStyle(
+                          color: white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              gap(h: 10)
+            ],
           ),
         ),
       ),

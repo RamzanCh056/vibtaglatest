@@ -15,6 +15,7 @@ import 'package:vibetag/screens/groups/group.dart';
 import 'package:vibetag/screens/groups/group_old.dart';
 import 'package:vibetag/screens/groups/private_group.dart';
 import 'package:vibetag/screens/hast_tag/tred_screen.dart';
+import '../screens/funding/funding.dart';
 
 import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:vibetag/screens/page/page.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: HexColor('#EFEFEF'),
           fontFamily: 'HelveticalNeueLTStd',
         ),
-        home:  FutureBuilder(
+        home:true? Funding() : FutureBuilder(
                 future: SharedPreferences.getInstance(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
