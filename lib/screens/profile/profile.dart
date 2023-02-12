@@ -1,17 +1,20 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter/rendering.dart';
+
 import 'package:provider/provider.dart';
+
 import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
-import 'package:vibetag/screens/profile/photo_tab.dart';
-import 'package:vibetag/screens/profile/post_tab_profile.dart';
-import 'package:vibetag/screens/page/videos_tab.dart';
+import 'package:vibetag/screens/profile/user_video_tab.dart';
+import 'package:vibetag/screens/profile/about_items.dart';
 import 'package:vibetag/screens/profile/group_tab.dart';
 import 'package:vibetag/screens/profile/like_tab.dart';
+import 'package:vibetag/screens/profile/photo_tab.dart';
+import 'package:vibetag/screens/profile/post_tab_profile.dart';
 import 'package:vibetag/widgets/bottom_navigation_bar.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
@@ -21,76 +24,172 @@ import '../../methods/auth_method.dart';
 import '../../model/user.dart';
 import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
-import '../home/comment.dart';
-import '../home/home_search.dart';
-import '../home/home_tab_bar.dart';
-import '../home/revibe.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  final String user_id;
+  const Profile({
+    Key? key,
+    required this.user_id,
+  }) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-  late ModelUser user;
-  late UserDetails userDetails;
+  List<Widget> aboutItems = [];
+  late dynamic profileUser;
+  late dynamic profileUserDetails;
   bool isLoading = false;
   bool followLoading = false;
   bool isFollowing = false;
-  String profileUserId = '1724025';
+  bool isScrollDown = false;
+
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     getUsers();
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        setState(() {
+          isScrollDown = true;
+        });
+      }
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        setState(() {
+          isScrollDown = false;
+        });
+      }
+    });
   }
 
   getUsers() async {
-    user = Provider.of<UserProvider>(context, listen: false).user;
-    userDetails =
-        Provider.of<UsersDetailsProvider>(context, listen: false).userDetails;
-
-    if (user.username == '') {
-      setState(() {
-        isLoading = true;
-      });
-      await AuthMethod().setUser(
+    setState(() {
+      isLoading = true;
+    });
+    final data = {
+      'type': 'get_user_data',
+      'sub_type': 'profile_info',
+      'user_id': loginUserId,
+      'user_profile_id': widget.user_id
+    };
+    final result = await API().postData(data);
+    profileUser = jsonDecode(result.body)['user_data'];
+    profileUserDetails = jsonDecode(result.body)['user_data']['details'];
+    aboutItems.add(
+      AboutItems(
         context: context,
-        userId: loginUserId,
-      );
-      user = Provider.of<UserProvider>(context, listen: false).user;
-      userDetails =
-          Provider.of<UsersDetailsProvider>(context, listen: false).userDetails;
-
+        iconsUrl: 'assets/new/icons/Work.png',
+        leading: 'Working at',
+        itemName: profileUser['working'],
+        haveIcon: true,
+      ),
+    );
+    aboutItems.add(
+      AboutItems(
+        context: context,
+        iconsUrl: 'assets/new/icons/user_location.png',
+        leading: 'Lives in',
+        itemName: profileUser['address'],
+        haveIcon: true,
+      ),
+    );
+    aboutItems.add(
+      AboutItems(
+        context: context,
+        iconsUrl: 'assets/new/icons/birthday_date.png',
+        leading: 'Born in',
+        itemName: profileUser['birthday'],
+        haveIcon: true,
+      ),
+    );
+    aboutItems.add(
+      AboutItems(
+        context: context,
+        iconsUrl: 'assets/new/icons/relationship_status.png',
+        leading: relationship[int.parse(
+          profileUser['relationship_id'].toString(),
+        )],
+        itemName: '',
+        haveIcon: true,
+      ),
+    );
+    aboutItems.add(
+      AboutItems(
+        context: context,
+        iconsUrl: 'assets/new/icons/birthday_date.png',
+        leading: 'Born in',
+        itemName: profileUser['birthday'],
+        haveIcon: true,
+      ),
+    );
+    if (profileUser['side_fields'].length > 0) {
+      for (var i = 0; i < profileUser['side_fields'].length; i++) {
+        if (aboutIcons[i] != '') {
+          aboutItems.add(
+            AboutItems(
+              context: context,
+              iconsUrl: aboutIcons[i],
+              haveIcon: aboutIcons[i] != '' ? true : false,
+              leading: profileUser['side_fields'][i]['name'],
+              itemName: profileUser['side_fields'][i]['user_value'],
+            ),
+          );
+        }
+      }
+      for (var i = 0; i < profileUser['side_fields'].length; i++) {
+        if (aboutIcons[i] == '') {
+          aboutItems.add(
+            AboutItems(
+              context: context,
+              iconsUrl: aboutIcons[i],
+              haveIcon: aboutIcons[i] != '' ? true : false,
+              leading: profileUser['side_fields'][i]['name'],
+              itemName: profileUser['side_fields'][i]['user_value'],
+            ),
+          );
+        }
+      }
+    }
+    if (profileUser['followers_data'].indexOf(loginUserId.toString()) != -1) {
       setState(() {
-        isLoading = false;
+        isFollowing = true;
+      });
+    } else {
+      setState(() {
+        isFollowing = false;
       });
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void followUser() async {
     setState(() {
       isFollowing = !isFollowing;
-      followLoading = true;
     });
 
     final data = {
       'type': 'follow_user_startup',
       'user_id': loginUserId,
-      'user': profileUserId,
+      'user': widget.user_id == loginUserId.toString()
+          ? loginUserId.toString()
+          : widget.user_id.toString(),
     };
 
     await API().postData(data);
-    setState(() {
-      followLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
       body: SafeArea(
@@ -103,13 +202,15 @@ class _ProfileState extends State<Profile> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      NavBar(),
+                      isScrollDown ? gap() : NavBar(),
                       Header(),
                       Container(
                         width: double.infinity,
-                        height: height * 0.875,
-                        child: SingleChildScrollView(
-                          child: Column(
+                        height: isScrollDown ? height * 0.93 : height * 0.875,
+                        child: ListView.builder(
+                          itemCount: 1,
+                          controller: scrollController,
+                          itemBuilder: (context, index) => Column(
                             children: [
                               Container(
                                 width: width,
@@ -123,7 +224,7 @@ class _ProfileState extends State<Profile> {
                                       width: width,
                                       height: width * 0.4,
                                       child: Image.network(
-                                        user.cover!,
+                                        profileUser['cover'],
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -142,8 +243,8 @@ class _ProfileState extends State<Profile> {
                                                   borderRadius(width)),
                                           child: CircleAvatar(
                                             radius: width * 0.15,
-                                            foregroundImage:
-                                                NetworkImage(user.avatar!),
+                                            foregroundImage: NetworkImage(
+                                                profileUser['avatar']),
                                           ),
                                         ),
                                       ),
@@ -169,7 +270,7 @@ class _ProfileState extends State<Profile> {
                                                     width: 10,
                                                   ),
                                                   Text(
-                                                    '${user.first_name} ${user.last_name}',
+                                                    '${profileUser['first_name']} ${profileUser['last_name']}',
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -177,16 +278,18 @@ class _ProfileState extends State<Profile> {
                                                     ),
                                                   ),
                                                   gap(w: 5),
-                                                  const Icon(
-                                                    Icons.verified,
-                                                    color: Colors.cyan,
-                                                    size: 18,
-                                                  )
+                                                  profileUser['verified'] != '0'
+                                                      ? const Icon(
+                                                          Icons.verified,
+                                                          color: Colors.cyan,
+                                                          size: 18,
+                                                        )
+                                                      : gap()
                                                 ],
                                               ),
                                               gap(h: 5),
                                               Text(
-                                                '${user.username}',
+                                                '${profileUser['username']}',
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 12,
@@ -224,7 +327,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number: userDetails.total_reactions)}',
+                                                    '${getInK(number:  profileUserDetails['total_reactions'] != '[]' ? int.parse(profileUserDetails['total_reactions'].toString()) : 0 )}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -253,7 +356,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number: int.parse(userDetails.followers_count))}',
+                                                    '${getInK(number:  profileUserDetails['followers_count'] != null ? int.parse(profileUserDetails['followers_count'].toString()) : 0 )}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -282,7 +385,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number: int.parse(userDetails.following_count))}',
+                                                    '${getInK(number:  profileUserDetails['following_count'] != null ? int.parse(profileUserDetails['following_count'].toString()) : 0 )}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -311,7 +414,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number: int.parse(userDetails.video_views))}',
+                                                    '${getInK(number: profileUserDetails['video_views'] != null ? int.parse(profileUserDetails['video_views'].toString()) : 0 )}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -338,7 +441,7 @@ class _ProfileState extends State<Profile> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            user.user_id == loginUserId
+                                            widget.user_id == loginUserId
                                                 ? Container(
                                                     padding: spacing(
                                                       horizontal: width * 0.15,
@@ -367,35 +470,31 @@ class _ProfileState extends State<Profile> {
                                                       ],
                                                     ),
                                                   )
-                                                : followLoading
-                                                    ? loadingSpinner()
-                                                    : InkWell(
-                                                        onTap: followUser,
-                                                        child: Container(
-                                                          padding: spacing(
-                                                            horizontal:
-                                                                width * 0.15,
-                                                            vertical: 10,
-                                                          ),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                orangePrimary,
-                                                            borderRadius:
-                                                                borderRadius(5),
-                                                          ),
-                                                          child: Text(
-                                                            isFollowing
-                                                                ? 'Following'
-                                                                : 'Follow',
-                                                            style: TextStyle(
-                                                              color: white,
-                                                              fontSize: 12,
-                                                            ),
-                                                          ),
+                                                : InkWell(
+                                                    onTap: followUser,
+                                                    child: Container(
+                                                      padding: spacing(
+                                                        horizontal:
+                                                            width * 0.15,
+                                                        vertical: 10,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: orangePrimary,
+                                                        borderRadius:
+                                                            borderRadius(5),
+                                                      ),
+                                                      child: Text(
+                                                        isFollowing
+                                                            ? 'Following'
+                                                            : 'Follow',
+                                                        style: TextStyle(
+                                                          color: white,
+                                                          fontSize: 12,
                                                         ),
                                                       ),
-                                            user.user_id == loginUserId
+                                                    ),
+                                                  ),
+                                            widget.user_id == loginUserId
                                                 ? Container(
                                                     padding: spacing(
                                                       horizontal: width * 0.15,
@@ -453,7 +552,7 @@ class _ProfileState extends State<Profile> {
                                                       ),
                                                     ),
                                                   ),
-                                            user.user_id == loginUserId
+                                            widget.user_id == loginUserId
                                                 ? gap()
                                                 : Icon(
                                                     Icons.more_vert_rounded,
@@ -465,8 +564,8 @@ class _ProfileState extends State<Profile> {
                                       Container(
                                         color: backgroundColor,
                                         child: DefaultTabController(
-                                            initialIndex: 0,
-                                            length: 5,
+                                            initialIndex: 1,
+                                            length: 6,
                                             child: SingleChildScrollView(
                                               child: Column(
                                                 children: [
@@ -487,6 +586,9 @@ class _ProfileState extends State<Profile> {
                                                       ),
                                                       tabs: const [
                                                         Tab(
+                                                          text: 'About',
+                                                        ),
+                                                        Tab(
                                                           text: 'Timeline',
                                                         ),
                                                         Tab(
@@ -506,15 +608,184 @@ class _ProfileState extends State<Profile> {
                                                   ),
                                                   Container(
                                                     width: double.maxFinite,
-                                                    height: height * 0.7,
+                                                    height: height * 0.89,
                                                     child:
                                                         TabBarView(children: [
+                                                      Container(
+                                                        padding: spacing(
+                                                          horizontal: 15,
+                                                          vertical: 15,
+                                                        ),
+                                                        child:
+                                                            SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                'Bio',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                              gap(h: 4),
+                                                              profileUser['about'] !=
+                                                                      null
+                                                                  ? Container(
+                                                                      child:
+                                                                          Text(
+                                                                        profileUser[
+                                                                            'about'],
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              grayMed,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : gap(),
+                                                              gap(
+                                                                h: 10,
+                                                              ),
+                                                              Container(
+                                                                height: 1,
+                                                                width: double
+                                                                    .maxFinite,
+                                                                color: grayMed,
+                                                              ),
+                                                              gap(
+                                                                h: 10,
+                                                              ),
+                                                              Text(
+                                                                'More Info',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      blackPrimary,
+                                                                ),
+                                                              ),
+                                                              gap(h: 10),
+                                                              Container(
+                                                                width: double
+                                                                    .maxFinite,
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceEvenly,
+                                                                  children: [
+                                                                    Container(
+                                                                      padding:
+                                                                          spacing(
+                                                                        horizontal:
+                                                                            40,
+                                                                        vertical:
+                                                                            15,
+                                                                      ),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color:
+                                                                            white,
+                                                                        borderRadius:
+                                                                            borderRadius(7),
+                                                                      ),
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Text(
+                                                                           getInK(number: int.parse(profileUserDetails['followers_count'])).toString()
+                                                                               ,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: blackPrimary,
+                                                                              fontSize: 14,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            'Followers',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: grayMed,
+                                                                              fontSize: 10,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      padding:
+                                                                          spacing(
+                                                                        horizontal:
+                                                                            40,
+                                                                        vertical:
+                                                                            15,
+                                                                      ),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color:
+                                                                            white,
+                                                                        borderRadius:
+                                                                            borderRadius(7),
+                                                                      ),
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Text(
+                                                                             getInK(number: int.parse(profileUserDetails['following_count'])).toString(),
+                                                                                
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: blackPrimary,
+                                                                              fontSize: 14,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            'Following',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: grayMed,
+                                                                              fontSize: 10,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              gap(h: 10),
+                                                              SingleChildScrollView(
+                                                                child: Column(
+                                                                  children:
+                                                                      aboutItems,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                       PostTabProfile(
-                                                          user: user),
-                                                      GroupTab(user: user),
-                                                      LikeTab(user: user),
-                                                      VideoTab(),
-                                                      PhotoTab()
+                                                        user_id: widget.user_id,
+                                                        user: user,
+                                                      ),
+                                                      GroupTab(
+                                                        user_id: widget.user_id,
+                                                      ),
+                                                      LikeTab(
+                                                        user_id: widget.user_id,
+                                                      ),
+                                                      UserVideoTab(
+                                                        user_id: widget.user_id,
+                                                      ),
+                                                      PhotoTab(
+                                                        user_id: widget.user_id,
+                                                      )
                                                     ]),
                                                   )
                                                 ],
@@ -525,7 +796,6 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                               ),
-                              gap(h: 10)
                             ],
                           ),
                         ),

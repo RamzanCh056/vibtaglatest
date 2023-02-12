@@ -6,15 +6,18 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/screens/home/comment.dart';
-import 'package:vibetag/screens/home/revibe.dart';
 
+import 'package:vibetag/screens/home/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
 import '../profile/profile.dart';
 
 class PoolPost extends StatefulWidget {
+  final dynamic post;
+
   final String avatar;
   final String name;
   final String postId;
@@ -28,6 +31,7 @@ class PoolPost extends StatefulWidget {
 
   const PoolPost({
     Key? key,
+    required this.post,
     required this.avatar,
     required this.name,
     required this.postId,
@@ -83,6 +87,29 @@ class _PoolPostState extends State<PoolPost> {
     });
   }
 
+  followOrLike() async {
+    print('+++++++++++++++++++++++++++++++++++++++++');
+    var data = {};
+    if (widget.post['publisher']['page_id'] != null) {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'like_page',
+        'user_id': loginUserId.toString(),
+        'page_id': widget.post['publisher']['page_id'],
+      };
+    } else {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'follow_user',
+        'user_id': widget.post['publisher']['user_id'],
+        'loggedin_user_id': loginUserId,
+      };
+    }
+    print(data);
+    final result = await API().postData(data);
+    print(jsonDecode(result.body));
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -112,6 +139,128 @@ class _PoolPostState extends State<PoolPost> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Container(
+              width: width,
+              height: height * 0.08,
+              margin: spacing(
+                horizontal: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          pushRoute(
+                              context: context,
+                              screen: Profile(
+                                user_id: widget.post['publisher']['user_id']
+                                    .toString(),
+                              ));
+                        },
+                        child: Container(
+                          width: width * 0.12,
+                          height: width * 0.12,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: borderRadius(width),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  orangePrimary,
+                                  graySecondary,
+                                ],
+                              )),
+                          padding: const EdgeInsets.all(2),
+                          child: CircleAvatar(
+                            radius: width * 0.06,
+                            foregroundImage: NetworkImage(
+                              widget.avatar,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  pushRoute(
+                                      context: context,
+                                      screen: Profile(
+                                        user_id: widget.post['publisher']
+                                                ['user_id']
+                                            .toString(),
+                                      ));
+                                },
+                                child: Text(
+                                  widget.name,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: blackPrimary,
+                                  ),
+                                ),
+                              ),
+                              gap(
+                                w: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                        color: blackPrimary,
+                                        borderRadius: borderRadius(width)),
+                                  ),
+                                  gap(
+                                    w: 5,
+                                  ),
+                                  Text(
+                                    'created a poll',
+                                    style: TextStyle(
+                                      color: graySecondary,
+                                      fontSize: 12,
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                widget.postTime,
+                                style: TextStyle(
+                                  color: grayMed,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  Container(
+                    width: width * 0.08,
+                    height: width * 0.08,
+                    child: Image.asset(
+                      'assets/new/icons/more_h.png',
+                    ),
+                  )
+                ],
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -132,7 +281,6 @@ class _PoolPostState extends State<PoolPost> {
                       ),
                     },
                   ),
-               
                 ),
                 gap(h: 10),
                 Container(
@@ -240,13 +388,12 @@ class _PoolPostState extends State<PoolPost> {
                 ),
               ],
             ),
+            gap(h: 10),
             Container(
+              color: grayLight,
               padding: spacing(
                 horizontal: 15,
                 vertical: 5,
-              ),
-              decoration: BoxDecoration(
-                color: whiteSecondary,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,11 +440,10 @@ class _PoolPostState extends State<PoolPost> {
                 ],
               ),
             ),
-            SizedBox(
-              height: height * 0.02,
-            ),
+            gap(h: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 InkWell(
                   onTap: () {
@@ -309,10 +455,11 @@ class _PoolPostState extends State<PoolPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: Image.asset(
                           'assets/new/icons/heart.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(
@@ -330,18 +477,19 @@ class _PoolPostState extends State<PoolPost> {
                 ),
                 InkWell(
                   onTap: () {
-                    Comments(
-                      context: context,
-                    );
+                                                    PostComments(context:context,postId: widget.post['post_id']);
+
+
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: Image.asset(
                           'assets/new/icons/comment.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(
@@ -365,10 +513,11 @@ class _PoolPostState extends State<PoolPost> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: width * 0.03,
-                        height: width * 0.03,
+                        width: width * 0.04,
+                        height: width * 0.04,
                         child: Image.asset(
                           'assets/new/icons/revibe.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(
@@ -385,14 +534,6 @@ class _PoolPostState extends State<PoolPost> {
                   ),
                 )
               ],
-            ),
-            SizedBox(
-              height: height * 0.01,
-            ),
-            Container(
-              width: width * 0.95,
-              height: 2,
-              color: medGray,
             ),
             isShowReactions
                 ? Container(
@@ -442,114 +583,6 @@ class _PoolPostState extends State<PoolPost> {
             gap(
               h: 10,
             ),
-            Container(
-              width: width,
-              height: height * 0.08,
-              margin: spacing(
-                horizontal: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                    InkWell(
-                            onTap: () {
-                              pushRoute(
-                                context: context,
-                                screen: const Profile(),
-                              );
-                            },
-                        child: Container(
-                          width: width * 0.12,
-                          height: width * 0.12,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: borderRadius(width),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  orangePrimary,
-                                  graySecondary,
-                                ],
-                              )),
-                          padding: const EdgeInsets.all(2),
-                          child: CircleAvatar(
-                            radius: width * 0.06,
-                            foregroundImage: NetworkImage(
-                              widget.avatar,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                widget.name,
-                                style: TextStyle(
-                                  color: blackPrimary,
-                                ),
-                              ),
-                              gap(
-                                w: 5,
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 5,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                        color: blackPrimary,
-                                        borderRadius: borderRadius(width)),
-                                  ),
-                                  gap(
-                                    w: 5,
-                                  ),
-                                  Text(
-                                    'created a poll',
-                                    style: TextStyle(
-                                      color: graySecondary,
-                                      fontSize: 12,
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                widget.postTime,
-                                style: TextStyle(
-                                  color: grayMed,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    child: Image.asset(
-                      'assets/new/icons/more_h.png',
-                    ),
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),

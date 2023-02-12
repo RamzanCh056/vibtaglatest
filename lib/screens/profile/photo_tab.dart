@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,11 @@ import '../../methods/api.dart';
 import '../../utils/constant.dart';
 
 class PhotoTab extends StatefulWidget {
-  const PhotoTab({super.key});
+  final String user_id;
+  const PhotoTab({
+    Key? key,
+    required this.user_id,
+  }) : super(key: key);
 
   @override
   State<PhotoTab> createState() => _PhotoTabState();
@@ -30,7 +35,7 @@ class _PhotoTabState extends State<PhotoTab> {
       'type': 'get_user_data',
       'sub_type': 'get_user_images',
       'user_id': loginUserId,
-      'user_profile_id': loginUserId,
+      'user_profile_id': widget.user_id,
       'after_post_id': '0',
     };
     final result = await API().postData(data);
@@ -44,7 +49,6 @@ class _PhotoTabState extends State<PhotoTab> {
         }
       }
     }
-    print(Photos);
     if (mounted) {
       setState(() {
         isLoading = false;

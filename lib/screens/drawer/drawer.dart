@@ -73,7 +73,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   onTap: () {
                     pushRoute(
                       context: context,
-                      screen: const Profile(),
+                      screen: Profile(
+                        user_id: loginUserId.toString(),
+                      ),
                     );
                   },
                   child: Container(

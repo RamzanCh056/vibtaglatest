@@ -9,7 +9,7 @@ import 'package:vibetag/methods/api.dart';
 
 import '../../model/user.dart';
 import '../../utils/constant.dart';
-import '../home/comment.dart';
+import '../home/post_comment_bar.dart';
 import '../home/home_search.dart';
 import '../home/home_tab_bar.dart';
 import '../home/post_blog.dart';
@@ -21,9 +21,11 @@ import '../home/post_product.dart';
 import '../home/revibe.dart';
 
 class PostTabProfile extends StatefulWidget {
+  final String user_id;
   final ModelUser user;
   const PostTabProfile({
     Key? key,
+    required this.user_id,
     required this.user,
   }) : super(key: key);
 
@@ -51,16 +53,17 @@ class _PostTabProfileState extends State<PostTabProfile> {
       'type': 'get_user_data',
       'sub_type': 'get_user_posts',
       'user_id': loginUserId,
-      'user_profile_id': loginUserId,
+      'user_profile_id': widget.user_id,
     };
 
     final result = await API().postData(data);
 
     posts = jsonDecode(result.body)['posts_data'];
-
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   loadMore() async {
@@ -74,7 +77,7 @@ class _PostTabProfileState extends State<PostTabProfile> {
       'type': 'get_user_data',
       'sub_type': 'get_user_posts',
       'user_id': loginUserId,
-      'user_profile_id': loginUserId,
+      'user_profile_id': widget.user_id,
       'after_post_id': lastPostId,
     };
     final result = await API().postData(data);
@@ -101,12 +104,6 @@ class _PostTabProfileState extends State<PostTabProfile> {
         ? loadingSpinner()
         : Container(
             width: double.maxFinite,
-            margin: spacing(
-              vertical: 10,
-            ),
-            padding: const EdgeInsets.only(
-              bottom: 10,
-            ),
             decoration: BoxDecoration(
               color: white,
               borderRadius: BorderRadius.circular(
@@ -120,7 +117,7 @@ class _PostTabProfileState extends State<PostTabProfile> {
                   Container(
                     width: double.maxFinite,
                     color: grayLight,
-                    height: height * 0.82,
+                    height: height * 0.9,
                     child: ListView.builder(
                       itemCount: posts.length + 2,
                       itemBuilder: (constext, i) {
@@ -129,14 +126,19 @@ class _PostTabProfileState extends State<PostTabProfile> {
                             children: [
                               HomeTabBar(),
                               gap(h: 10),
-                              createPost(widget.user),
-                            //  HomeSearchBar(user: widget.user),
+                              widget.user_id == loginUserId
+                                  ?  createPost( widget.user)
+                              //HomeSearchBar(user: widget.user)
+                                  : gap(),
                               gap(h: 10),
                             ],
                           );
                         } else if (i > 0 && i < (posts.length - 1)) {
                           if (posts[i - 1]['poll_id'] != '0') {
+                            return Container();
+
                             return PoolPost(
+                              post: posts[i - 1],
                               postId: posts[i - 1]['post_id'],
                               avatar: posts[i - 1]['publisher']['avatar'],
                               name: posts[i - 1]['publisher']['first_name'] !=
@@ -153,29 +155,11 @@ class _PostTabProfileState extends State<PostTabProfile> {
                             );
                           } else if (posts[i - 1]['blog_id'] != '0') {
                             return BlogPost(
-                              postId: posts[i - 1]['post_id'],
-                              avatar: posts[i - 1]['publisher']['avatar'],
-                              name: posts[i - 1]['publisher']['first_name'] !=
-                                      null
-                                  ? "${posts[i - 1]['publisher']['first_name']} ${posts[i - 1]['publisher']['last_name']}"
-                                  : "${posts[i - 1]['publisher']['page_title']}",
-                              about: "${posts[i - 1]['publisher']['about']}}",
-                              first: posts[i - 1]['publisher']['first_name'] !=
-                                      null
-                                  ? "${posts[i - 1]['publisher']['first_name']}"
-                                  : "${posts[i - 1]['publisher']['page_title']}",
-                              postTime: posts[i - 1]['post_time'],
-                              reactions: posts[i - 1]['reaction'],
-                              postText: posts[i - 1]['postText'],
-                              blog: posts[i - 1]['blog'],
-                              parent_id: posts[i - 1]['parent_id'],
-                              likes:
-                                  posts[i - 1]['reaction']['count'].toString(),
-                              comments: posts[i - 1]['post_comments'],
-                              shares: posts[i - 1]['post_shares'],
+                              post: posts[i - 1],
                             );
                           } else if (posts[i - 1]['page_event_id'] != '0') {
                             return PostEvent(
+                              post: posts[i - 1],
                               postId: posts[i - 1]['post_id'],
                               avatar: posts[i - 1]['publisher']['avatar'],
                               name: posts[i - 1]['publisher']['first_name'] !=
@@ -200,6 +184,7 @@ class _PostTabProfileState extends State<PostTabProfile> {
                             );
                           } else if (posts[i - 1]['color_id'] != '0') {
                             return ColoredPost(
+                              post: posts[i - 1],
                               postId: posts[i - 1]['post_id'],
                               avatar: posts[i - 1]['publisher']['avatar'],
                               name: posts[i - 1]['publisher']['first_name'] !=

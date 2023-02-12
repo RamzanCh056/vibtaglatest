@@ -682,7 +682,9 @@ class _ProductPostCopyState extends State<ProductPostCopy> {
                         onTap: () {
                           pushRoute(
                             context: context,
-                            screen: const Profile(),
+                            screen: Profile(
+                              user_id: widget.post['publisher']['user_id'],
+                            ),
                           );
                         },
                         child: Container(

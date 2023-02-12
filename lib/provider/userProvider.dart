@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:html_editor_enhanced/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/model/user.dart';
 
@@ -39,6 +40,7 @@ class UserProvider with ChangeNotifier {
     email_code: '',
     src: '',
     following_number: '',
+    verified: '',
   );
 
   ModelUser get user => _user;

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
+import 'package:vibetag/model/user.dart';
+import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
 import 'package:vibetag/screens/album/album.dart';
 import 'package:vibetag/screens/article/widgets.dart';
@@ -28,15 +31,13 @@ import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
-import '../my_articles/my_article.dart';
-import '../my_articles/my_article_main_screen.dart';
-import '../my_page_screen/browse_event_screen.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
+  ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
   return showBarModalBottomSheet(
-    barrierColor: const Color.fromARGB(0, 255, 255, 255),
+    barrierColor: Color.fromARGB(0, 255, 255, 255),
     elevation: 0,
     topControl: Container(),
     shape: RoundedRectangleBorder(
@@ -44,21 +45,21 @@ BottomDrawer({required BuildContext context}) {
     ),
     context: context,
     builder: (context) {
-      return SizedBox(
+      return Container(
         height: height * 0.88,
         child: Column(
           children: [
-            SizedBox(
+            Container(
               height: height * 0.3,
               width: double.maxFinite,
               child: Stack(
                 children: [
                   Positioned(
-                    child: SizedBox(
+                    child: Container(
                       width: double.maxFinite,
                       height: height * 0.15,
-                      child: Image.asset(
-                        'assets/images/cover.jpg',
+                      child: Image.network(
+                        user.cover!,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -68,13 +69,13 @@ BottomDrawer({required BuildContext context}) {
                     right: 0,
                     top: height * 0.075,
                     child: Center(
-                      child: SizedBox(
+                      child: Container(
                         width: width * 0.25,
                         height: width * 0.25,
                         child: Center(
                           child: CircleAvatar(
-                            foregroundImage: const AssetImage(
-                              'assets/images/streamer.jpg',
+                            foregroundImage: NetworkImage(
+                              user.avatar!,
                             ),
                             radius: width * 0.125,
                           ),
@@ -96,8 +97,8 @@ BottomDrawer({required BuildContext context}) {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               gap(w: 20),
-                              const Text(
-                                'Illizabat Bab',
+                              Text(
+                                '${user.first_name} ${user.last_name}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -105,17 +106,21 @@ BottomDrawer({required BuildContext context}) {
                               gap(
                                 w: 10,
                               ),
-                              const Icon(
-                                Icons.verified,
-                                color: Colors.cyan,
-                              ),
+                              user.verified != '0'
+                                  ? const Icon(
+                                      Icons.verified,
+                                      color: Colors.cyan,
+                                    )
+                                  : gap(),
                             ],
                           ),
                           InkWell(
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Profile(),
+                                screen: Profile(
+                                  user_id: loginUserId,
+                                ),
                               );
                             },
                             child: Text(
@@ -134,7 +139,7 @@ BottomDrawer({required BuildContext context}) {
                 ],
               ),
             ),
-            SizedBox(
+            Container(
               height: height * 0.58,
               child: SingleChildScrollView(
                 child: Column(
@@ -146,7 +151,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Cart(),
+                          screen: Cart(),
                         );
                       },
                     ),
@@ -157,7 +162,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Album(),
+                          screen: Album(),
                         );
                       },
                     ),
@@ -168,7 +173,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const SavedPost(),
+                          screen: SavedPost(),
                         );
                       },
                     ),
@@ -179,19 +184,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Nudge(),
-                        );
-                      },
-                    ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
-                      title: 'Pages',
-                      notifications: 0,
-                      onTap: () {
-                        pushReplacement(
-                          context: context,
-                          screen:const MyPageHomeScreen(),
-                          //PageScreen(),
+                          screen: Nudge(),
                         );
                       },
                     ),
@@ -202,7 +195,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const PlayLists(),
+                          screen: PlayLists(),
                         );
                       },
                     ),
@@ -213,7 +206,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Gift(),
+                          screen: Gift(),
                         );
                       },
                     ),
@@ -225,7 +218,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Activities(),
+                          screen: Activities(),
                         );
                       },
                     ),
@@ -236,7 +229,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Groups(),
+                          screen: Groups(),
                         );
                       },
                     ),
@@ -247,7 +240,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const PageScreen(),
+                          screen: PageScreen(page_id: loginUserId),
                         );
                       },
                     ),
@@ -256,10 +249,9 @@ BottomDrawer({required BuildContext context}) {
                       title: 'Blog',
                       notifications: 0,
                       onTap: () {
-
                         pushReplacement(
                           context: context,
-                          screen: const Blog(),
+                          screen: Blogs(),
                         );
                       },
                     ),
@@ -269,10 +261,8 @@ BottomDrawer({required BuildContext context}) {
                       notifications: 0,
                       onTap: () {
                         pushReplacement(
-
                           context: context,
-                          screen:const MyArticleHomeSceen(),
-                          //MyArticles(context: context),
+                          screen: MyArticles(context: context),
                         );
                       },
                     ),
@@ -283,7 +273,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Shop(),
+                          screen: Shop(),
                         );
                       },
                     ),
@@ -294,7 +284,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const MyProducts(),
+                          screen: MyProducts(),
                         );
                       },
                     ),
@@ -305,7 +295,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Explore(),
+                          screen: Explore(),
                         );
                       },
                     ),
@@ -316,7 +306,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const FindVibes(),
+                          screen: FindVibes(),
                         );
                       },
                     ),
@@ -327,7 +317,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Blogs(),
+                          screen: Blogs(),
                         );
                       },
                     ),
@@ -339,7 +329,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: const Events(),
+                          screen: Events(),
                         );
                       },
                     ),

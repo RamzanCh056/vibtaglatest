@@ -211,3 +211,25 @@ Widget titleForDialog(BuildContext context, String title) {
     ),
   );
 }
+
+
+List<String> relationship = [
+  'none',
+  'Single',
+  'In a relationship',
+  'Married',
+  'Engaged',
+];
+
+List<String> aboutIcons = [
+  'assets/new/icons/man.png',
+  'assets/new/icons/height.png',
+  '',
+  '',
+  '',
+  'assets/icons/smoke.png',
+  'assets/icons/baby.png',
+  'assets/icons/paws.png',
+  'assets/icons/college-graduation.png',
+  '',
+];
