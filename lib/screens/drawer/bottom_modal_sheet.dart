@@ -19,6 +19,7 @@ import 'package:vibetag/screens/events/events.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/gift/gift.dart';
 import 'package:vibetag/screens/groups/groups.dart';
+import 'package:vibetag/screens/my_articles/my_article_main_screen.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/page/page_old.dart';
@@ -247,17 +248,6 @@ BottomDrawer({required BuildContext context}) {
                       },
                     ),
                     BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
-                      title: 'My Page',
-                      notifications: 0,
-                      onTap: () {
-                        pushReplacement(
-                          context: context,
-                          screen: PageScreen(page_id: loginUserId),
-                        );
-                      },
-                    ),
-                    BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
                       title: 'Blog',
                       notifications: 0,
@@ -275,7 +265,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: MyArticles(context: context),
+                          screen: MyArticleHomeSceen(),
                         );
                       },
                     ),
