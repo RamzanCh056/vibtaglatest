@@ -31,6 +31,7 @@ import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
+import '../my_page_screen/browse_event_screen.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
@@ -185,6 +186,18 @@ BottomDrawer({required BuildContext context}) {
                         pushReplacement(
                           context: context,
                           screen: Nudge(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                      title: 'Pages',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: const MyPageHomeScreen(),
+                          //PageScreen(),
                         );
                       },
                     ),
