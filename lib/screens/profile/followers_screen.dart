@@ -31,8 +31,13 @@ class _FollowersState extends State<Followers> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.arrow_back,
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                        ),
                       ),
                       Text('Followers'),
                       gap()

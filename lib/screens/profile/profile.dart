@@ -24,6 +24,7 @@ import '../../methods/auth_method.dart';
 import '../../model/user.dart';
 import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
+import 'followers_screen.dart';
 
 class Profile extends StatefulWidget {
   final String user_id;
@@ -327,7 +328,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number:  profileUserDetails['total_reactions'] != '[]' ? int.parse(profileUserDetails['total_reactions'].toString()) : 0 )}',
+                                                    '${getInK(number: profileUserDetails['total_reactions'] != '[]' ? int.parse(profileUserDetails['total_reactions'].toString()) : 0)}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -356,7 +357,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number:  profileUserDetails['followers_count'] != null ? int.parse(profileUserDetails['followers_count'].toString()) : 0 )}',
+                                                    '${getInK(number: profileUserDetails['followers_count'] != null ? int.parse(profileUserDetails['followers_count'].toString()) : 0)}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -385,7 +386,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number:  profileUserDetails['following_count'] != null ? int.parse(profileUserDetails['following_count'].toString()) : 0 )}',
+                                                    '${getInK(number: profileUserDetails['following_count'] != null ? int.parse(profileUserDetails['following_count'].toString()) : 0)}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -414,7 +415,7 @@ class _ProfileState extends State<Profile> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${getInK(number: profileUserDetails['video_views'] != null ? int.parse(profileUserDetails['video_views'].toString()) : 0 )}',
+                                                    '${getInK(number: profileUserDetails['video_views'] != null ? int.parse(profileUserDetails['video_views'].toString()) : 0)}',
                                                     style: const TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -609,184 +610,193 @@ class _ProfileState extends State<Profile> {
                                                   Container(
                                                     width: double.maxFinite,
                                                     height: height * 0.89,
-                                                    child:
-                                                        TabBarView(children: [
-                                                      Container(
-                                                        padding: spacing(
-                                                          horizontal: 15,
-                                                          vertical: 15,
-                                                        ),
-                                                        child:
-                                                            SingleChildScrollView(
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                'Bio',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 16,
-                                                                ),
-                                                              ),
-                                                              gap(h: 4),
-                                                              profileUser['about'] !=
-                                                                      null
-                                                                  ? Container(
-                                                                      child:
-                                                                          Text(
-                                                                        profileUser[
-                                                                            'about'],
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              grayMed,
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  : gap(),
-                                                              gap(
-                                                                h: 10,
-                                                              ),
-                                                              Container(
-                                                                height: 1,
-                                                                width: double
-                                                                    .maxFinite,
-                                                                color: grayMed,
-                                                              ),
-                                                              gap(
-                                                                h: 10,
-                                                              ),
-                                                              Text(
-                                                                'More Info',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      blackPrimary,
-                                                                ),
-                                                              ),
-                                                              gap(h: 10),
-                                                              Container(
-                                                                width: double
-                                                                    .maxFinite,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceEvenly,
-                                                                  children: [
-                                                                    Container(
-                                                                      padding:
-                                                                          spacing(
-                                                                        horizontal:
-                                                                            40,
-                                                                        vertical:
-                                                                            15,
-                                                                      ),
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color:
-                                                                            white,
-                                                                        borderRadius:
-                                                                            borderRadius(7),
-                                                                      ),
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Text(
-                                                                           getInK(number: int.parse(profileUserDetails['followers_count'])).toString()
-                                                                               ,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color: blackPrimary,
-                                                                              fontSize: 14,
-                                                                            ),
-                                                                          ),
-                                                                          Text(
-                                                                            'Followers',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              color: grayMed,
-                                                                              fontSize: 10,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
+                                                    child: TabBarView(
+                                                        children: [
+                                                          Container(
+                                                            padding: spacing(
+                                                              horizontal: 15,
+                                                              vertical: 15,
+                                                            ),
+                                                            child:
+                                                                SingleChildScrollView(
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    'Bio',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          16,
                                                                     ),
-                                                                    Container(
-                                                                      padding:
-                                                                          spacing(
-                                                                        horizontal:
-                                                                            40,
-                                                                        vertical:
-                                                                            15,
-                                                                      ),
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color:
-                                                                            white,
-                                                                        borderRadius:
-                                                                            borderRadius(7),
-                                                                      ),
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Text(
-                                                                             getInK(number: int.parse(profileUserDetails['following_count'])).toString(),
-                                                                                
+                                                                  ),
+                                                                  gap(h: 4),
+                                                                  profileUser['about'] !=
+                                                                          null
+                                                                      ? Container(
+                                                                          child:
+                                                                              Text(
+                                                                            profileUser['about'],
                                                                             style:
                                                                                 TextStyle(
-                                                                              color: blackPrimary,
                                                                               fontSize: 14,
-                                                                            ),
-                                                                          ),
-                                                                          Text(
-                                                                            'Following',
-                                                                            style:
-                                                                                TextStyle(
                                                                               color: grayMed,
-                                                                              fontSize: 10,
                                                                             ),
                                                                           ),
-                                                                        ],
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
+                                                                        )
+                                                                      : gap(),
+                                                                  gap(
+                                                                    h: 10,
+                                                                  ),
+                                                                  Container(
+                                                                    height: 1,
+                                                                    width: double
+                                                                        .maxFinite,
+                                                                    color:
+                                                                        grayMed,
+                                                                  ),
+                                                                  gap(
+                                                                    h: 10,
+                                                                  ),
+                                                                  Text(
+                                                                    'More Info',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          blackPrimary,
+                                                                    ),
+                                                                  ),
+                                                                  gap(h: 10),
+                                                                  Container(
+                                                                    width: double
+                                                                        .maxFinite,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: [
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            pushRoute(
+                                                                                context: context,
+                                                                                screen: Followers());
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            padding:
+                                                                                spacing(
+                                                                              horizontal: 40,
+                                                                              vertical: 15,
+                                                                            ),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: white,
+                                                                              borderRadius: borderRadius(7),
+                                                                            ),
+                                                                            child:
+                                                                                Column(
+                                                                              children: [
+                                                                                Text(
+                                                                                  getInK(number: int.parse(profileUserDetails['followers_count'])).toString(),
+                                                                                  style: TextStyle(
+                                                                                    color: blackPrimary,
+                                                                                    fontSize: 14,
+                                                                                  ),
+                                                                                ),
+                                                                                Text(
+                                                                                  'Followers',
+                                                                                  style: TextStyle(
+                                                                                    color: grayMed,
+                                                                                    fontSize: 10,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            pushRoute(
+                                                                                context: context,
+                                                                                screen: Followers());
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            padding:
+                                                                                spacing(
+                                                                              horizontal: 40,
+                                                                              vertical: 15,
+                                                                            ),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: white,
+                                                                              borderRadius: borderRadius(7),
+                                                                            ),
+                                                                            child:
+                                                                                Column(
+                                                                              children: [
+                                                                                Text(
+                                                                                  getInK(number: int.parse(profileUserDetails['following_count'])).toString(),
+                                                                                  style: TextStyle(
+                                                                                    color: blackPrimary,
+                                                                                    fontSize: 14,
+                                                                                  ),
+                                                                                ),
+                                                                                Text(
+                                                                                  'Following',
+                                                                                  style: TextStyle(
+                                                                                    color: grayMed,
+                                                                                    fontSize: 10,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  gap(h: 10),
+                                                                  SingleChildScrollView(
+                                                                    child:
+                                                                        Column(
+                                                                      children:
+                                                                          aboutItems,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              gap(h: 10),
-                                                              SingleChildScrollView(
-                                                                child: Column(
-                                                                  children:
-                                                                      aboutItems,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      PostTabProfile(
-                                                        user_id: widget.user_id,
-                                                        user: user,
-                                                      ),
-                                                      GroupTab(
-                                                        user_id: widget.user_id,
-                                                      ),
-                                                      LikeTab(
-                                                        user_id: widget.user_id,
-                                                      ),
-                                                      UserVideoTab(
-                                                        user_id: widget.user_id,
-                                                      ),
-                                                      PhotoTab(
-                                                        user_id: widget.user_id,
-                                                      )
-                                                    ]),
+                                                          PostTabProfile(
+                                                            user_id:
+                                                                widget.user_id,
+                                                            user: user,
+                                                          ),
+                                                          GroupTab(
+                                                            user_id:
+                                                                widget.user_id,
+                                                          ),
+                                                          LikeTab(
+                                                            user_id:
+                                                                widget.user_id,
+                                                          ),
+                                                          UserVideoTab(
+                                                            user_id:
+                                                                widget.user_id,
+                                                          ),
+                                                          PhotoTab(
+                                                            user_id:
+                                                                widget.user_id,
+                                                          )
+                                                        ]),
                                                   )
                                                 ],
                                               ),
