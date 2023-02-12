@@ -374,8 +374,11 @@ class _BuzzinState extends State<Buzzin> {
                                 ),
                                 Container(
                                   width: width * 0.06,
-                                  child: SvgPicture.asset(
-                                      'assets/new/svg/buzzin/share.svg'),
+                                  child: Image.asset(
+                                    'assets/new/icons/revibe.png',
+                                    color: white,
+                                    width: width * 0.06,
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 5,
