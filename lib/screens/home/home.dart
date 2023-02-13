@@ -201,7 +201,6 @@ class _HomeState extends State<Home> {
                           children: [
                             HomeTabBar(),
                             HomeStory(user: user),
-                            // HomeSearchBar(user: user),
                             createPost(user),
                             Column(
                               children: postWidgets,

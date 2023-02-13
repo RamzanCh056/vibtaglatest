@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:svg_icon/svg_icon.dart';
@@ -8,10 +6,7 @@ import 'package:vibetag/screens/events/create_event.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
 import 'package:vibetag/widgets/header.dart';
-import 'package:vibetag/widgets/my_sugested.dart';
 import 'package:vibetag/widgets/navbar.dart';
-import 'package:vibetag/screens/chat/chat_profile.dart';
-import 'package:vibetag/screens/page/add_page.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
 class Events extends StatefulWidget {

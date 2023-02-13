@@ -56,7 +56,6 @@ class _PostAdsState extends State<PostAds> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    print(widget.post);
 
     return Container(
       margin: spacing(

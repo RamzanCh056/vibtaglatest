@@ -149,7 +149,7 @@ class _PostState extends State<Post> {
           gap(h: 7),
           Container(
             width: width,
-            height: height * 0.06,
+            height: height * 0.07,
             margin: spacing(
               horizontal: 10,
             ),

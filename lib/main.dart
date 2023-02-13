@@ -24,6 +24,9 @@ import 'package:vibetag/screens/video_player/video_screen.dart';
 
 import 'package:vibetag/utils/constant.dart';
 
+import 'screens/album/my_album.dart';
+import 'screens/events/events_old.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MultiProvider(
+    return  MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
