@@ -15,7 +15,7 @@ import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
 import 'package:vibetag/screens/drawer/see_more_popup.dart';
-import 'package:vibetag/screens/events/events.dart';
+import 'package:vibetag/screens/events/events_old_version.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/gift/gift.dart';
 import 'package:vibetag/screens/groups/groups.dart';
@@ -32,6 +32,7 @@ import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
+import '../events/events.dart';
 import '../my_page_screen/browse_event_screen.dart';
 
 BottomDrawer({required BuildContext context}) {
@@ -328,7 +329,6 @@ BottomDrawer({required BuildContext context}) {
                       iconPath: 'assets/new/svg/bottom_drawer/events.svg',
                       title: 'Events',
                       notifications: 0,
-                      bgColor: orangePrimary,
                       onTap: () {
                         pushReplacement(
                           context: context,

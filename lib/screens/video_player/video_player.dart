@@ -14,13 +14,17 @@ class VideoMediaPlayer extends StatefulWidget {
   final String post_id;
   final String videoUrl;
   final String thumbnail;
-  bool isAds = false;
+  bool isAds;
+  bool autoPlay;
+  bool videoTimer;
   VideoMediaPlayer({
     Key? key,
     required this.post_id,
     required this.videoUrl,
     required this.thumbnail,
     this.isAds = false,
+    this.autoPlay = true,
+    this.videoTimer = false,
   }) : super(key: key);
 
   @override
@@ -41,7 +45,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
       widget.videoUrl.toString(),
     )..initialize().then(
         (_) {
-          if (mounted) {
+          if (mounted && widget.autoPlay) {
             _controller.play();
           }
           setMic();
@@ -104,10 +108,10 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
             }
           },
           child: VisibilityDetector(
-            key: Key('Video-Player'),
+            key: Key('${widget.videoUrl}'),
             onVisibilityChanged: (info) {
               var isVisible = info.visibleFraction;
-              Future.delayed(const Duration(milliseconds: 1), () {
+              if (widget.autoPlay) {
                 if (mounted) {
                   if (isVisible > 0.6) {
                     if (_controller.value.isInitialized &&
@@ -121,22 +125,35 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                     if (_controller.value.isPlaying) {
                       _controller.pause();
                       setState(() {
-                        isFocused = true;
+                        isFocused = false;
                       });
                     }
                   }
                 }
-              });
+              }
             },
             child: Center(
               child: !isFocused
-                  ? Container(
-                      width: double.maxFinite,
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/new/gif/image_loading1.gif',
-                        image: videoThumbnail,
-                        fit: BoxFit.cover,
-                        placeholderFit: BoxFit.fitWidth,
+                  ? InkWell(
+                      onTap: () {
+                        if (!(widget.isAds)) {
+                          pushRoute(
+                            context: context,
+                            screen: VideoScreen(
+                              post_id: widget.post_id,
+                              controller: _controller,
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: double.maxFinite,
+                        child: FadeInImage.assetNetwork(
+                          placeholder: 'assets/new/gif/image_loading1.gif',
+                          image: videoThumbnail,
+                          fit: BoxFit.cover,
+                          placeholderFit: BoxFit.fitWidth,
+                        ),
                       ),
                     )
                   : _controller.value.isInitialized
@@ -296,6 +313,17 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                         ],
                       ),
               )
+            : gap(),
+        widget.videoTimer
+            ? Positioned(
+                left: 15,
+                bottom: 5,
+                child: Text(
+                  '${_controller.value.duration.inHours}:${_controller.value.duration.inMinutes}:${(_controller.value.duration.inSeconds % 60).toInt()}',
+                  style: TextStyle(
+                    color: white,
+                  ),
+                ))
             : gap(),
         Positioned(
           right: 15,

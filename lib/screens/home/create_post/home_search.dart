@@ -14,11 +14,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../model/colorspost_model.dart';
-import '../../utils/constant.dart';
-import '../../widgets/post_option.dart';
-import 'catagories/catagories_home.dart';
-import 'catagories/explore_catagorie.dart';
+import '../../../model/colorspost_model.dart';
+import '../../../utils/constant.dart';
+import '../../../widgets/post_option.dart';
+import '../catagories/catagories_home.dart';
+import '../catagories/explore_catagorie.dart';
 
 class createPost extends StatefulWidget {
   createPost(this.user, {Key? key}) : super(key: key);

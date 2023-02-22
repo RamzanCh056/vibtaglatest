@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vibetag/screens/my_page_screen/suggested_page.dart';
+import '../../utils/constant.dart';
 import '../../widgets/header.dart';
 import '../../widgets/navbar.dart';
 import 'create_pages.dart';
@@ -13,91 +14,69 @@ class MyPageHomeScreen extends StatefulWidget {
 }
 
 class _MyPageHomeScreenState extends State<MyPageHomeScreen> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
+  int pageIndex = 0;
+  List<Widget> screens = [MyPage(), SuggestedPage(), CreateBusinessPage()];
+  List<String> buttonText = [
+    'My Pages',
+    'Suggested Pages',
+    'Create Page',
+  ];
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade300,
-        body: SafeArea(
+    double width = deviceWidth(context: context);
+    double height = deviceHeight(context: context);
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
-
             children: [
+              NavBar(),
+              Header(),
               Column(
                 children: [
-                  NavBar(),
-                  Header(
-                    onTap: () {
-                      _key.currentState!.openDrawer();
-                    },
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const Expanded(
-                    child: TabBar(
-                      indicatorColor: Colors.orange,
-                      labelColor: Colors.orange,
-                      unselectedLabelColor: Colors.grey,
-                      isScrollable: true,
-                      tabs: [
-                        Tab(
-                          text: "My Page",
-                        ),
-                        Tab(
-                          text: "Suggested Pages",
-                        ),
-                        Tab(
-                          text: "My Like",
-                        ),
-                      ],
+                  Container(
+                    height: height * 0.06,
+                    width: double.infinity,
+                    child: ListView.builder(
+                      itemCount: buttonText.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              pageIndex = i;
+                            });
+                          },
+                          child: Container(
+                            padding: spacing(horizontal: 20, vertical: 10),
+                            margin: spacing(horizontal: 7, vertical: 5),
+                            decoration: i == pageIndex
+                                ? BoxDecoration(
+                                    gradient: gradient,
+                                    borderRadius: borderRadius(width),
+                                  )
+                                : BoxDecoration(
+                                    color: white,
+                                    borderRadius: borderRadius(width),
+                                  ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              buttonText[i],
+                              style: TextStyle(
+                                color: i == pageIndex ? white : blackPrimary,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      //   return ;
-                      // }));
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                      margin: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateBusinessPage()));
-                        //  Get.to(CreateBusinessPage());
-                        },
-                        child: Row(
-                          children: const [
-                            Text(
-                              "Create",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(
-                              Icons.add_circle_rounded,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
                 ],
               ),
-              Expanded(child: TabBarView(children: [
-                const MyPage(),
-                const SuggestedPage(),
-                Container(),
-              ],))
+              Container(
+                height: height * 0.82,
+                child: screens[pageIndex],
+              ),
             ],
           ),
         ),
@@ -105,5 +84,3 @@ class _MyPageHomeScreenState extends State<MyPageHomeScreen> {
     );
   }
 }
-
-

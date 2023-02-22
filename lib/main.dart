@@ -1,35 +1,29 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/front.dart';
 import 'package:vibetag/provider/post_provider.dart';
-
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
-
 import 'package:vibetag/screens/auth/login.dart';
-import 'package:vibetag/screens/groups/group.dart';
-import 'package:vibetag/screens/groups/group_old.dart';
-import 'package:vibetag/screens/groups/private_group.dart';
-import 'package:vibetag/screens/hast_tag/tred_screen.dart';
-import '../screens/funding/funding.dart';
-
-import 'package:vibetag/screens/video_player/video_player.dart';
-import 'package:vibetag/screens/page/page.dart';
-import 'package:vibetag/screens/profile/profile.dart';
-import 'package:vibetag/screens/video_player/video_screen.dart';
-
 import 'package:vibetag/utils/constant.dart';
 
-import 'screens/album/my_album.dart';
-import 'screens/events/events_old.dart';
+import 'screens/livestream/create/show_pop.dart';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
+  HttpOverrides.global = new MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -43,7 +37,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return  MultiProvider(
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
@@ -59,34 +53,36 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.orange,
-          backgroundColor: HexColor('#EFEFEF'),
           fontFamily: 'HelveticalNeueLTStd',
+          scaffoldBackgroundColor: backgroundColor,
         ),
-        home: FutureBuilder(
-          future: SharedPreferences.getInstance(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('Some Issue has occurred!'),
-              );
-            }
-            if (snapshot.hasData) {
-              SharedPreferences preferences = snapshot.data!;
-              final userId = preferences.getString('userId');
-              if (userId == null) {
-                return const Login();
-              } else {
-                loginUserId = userId;
-                return const FrontPage();
-              }
-            }
-            return const Login();
-          },
-        ),
+        home: true
+            ? ShowStreamPop()
+            : FutureBuilder(
+                future: SharedPreferences.getInstance(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Some Issue has occurred!'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    SharedPreferences preferences = snapshot.data!;
+                    final userId = preferences.getString('userId');
+                    if (userId == null) {
+                      return const Login();
+                    } else {
+                      loginUserId = userId;
+                      return const FrontPage();
+                    }
+                  }
+                  return const Login();
+                },
+              ),
       ),
     );
   }

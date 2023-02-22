@@ -7,7 +7,7 @@ import 'package:vibetag/model/user.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
-import '../home/home_search.dart';
+import '../home/create_post/home_search.dart';
 import '../home/home_tab_bar.dart';
 
 class LikeTab extends StatefulWidget {

@@ -10,7 +10,7 @@ import 'package:vibetag/methods/api.dart';
 import '../../model/user.dart';
 import '../../utils/constant.dart';
 import '../home/post_comment_bar.dart';
-import '../home/home_search.dart';
+import '../home/create_post/home_search.dart';
 import '../home/home_tab_bar.dart';
 import '../home/post_blog.dart';
 import '../home/post_colored.dart';

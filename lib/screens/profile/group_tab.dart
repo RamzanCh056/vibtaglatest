@@ -8,7 +8,7 @@ import 'package:vibetag/screens/groups/group.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
-import '../home/home_search.dart';
+import '../home/create_post/home_search.dart';
 import '../home/home_tab_bar.dart';
 
 class GroupTab extends StatefulWidget {

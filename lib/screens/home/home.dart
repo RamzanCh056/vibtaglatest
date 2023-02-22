@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -10,7 +12,7 @@ import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
-import 'package:vibetag/screens/home/home_search.dart';
+import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:vibetag/screens/home/home_story.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
 import 'package:vibetag/screens/home/post_ads.dart';
@@ -24,6 +26,7 @@ import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import '../../methods/api.dart';
 import 'post_methods/post_methods.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
@@ -102,7 +105,7 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = false;
     });
-
+    getBuzzin();
     userDetails = Provider.of<UsersDetailsProvider>(
       context,
       listen: false,
@@ -113,6 +116,16 @@ class _HomeState extends State<Home> {
         screen: const AddPhoto(),
       );
     }
+  }
+
+  getBuzzin() async {
+    final data = {
+      'type': 'buzzin',
+      'sub_type': 'get_buzzin',
+      'user_id': loginUserId,
+    };
+    final result = await API().postData(data);
+    loadedBuzzin = jsonDecode(result.body)['data'];
   }
 
   @override
@@ -156,7 +169,7 @@ class _HomeState extends State<Home> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
 
-    posts = Provider.of<PostProvider>(context).posts;
+    posts = Provider.of<PostProvider>(context, listen: false).posts;
     postWidgets = PostMethods().setPosts(posts: posts);
     if (postWidgets.length > postsLength) {
       postsLength = postWidgets.length;

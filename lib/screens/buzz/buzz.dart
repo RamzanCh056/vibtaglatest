@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/buzz/buzzin_player.dart';
+import 'package:vibetag/screens/buzz/category_item.dart';
 
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/video_player/video_player.dart';
@@ -25,6 +27,11 @@ class _BuzzinState extends State<Buzzin> {
   int pageIndex = 0;
   final PageController pageController = PageController(initialPage: 0);
   List<String> not_ids = [];
+  bool showSearchbar = false;
+  bool isFocusCategory = false;
+  List<dynamic> categories = [];
+  List<Widget> categoriesList = [];
+  String buzzCategory = '';
 
   void SliderScroll() {
     Timer.periodic(
@@ -81,23 +88,28 @@ class _BuzzinState extends State<Buzzin> {
     }
   }
 
-  late List<dynamic> buzzin;
+  List<dynamic> buzzin = loadedBuzzin;
   bool isLoading = false;
 
   getBuzzin() async {
-    setState(() {
-      isLoading = true;
-    });
-    final data = {
-      'type': 'buzzin',
-      'sub_type': 'get_buzzin',
-      'user_id': loginUserId,
-    };
-    final result = await API().postData(data);
-    buzzin = jsonDecode(result.body)['data'];
-    setState(() {
-      isLoading = false;
-    });
+    if (buzzin.length == 0) {
+      setState(() {
+        isLoading = true;
+      });
+      final data = {
+        'type': 'buzzin',
+        'sub_type': 'load_more_buzzin',
+        'user_id': loginUserId,
+        'category': buzzCategory,
+        'post_id': '',
+      };
+      final result = await API().postData(data);
+      buzzin = jsonDecode(result.body)['data'];
+      setState(() {
+        isLoading = false;
+      });
+    }
+    getBuzzinCategory();
     SliderScroll();
   }
 
@@ -111,7 +123,7 @@ class _BuzzinState extends State<Buzzin> {
       'type': 'buzzin',
       'sub_type': 'load_more_buzzin',
       'user_id': loginUserId,
-      'category': '',
+      'category': buzzCategory,
       'not_ids': not_included.substring(1, (not_included.length - 1)),
     };
     final result = await API().postData(data);
@@ -119,6 +131,33 @@ class _BuzzinState extends State<Buzzin> {
     if (buzzData.length > 0) {
       for (var i = 0; i < buzzData.length; i++) {
         buzzin.add(buzzData[i]);
+      }
+    }
+    setState(() {});
+  }
+
+  getBuzzinCategory() async {
+    final data = {
+      'type': 'buzzin',
+      'sub_type': 'get_buzzin_categories',
+    };
+    final result = await API().postData(data);
+    categories = jsonDecode(result.body);
+    if (categories.length > 0) {
+      for (var i = 0; i < categories.length; i++) {
+        categoriesList.add(
+          InkWell(
+            onTap: () {
+              buzzin = [];
+              buzzCategory = categories[i]['id'];
+              isFocusCategory = !isFocusCategory;
+              getBuzzin();
+            },
+            child: CategoryItem(
+              title: categories[i]['name'],
+            ),
+          ),
+        );
       }
     }
     setState(() {});
@@ -170,48 +209,166 @@ class _BuzzinState extends State<Buzzin> {
                           ),
                           Positioned(
                             top: 10,
-                            child: Container(
-                              width: width,
-                              padding: spacing(
-                                horizontal: 10,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: width * 0.08,
-                                    height: width * 0.08,
-                                    child: SvgPicture.asset(
-                                        'assets/new/svg/buzzin/back.svg'),
-                                  ),
-                                  Row(
+                            child: showSearchbar
+                                ? Column(
                                     children: [
                                       Container(
-                                        width: width * 0.08,
-                                        height: width * 0.08,
-                                        decoration: BoxDecoration(
-                                          borderRadius: borderRadius(width),
+                                        width: width * 0.9,
+                                        margin: spacing(horizontal: 15),
+                                        child: Stack(
+                                          children: [
+                                            Positioned(
+                                              left: 0,
+                                              top: 0,
+                                              bottom: 0,
+                                              child: Image.asset(
+                                                'assets/new/icons/buzzin_search.png',
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                            isFocusCategory
+                                                ? Positioned(
+                                                    right: 0,
+                                                    top: 0,
+                                                    bottom: 0,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        isFocusCategory =
+                                                            !isFocusCategory;
+                                                        setState(() {});
+                                                      },
+                                                      child: Image.asset(
+                                                        'assets/icons/clear_comment_1.png',
+                                                      ),
+                                                    ),
+                                                  )
+                                                : gap(),
+                                            Container(
+                                              height: height * 0.05,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: grayMed,
+                                                ),
+                                                borderRadius:
+                                                    borderRadius(width),
+                                              ),
+                                              child: TextFormField(
+                                                onTap: () {
+                                                  setState(() {
+                                                    isFocusCategory =
+                                                        !isFocusCategory;
+                                                  });
+                                                },
+                                                onTapOutside: (e) {
+                                                  // setState(() {
+                                                  //   isFocusCategory =
+                                                  //       !isFocusCategory;
+                                                  // });
+                                                },
+                                                keyboardType:
+                                                    TextInputType.none,
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      'Search for anything',
+                                                  border: InputBorder.none,
+                                                  contentPadding:
+                                                      EdgeInsets.only(
+                                                    left: 40,
+                                                    right: 40,
+                                                    bottom: 10,
+                                                  ),
+                                                  hintStyle: TextStyle(
+                                                    color: grayMed,
+                                                  ),
+                                                ),
+                                                style: TextStyle(
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        child: SvgPicture.asset(
-                                            'assets/new/svg/buzzin/search.svg'),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      ClipRRect(
-                                        borderRadius: borderRadius(width),
-                                        child: Image.network(
-                                          buzzin[i]['publisher']['avatar'],
-                                          width: width * 0.08,
-                                        ),
-                                      ),
+                                      gap(h: 10),
+                                      isFocusCategory
+                                          ? Center(
+                                              child: Container(
+                                                width: width * 0.9,
+                                                padding: spacing(
+                                                  horizontal: 15,
+                                                  vertical: 10,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: HexColor('#3D3D3D'),
+                                                  borderRadius:
+                                                      borderRadius(10),
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: grayMed,
+                                                  ),
+                                                ),
+                                                child: Wrap(
+                                                  children: categoriesList,
+                                                ),
+                                              ),
+                                            )
+                                          : gap(),
                                     ],
                                   )
-                                ],
-                              ),
-                            ),
+                                : Container(
+                                    width: width,
+                                    padding: spacing(
+                                      horizontal: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: width * 0.08,
+                                          height: width * 0.08,
+                                          child: SvgPicture.asset(
+                                              'assets/new/svg/buzzin/back.svg'),
+                                        ),
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  showSearchbar =
+                                                      !showSearchbar;
+                                                });
+                                              },
+                                              child: Container(
+                                                width: width * 0.08,
+                                                height: width * 0.08,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      borderRadius(width),
+                                                ),
+                                                child: SvgPicture.asset(
+                                                    'assets/new/svg/buzzin/search.svg'),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            ClipRRect(
+                                              borderRadius: borderRadius(width),
+                                              child: Image.network(
+                                                buzzin[i]['publisher']
+                                                    ['avatar'],
+                                                width: width * 0.08,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
                           ),
                           Positioned(
                             bottom: 20,

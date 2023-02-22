@@ -67,6 +67,7 @@ class _LoginState extends State<Login> {
     };
     final result = await API().postData(data);
     final response = json.decode(result.body);
+    print(response);
 
     if (response['api_text'] == 'success') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -181,6 +182,7 @@ class _LoginState extends State<Login> {
                 ],
               ),
               Container(
+                height: height * 0.7,
                 padding: spacing(
                   horizontal: 2,
                 ),
@@ -198,7 +200,6 @@ class _LoginState extends State<Login> {
                         horizontal: 19,
                         vertical: 20,
                       ),
-                      decoration: BoxDecoration(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,

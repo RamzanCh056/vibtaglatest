@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -9,7 +11,7 @@ double deviceWidth({required BuildContext context}) {
 }
 
 //Colors
-Color backgroundColor = HexColor('#F0F0F0');
+Color backgroundColor = HexColor('#D3D3D3');
 Color primaryGray = HexColor('#818181');
 Color darkGray = HexColor('#B4B4B4');
 Color medGray = HexColor('#E6E6E6');
@@ -60,9 +62,16 @@ bool isMuted = true;
 
 String API_Url = 'https://vibetag.com/app_api.php';
 final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
-
+Gradient gradient = LinearGradient(
+  begin: Alignment.centerRight,
+  end: Alignment.centerLeft,
+  colors: [
+    HexColor('#FF9200'),
+    HexColor('#FDBA31'),
+  ],
+);
 String loginUserId = '';
-
+List<dynamic> loadedBuzzin = [];
 double deviceHeight({required BuildContext context}) {
   return MediaQuery.of(context).size.height -
       MediaQuery.of(context).padding.top;
@@ -107,7 +116,7 @@ borderRadius(double radius) {
 Widget loadingSpinner() {
   return Center(
     child: Image.asset(
-      'assets/images/spinner.png',
+      'assets/images/loading_new.gif',
       width: 50,
     ),
   );
@@ -116,6 +125,15 @@ Widget loadingSpinner() {
 Future<XFile?> pickImage() async {
   final ImagePicker _picker = ImagePicker();
   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  if (image != null) {
+    return image;
+  }
+  return null;
+}
+
+Future<XFile?> pickImageCamera() async {
+  final ImagePicker _picker = ImagePicker();
+  final XFile? image = await _picker.pickImage(source: ImageSource.camera);
   if (image != null) {
     return image;
   }
@@ -199,6 +217,7 @@ String readTimestamp(int timestamp) {
 
   return time;
 }
+
 Widget titleForDialog(BuildContext context, String title) {
   return Container(
     color: Theme.of(context).primaryColor,
@@ -206,12 +225,11 @@ Widget titleForDialog(BuildContext context, String title) {
     child: Center(
       child: Text(title,
           style:
-          const TextStyle(color: Colors.white, fontSize: 17, height: 1.55),
+              const TextStyle(color: Colors.white, fontSize: 17, height: 1.55),
           textAlign: TextAlign.center),
     ),
   );
 }
-
 
 List<String> relationship = [
   'none',
@@ -233,3 +251,27 @@ List<String> aboutIcons = [
   'assets/icons/college-graduation.png',
   '',
 ];
+
+bool isVideo({required String ex}) {
+  if (ex == '.mp4' ||
+      ex == '.avi' ||
+      ex == '.mkv' ||
+      ex == '.flv' ||
+      ex == '.ts') {
+    return true;
+  }
+  return false;
+}
+
+List<BoxShadow> boxShadow = [
+  BoxShadow(
+    offset: Offset.zero,
+    color: Color.fromARGB(80, 0, 0, 0),
+    blurRadius: 4,
+    spreadRadius: 1,
+  ),
+];
+
+pop(BuildContext context) {
+  return Navigator.of(context).pop();
+}

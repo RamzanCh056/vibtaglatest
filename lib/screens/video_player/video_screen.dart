@@ -6,12 +6,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:vibetag/screens/home/comments.dart';
 import 'package:vibetag/screens/video_player/Single_video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../utils/constant.dart';
 import '../home/revibe.dart';
@@ -34,7 +36,11 @@ class _VideoScreenState extends State<VideoScreen> {
   ScrollController scrollController = ScrollController();
   double decreaseWidth = 0;
   double decreaseHeight = 0;
+  bool you_may_like = false;
+  List<dynamic> youMayLikePosts = [];
+  List<int> not_ids = [];
   bool isLoading = false;
+  bool loadMore = false;
   late Map<String, dynamic> post;
 
   @override
@@ -77,11 +83,11 @@ class _VideoScreenState extends State<VideoScreen> {
     };
     final result = await API().postData(data);
     post = jsonDecode(result.body)['data'];
-    print('+++++++++++++++++++++++++++++++++++++++++');
-    print(post);
+
     setState(() {
       isLoading = false;
     });
+    getYouMayLike();
   }
 
   List<String> videoBar = [
@@ -90,6 +96,48 @@ class _VideoScreenState extends State<VideoScreen> {
     'Music',
     'Entertainment'
   ];
+
+  getYouMayLike() async {
+    if (!loadMore) {
+      setState(() {
+        you_may_like = !you_may_like;
+      });
+    }
+    final data = {
+      'type': 'single_page',
+      'action': 'get_more_you_may_like_videos',
+      'user_id': loginUserId.toString(),
+      'not_ids': not_ids.length == 0
+          ? '0'
+          : not_ids.toString().substring(1, (not_ids.length - 1)),
+    };
+    final result = await API().postData(data);
+    if (loadMore) {
+      final newLoadedPosts = jsonDecode(result.body)['data'];
+      if (newLoadedPosts.length > 0) {
+        for (var i = 0; i < newLoadedPosts.length; i++) {
+          youMayLikePosts.add(newLoadedPosts[i]);
+        }
+      }
+    } else {
+      youMayLikePosts = jsonDecode(result.body)['data'];
+    }
+    if (youMayLikePosts.length > 0) {
+      for (var i = 0; i < youMayLikePosts.length; i++) {
+        not_ids.add(int.parse(youMayLikePosts[i]['post_id'].toString()));
+      }
+    }
+    if (loadMore) {
+      setState(() {
+        loadMore = !loadMore;
+      });
+    } else {
+      setState(() {
+        you_may_like = !you_may_like;
+      });
+    }
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -210,8 +258,26 @@ class _VideoScreenState extends State<VideoScreen> {
                                   color: grayLight,
                                   width: double.infinity,
                                   child: ListView.builder(
-                                      itemCount: 10,
+                                      itemCount: youMayLikePosts.length + 2,
                                       itemBuilder: (context, i) {
+                                        if (i == (youMayLikePosts.length + 1)) {
+                                          return Column(
+                                            children: [
+                                              VisibilityDetector(
+                                                key: Key('loadingMore'),
+                                                child: loadingSpinner(),
+                                                onVisibilityChanged: (info) {
+                                                  if (info.visibleFraction >
+                                                      0.4) {
+                                                    loadMore = true;
+                                                    getYouMayLike();
+                                                  }
+                                                },
+                                              ),
+                                              gap(h: height * 0.25),
+                                            ],
+                                          );
+                                        }
                                         if (i == 0) {
                                           return Column(
                                             children: [
@@ -513,7 +579,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                                                   ['avatar'],
                                                             ),
                                                             radius:
-                                                                width * 0.08,
+                                                                width * 0.06,
                                                           ),
                                                         ),
                                                         gap(w: 10),
@@ -629,155 +695,170 @@ class _VideoScreenState extends State<VideoScreen> {
                                                   ],
                                                 ),
                                               ),
-                                              gap(h: 10),
-                                              Padding(
-                                                padding:
-                                                    spacing(horizontal: 15),
-                                                child: Center(
-                                                  child: Container(
-                                                    width: width * 0.9,
-                                                    child: Text(
-                                                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry...Read more',
-                                                      style: TextStyle(
-                                                        color: blackLight,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              gap(h: 15)
                                             ],
                                           );
                                         }
-                                        return Container(
-                                          width: double.infinity,
-                                          color: white,
-                                          margin: spacing(
-                                            vertical: 8,
-                                          ),
-                                          padding: spacing(
-                                            horizontal: 10,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: double.maxFinite,
-                                                child: ClipRRect(
-                                                  borderRadius: borderRadius(7),
-                                                  child: Image.asset(
-                                                    'assets/new/images/single_post_timeline.png',
-                                                    fit: BoxFit.cover,
-                                                  ),
+
+                                        return you_may_like
+                                            ? loadingSpinner()
+                                            : Container(
+                                                width: double.infinity,
+                                                color: white,
+                                                margin: spacing(
+                                                  vertical: 8,
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    spacing(horizontal: 15),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                padding: spacing(
+                                                  horizontal: 10,
+                                                ),
+                                                child: Column(
                                                   children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        gap(
-                                                          h: 10,
+                                                    Container(
+                                                      width: double.maxFinite,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            borderRadius(7),
+                                                        child: postFile(
+                                                          file: youMayLikePosts[
+                                                                  i - 1]
+                                                              ['postFile_full'],
+                                                          context: context,
+                                                          thumbnail:
+                                                              '${serverUrl}${youMayLikePosts[i - 1]['postFileThumb']}',
+                                                          post_id:
+                                                              youMayLikePosts[
+                                                                      i - 1]
+                                                                  ['post_id'],
+                                                          autoPlay: false,
+                                                          videoTimer: true,
                                                         ),
-                                                        Text(
-                                                          'IceAge - Dawn of the Dinosaurs',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: blackPrimary,
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      bottom:
-                                                                          4),
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .remove_red_eye,
-                                                                    size: 16,
-                                                                    color:
-                                                                        grayMed,
-                                                                  ),
-                                                                ),
-                                                                gap(w: 3),
-                                                                Text(
-                                                                  '1.2k views',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        10,
-                                                                    color:
-                                                                        blackLight,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            gap(w: 20),
-                                                            Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      bottom:
-                                                                          4),
-                                                                  child:
-                                                                      Container(
-                                                                    width: 14,
-                                                                    child: Image
-                                                                        .asset(
-                                                                      'assets/new/icons/heart.png',
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                gap(w: 3),
-                                                                Text(
-                                                                  '238 Reacts',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        10,
-                                                                    color:
-                                                                        blackLight,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                    Image.asset(
-                                                      'assets/new/icons/more_v.png',
-                                                      color: grayMed,
-                                                    )
+                                                    Padding(
+                                                      padding: spacing(
+                                                          horizontal: 15),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              gap(
+                                                                h: 10,
+                                                              ),
+                                                              Container(
+                                                                width:
+                                                                    width * 0.8,
+                                                                child: Html(
+                                                                  data: youMayLikePosts[
+                                                                          i - 1]
+                                                                      [
+                                                                      'postText'],
+                                                                  style: {
+                                                                    "body":
+                                                                        Style(
+                                                                      fontSize:
+                                                                          FontSize(
+                                                                              12.0),
+                                                                      textOverflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      maxLines:
+                                                                          3,
+                                                                    )
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(bottom: 4),
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .remove_red_eye,
+                                                                          size:
+                                                                              16,
+                                                                          color:
+                                                                              grayMed,
+                                                                        ),
+                                                                      ),
+                                                                      gap(w: 3),
+                                                                      Text(
+                                                                        '${getInK(number: int.parse(youMayLikePosts[i - 1]['videoViews'].toString()))} views',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              10,
+                                                                          color:
+                                                                              blackLight,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  gap(w: 20),
+                                                                  Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(bottom: 4),
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              14,
+                                                                          child:
+                                                                              Image.asset(
+                                                                            'assets/new/icons/heart.png',
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      gap(w: 3),
+                                                                      Text(
+                                                                        '${getInK(number: int.parse(youMayLikePosts[i - 1]['reaction']['count'].toString()))} Reacts',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              10,
+                                                                          color:
+                                                                              blackLight,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Image.asset(
+                                                            'assets/new/icons/more_v.png',
+                                                            color: grayMed,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    gap(
+                                                      h: 10,
+                                                    ),
                                                   ],
                                                 ),
-                                              ),
-                                              gap(
-                                                h: 10,
-                                              ),
-                                            ],
-                                          ),
-                                        );
+                                              );
                                       }),
                                 )
                               ],

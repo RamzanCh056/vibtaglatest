@@ -19,7 +19,7 @@ import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';
-import '../home/home_search.dart';
+import '../home/create_post/home_search.dart';
 import '../home/home_tab_bar.dart';
 import '../profile/about_items.dart';
 

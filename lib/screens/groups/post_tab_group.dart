@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
-import 'package:vibetag/screens/home/home_search.dart';
+import 'package:vibetag/screens/home/create_post/home_search.dart';
 
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 

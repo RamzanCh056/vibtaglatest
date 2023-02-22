@@ -42,4 +42,24 @@ class API {
     final response = await result.stream.bytesToString();
     return response;
   }
+
+  Future pictureComment({
+    required String path,
+    required Map<String, String> data,
+  }) async {
+    var req = http.MultipartRequest("POST", Uri.parse(API_Url));
+    req.fields.addAll(data);
+    if (path != '') {
+      req.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          path,
+        ),
+      );
+    }
+    final result = await req.send();
+    final response = await result.stream.bytesToString();
+    print(response);
+    return response;
+  }
 }

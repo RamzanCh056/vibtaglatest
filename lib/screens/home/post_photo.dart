@@ -14,8 +14,10 @@ import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/profile/profile.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import '../../utils/constant.dart';
 import '../groups/group.dart';
+import '../video_player/playlist_sheet.dart';
 
 class Post extends StatefulWidget {
   final dynamic post;
@@ -128,6 +130,7 @@ class _PostState extends State<Post> {
         int.parse(widget.post['reaction']['count'].toString()) + userLike;
     String fileExtension = p.extension(widget.post['postFile']);
     bool isAudio = fileExtension == '.mp3' || fileExtension == '.wave';
+    bool is_video = isVideo(ex: fileExtension);
 
     return Container(
       width: double.maxFinite,
@@ -555,7 +558,7 @@ class _PostState extends State<Post> {
                 )
               : gap(),
           SizedBox(
-            height: height * 0.01,
+            height: 10,
           ),
           Padding(
             padding: const EdgeInsets.only(
@@ -594,7 +597,7 @@ class _PostState extends State<Post> {
                 )
               : gap(),
           SizedBox(
-            height: height * 0.01,
+            height: 10,
           ),
           widget.post['photo_album'].length > 2
               ? Container(
@@ -716,6 +719,21 @@ class _PostState extends State<Post> {
                   ),
                   child: Row(
                     children: [
+                      is_video || isAudio
+                          ? InkWell(
+                              onTap: () {
+                                createBottomModalSheet(
+                                  context: context,
+                                  screen: PlayListOption(),
+                                );
+                              },
+                              child: Image.asset(
+                                'assets/new/images/video_icons/playlist.png',
+                                color: grayMed,
+                              ),
+                            )
+                          : gap(),
+                      is_video || isAudio ? gap(w: 10) : gap(),
                       Text(
                         "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                         style: TextStyle(

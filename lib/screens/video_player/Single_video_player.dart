@@ -1,13 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:vibetag/screens/playlists/playlist.dart';
+import 'package:vibetag/screens/video_player/playlist_sheet.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:vibetag/screens/video_player/video_player_landscap.dart';
 import 'package:vibetag/screens/video_player/video_setting.dart';
 import 'package:vibetag/utils/constant.dart';
+
+import '../../methods/api.dart';
 
 /// Stateful widget to fetch and then display video content.
 class SingleVideoPlayer extends StatefulWidget {
@@ -205,12 +211,20 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
                 ),
               ),
               gap(w: 10),
-              Container(
-                width: 15,
-                height: 15,
-                child: Image.asset(
-                  'assets/new/images/video_icons/playlist.png',
-                  fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  createBottomModalSheet(
+                    context: context,
+                    screen: PlayListOption(),
+                  );
+                },
+                child: Container(
+                  width: 15,
+                  height: 15,
+                  child: Image.asset(
+                    'assets/new/images/video_icons/playlist.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],

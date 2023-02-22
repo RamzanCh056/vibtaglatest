@@ -11,7 +11,7 @@ import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import 'package:vibetag/screens/home/comments.dart';
-import 'package:vibetag/screens/home/home_search.dart';
+import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../methods/api.dart';

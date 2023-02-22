@@ -1,163 +1,238 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SuggestedPage extends StatelessWidget {
+import '../../methods/api.dart';
+import '../../utils/constant.dart';
+
+class SuggestedPage extends StatefulWidget {
   const SuggestedPage({Key? key}) : super(key: key);
 
   @override
+  State<SuggestedPage> createState() => _SuggestedPageState();
+}
+
+class _SuggestedPageState extends State<SuggestedPage> {
+  List<dynamic> pages = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getMyPage();
+  }
+
+  getMyPage() async {
+    setState(() {
+      isLoading = true;
+    });
+    final data = {
+      'type': 'get_pages',
+      'sub_type': 'my_pages',
+      'user_id':
+          loginUserId.toString() != '' ? loginUserId.toString() : '1724025',
+    };
+
+    final result = await API().postData(data);
+    pages = jsonDecode(result.body)['data'];
+    print(pages);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      body: SafeArea(
-        child: ListView(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-              child: Column(children: [
-                Text(
-                  "Categories",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 210,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 20,
-                      itemBuilder: (_, index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: 150,
+    double width = deviceWidth(context: context);
+    double height = deviceHeight(context: context);
+    return isLoading
+        ? loadingSpinner()
+        : Container(
+            width: double.infinity,
+            child: ListView.builder(
+              itemCount: pages.length,
+              shrinkWrap: true,
+              itemBuilder: (context, i) {
+                return Container(
+                  margin: spacing(horizontal: 15, vertical: 5),
+                  width: double.maxFinite,
+                  height: height * 0.42,
+                  decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: borderRadius(15),
+                  ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
+                        child: Container(
+                          height: height * 0.15,
+                          child: Image.network(
+                            pages[i]['cover'],
+                            fit: BoxFit.cover,
+                            width: double.maxFinite,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: height * 0.1,
+                        right: 0,
+                        left: 0,
+                        child: Center(
+                          child: Container(
+                            width: width * 0.2,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: white,
+                              ),
+                              borderRadius: borderRadius(width),
+                            ),
+                            child: CircleAvatar(
+                              radius: width * 0.1,
+                              foregroundImage: NetworkImage(
+                                pages[i]['avatar'],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: height * 0.21,
+                        right: 0,
+                        left: 0,
+                        child: Center(
                           child: Column(
                             children: [
-                              Container(
-                                height: 150,
-                                width: 100,
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade400,
-                                  borderRadius: BorderRadius.circular(10),
+                              Text(
+                                pages[i]['page_title'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
                                 ),
                               ),
+                              gap(h: 5),
                               Text(
-                                "Lorum ipsum\nDolor Dash",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey.shade400),
+                                pages[i]['category'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  color: grayMed,
+                                ),
+                              ),
+                              gap(h: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: spacing(
+                                        horizontal: width * 0.15, vertical: 15),
+                                    margin: spacing(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                      color: grayLight,
+                                      borderRadius: borderRadius(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Likes',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            color: grayMed,
+                                          ),
+                                        ),
+                                        gap(h: 5),
+                                        Text(
+                                          getInK(
+                                              number: int.parse(pages[i]
+                                                      ['likes']
+                                                  .toString())),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: spacing(
+                                        horizontal: width * 0.15, vertical: 15),
+                                    margin: spacing(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                      color: grayLight,
+                                      borderRadius: borderRadius(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Posts',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            color: grayMed,
+                                          ),
+                                        ),
+                                        gap(h: 5),
+                                        Text(
+                                          getInK(
+                                              number: int.parse(pages[i]
+                                                      ['users_post']
+                                                  .toString())),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              gap(h: 10),
+                              Container(
+                                width: width * 0.65,
+                                padding: spacing(
+                                    horizontal: width * 0.1, vertical: 15),
+                                margin: spacing(horizontal: 5),
+                                decoration: BoxDecoration(
+                                  gradient: gradient,
+                                  borderRadius: borderRadius(10),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Like',
+                                  style: TextStyle(
+                                    color: white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               )
                             ],
                           ),
-                        );
-                      }),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(child: CarPartsCard()),
-                    SizedBox(width: 10,),
-                    Expanded(child: CarPartsCard()),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Expanded(child: CarPartsCard()),
-                    SizedBox(width: 10,),
-                    Expanded(child: CarPartsCard()),
-                  ],
-                ),
-              ],),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              color: Color(0xFFFF9200),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Market Place\nTerms",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Your\nWishlist",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Refund\nPolicy",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "On Sale\nItems",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Start\nSelling",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Find Help &\nSupport",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Text("C 2022 VibeTag"),
-                  Spacer(),
-                  Text("C 2022 VibeTag"),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+    ;
   }
 }
 
@@ -204,8 +279,7 @@ class CarPartsCard extends StatelessWidget {
               children: [
                 Text(
                   "Raqoni Car Parts",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 17),
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                 ),
                 Text(
                   "Cars and Vehicles",
@@ -220,7 +294,7 @@ class CarPartsCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 9,vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.red),
@@ -240,7 +314,7 @@ class CarPartsCard extends StatelessWidget {
                       width: 5,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 9,vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.red),
