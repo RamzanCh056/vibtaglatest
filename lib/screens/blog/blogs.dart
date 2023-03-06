@@ -43,9 +43,7 @@ class _BlogsState extends State<Blogs> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     )
                   ],
                 ),

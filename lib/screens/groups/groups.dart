@@ -42,9 +42,7 @@ class _GroupsState extends State<Groups> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                     
                     )
                   ],
                 ),

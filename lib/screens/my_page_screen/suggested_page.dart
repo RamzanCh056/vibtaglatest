@@ -37,9 +37,11 @@ class _SuggestedPageState extends State<SuggestedPage> {
     final result = await API().postData(data);
     pages = jsonDecode(result.body)['data'];
     print(pages);
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

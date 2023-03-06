@@ -45,12 +45,7 @@ class _BoostState extends State<Boost> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        setState(() {
-                          isShop = false;
-                        });
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     ),
                     ShopHeader(
                       onTap: () {

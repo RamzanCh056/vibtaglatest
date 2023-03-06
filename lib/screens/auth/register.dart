@@ -164,6 +164,9 @@ class _RegisterState extends State<Register> {
     'PhD / Post Doctoral',
   ];
   void registerUser() async {
+    setState(() {
+      isLoading = true;
+    });
     final data = {
       'type': 'user_registration',
       'email': emailController.text.trim().toString(),
@@ -182,14 +185,18 @@ class _RegisterState extends State<Register> {
       'fid_10': ethnicityItems.indexOf(ethnicityController.text).toString(),
       'gender': genderController.text,
     };
-    print(data);
     final result = await API().postData(data);
     final response = json.decode(result.body);
-    if (response['api_text'] == 'success') {
+    if (response['api_status'] == '200') {
       pushReplacement(
         context: context,
         screen: const Login(),
       );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      ToastMessage(message: response['errors']['error_text']);
     }
   }
 

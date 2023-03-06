@@ -1,127 +1,159 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
+import '../../methods/api.dart';
+import '../../utils/constant.dart';
+import '../video_player/Single_video_player.dart';
+import '../video_player/video_player.dart';
 import 'my_playlist.dart';
 import 'other_playlist.dart';
 
-class PlayLists extends StatefulWidget {
-  const PlayLists({super.key});
+class PlayList extends StatefulWidget {
+  const PlayList({super.key});
 
   @override
-  State<PlayLists> createState() => _PlayListsState();
+  State<PlayList> createState() => _PlayListState();
 }
 
-class _PlayListsState extends State<PlayLists> {
+class _PlayListState extends State<PlayList> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-  int currentIndex = 0;
+  int currentTab = 0;
+  List<String> videoBar = ['My Playlist', 'Other Playlist'];
+  List<Widget> screen = [MyPlaylist(), OtherPlayList()];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    double width = deviceWidth(context: context);
+    double height = deviceHeight(context: context);
     return Scaffold(
       key: _key,
       backgroundColor: HexColor('#F1F4FB'),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
+        child: Container(
+          height: height,
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const NavBar(),
-                Header(onTap: () {
-                  _key.currentState!.openDrawer();
-                })
+                Container(
+                  height: height * 0.125,
+                  child: Column(
+                    children: [NavBar(), Header()],
+                  ),
+                ),
+                Container(
+                  height: height * 0.885,
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: height * 0.06,
+                          margin: spacing(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                height: height * 0.05,
+                                width: width * 0.8,
+                                child: ListView.builder(
+                                    itemCount: videoBar.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, i) {
+                                      if (i == currentTab) {
+                                        return Container(
+                                          margin: spacing(
+                                            horizontal: 10,
+                                            vertical: 5,
+                                          ),
+                                          padding: spacing(
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: orangePrimary,
+                                            ),
+                                            borderRadius: borderRadius(width),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              videoBar[i],
+                                              style: TextStyle(
+                                                color: orange,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      return InkWell(
+                                        onTap: () {
+                                          currentTab = i;
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          margin: spacing(
+                                            horizontal: 10,
+                                            vertical: 5,
+                                          ),
+                                          padding: spacing(
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: white,
+                                            borderRadius: borderRadius(width),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              videoBar[i],
+                                              style: TextStyle(
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: grayMed,
+                                  borderRadius: borderRadius(width),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/new/icons/search.png',
+                                    color: white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: width,
+                          height: height * 0.825,
+                          child: screen[currentTab],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        currentIndex = 0;
-                      });
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: currentIndex == 0 ? const Color(0xffFFC107) : Colors.white,
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Text(
-                          'My Playlist',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: currentIndex == 0 ? const Color(0xffFFC107) : const Color(0xff7D8CAC)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        currentIndex = 1;
-                      });
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: currentIndex == 1 ? const Color(0xffFFC107) : Colors.white,
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Other Playlists',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: currentIndex == 1 ? const Color(0xffFFC107) : const Color(0xff7D8CAC)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Expanded(child: Text("")),
-                  Container(
-                      height: 45,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xffC8D1E5),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.search, color: Colors.white),
-                      ))
-                ],
-              ),
-            ),
-            currentIndex == 0?  const Expanded(
-                child: MyPlaylist()):Container(),
-            currentIndex == 1?  const Expanded(
-                child: OtherPlayList()):Container(),
-            // const SecondaryFooter(),
-            // const AppFooter()
-
-          ],
-
-
+          ),
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
 
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../utils/constant.dart';
 
@@ -25,10 +26,9 @@ class PostTabGroup extends StatefulWidget {
 
 class _PostTabGroupState extends State<PostTabGroup> {
   bool isLoading = false;
-  late List<dynamic> LoadedPosts;
   bool loadPosts = false;
-  String lastPostId = '';
-  bool loadingMore = false;
+  bool isNoMore = false;
+  String lastPostId = '0';
   int postsLength = 0;
   List<Widget> posts = [];
 
@@ -46,53 +46,38 @@ class _PostTabGroupState extends State<PostTabGroup> {
       'type': 'get_group_posts',
       'group_profile_id': '20',
       'user_id': loginUserId,
+      'after_post_id': lastPostId,
     };
     final result = await API().postData(data);
-    LoadedPosts = jsonDecode(result.body)['posts_data'];
-    posts = PostMethods().setPosts(posts: LoadedPosts);
-
-    print(LoadedPosts);
+    final newPosts = jsonDecode(result.body)['posts_data'];
+    bool isFindId = false;
+    if (newPosts.length > 0) {
+      for (var i = 0; i < newPosts.length; i++) {
+        if (!isFindId) {
+          if (newPosts[(newPosts.length - (1 + i))]['post_id'] != null) {
+            lastPostId =
+                newPosts[(newPosts.length - (1 + i))]['post_id'].toString();
+            isFindId = true;
+          }
+        }
+      }
+    }
+    print(lastPostId);
+    if (newPosts.length == 0) {
+      isNoMore = true;
+    }
+    List<Widget> loadNewPosts = PostMethods().setPosts(posts: newPosts);
+    if (newPosts.length > 0) {
+      for (var i = 0; i < loadNewPosts.length; i++) {
+        posts.add(loadNewPosts[i]);
+      }
+    }
     setState(() {
       isLoading = false;
     });
   }
 
-  loadMore() async {
-    if (loadingMore) {
-      return;
-    }
-    setState(() {
-      loadingMore = true;
-    });
-    bool isFindId = false;
-
-    for (var i = 0; i < LoadedPosts.length; i++) {
-      if (!isFindId) {
-        if (LoadedPosts[(LoadedPosts.length - (1 + i))]['post_id'] != null) {
-          lastPostId =
-              LoadedPosts[(LoadedPosts.length - (1 + i))]['post_id'].toString();
-          isFindId = true;
-        }
-      }
-    }
-    final data = {
-      'type': 'load_more_home_posts',
-      'after_post_id': lastPostId,
-      'user_id': loginUserId,
-    };
-    final result = await API().postData(data);
-    final newPosts = jsonDecode(result.body)['posts_data'];
-    if (newPosts.length > 0) {
-      for (var i = 0; i < newPosts.length; i++) {
-        LoadedPosts.add(newPosts[i]);
-      }
-      postsLength = LoadedPosts.length + 2;
-      setState(() {
-        loadingMore = false;
-      });
-    }
-    posts = PostMethods().setPosts(posts: LoadedPosts);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -104,21 +89,32 @@ class _PostTabGroupState extends State<PostTabGroup> {
         : Container(
             alignment: Alignment.topCenter,
             width: width,
-            height: height * 0.9,
             decoration: BoxDecoration(
               color: whiteSecondary,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  createPost(user),
-                  Column(
-                    children: posts,
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                createPost(user),
+                Column(
+                  children: posts,
+                ),
+                gap(h: 15),
+                isNoMore
+                    ? Center(
+                        child: Text('No More Posts'),
+                      )
+                    : VisibilityDetector(
+                        key: Key('group_load_more'),
+                        child: loadingSpinner(),
+                        onVisibilityChanged: (info) {
+                          if (info.visibleFraction > 0.3) {
+                            getGroupPosts();
+                          }
+                        },
+                      )
+              ],
             ),
           );
   }

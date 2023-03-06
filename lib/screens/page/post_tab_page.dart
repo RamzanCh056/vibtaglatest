@@ -116,30 +116,25 @@ class _PostTabPageState extends State<PostTabPage> {
         : Container(
             alignment: Alignment.topCenter,
             width: width,
-            height: height * 0.9,
             decoration: BoxDecoration(
               color: whiteSecondary,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  createPost(user),
-                  Column(
-                    children: posts,
-                  ),
-                  isNoMorePosts
-                      ? Text('No More Posts')
-                      : VisibilityDetector(
-                          key: Key('loadMore'),
-                          child: loadingSpinner(),
-                          onVisibilityChanged: (info) {
-                            if (info.visibleFraction > 0.3) {
-                              loadMore();
-                            }
-                          },
-                        )
-                ],
-              ),
+            child: Column(
+              children: [
+                createPost(user),
+                Column(children: posts),
+                isNoMorePosts
+                    ? Text('No More Posts')
+                    : VisibilityDetector(
+                        key: Key('loadMore'),
+                        child: loadingSpinner(),
+                        onVisibilityChanged: (info) {
+                          if (info.visibleFraction > 0.3) {
+                            loadMore();
+                          }
+                        },
+                      )
+              ],
             ),
           );
   }

@@ -42,9 +42,7 @@ class _RecentProductsState extends State<RecentProducts> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                   
                     ),
                   ],
                 ),

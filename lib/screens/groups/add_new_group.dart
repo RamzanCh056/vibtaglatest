@@ -34,7 +34,6 @@ class _AddNewGroupState extends State<AddNewGroup> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {},
                     ),
                   ],
                 ),

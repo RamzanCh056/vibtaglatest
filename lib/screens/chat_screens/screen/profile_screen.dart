@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:vibetag/screens/chat_screens/screen/pages/change_theme.dart';
 
 import '../constants.dart';
+import '../model/show_list_message_model.dart';
 import '../widgets/reusable_listtile.dart';
 import 'call_history.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({key});
+   ProfileScreen(this.currentIndex, this.list,{key});
+   List<MessageList> list;
+   int currentIndex;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -63,8 +66,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text(
-                      "Mark Henry",
+                     Text(
+                     widget.list[widget.currentIndex].rec_name.toString(),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -255,13 +258,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: 130.0,
                   height: 130.0,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 3),
+                    border: Border.all(color: Colors.transparent, width: 3),
                     shape: BoxShape.circle,
-                    image: const DecorationImage(
-                      image: AssetImage("assets/images/Group 76548.png"),
-                      fit: BoxFit.cover,
+                    image:  DecorationImage(
+                      image:NetworkImage( widget.list[widget.currentIndex].rec_pic.toString()),
+
                     ),
                   ),
+                  // child: ClipRRect(
+                  //   borderRadius: BorderRadius.circular(30),
+                  //   child: Image.network(
+                  //     widget.list[widget.currentIndex].rec_pic.toString(),
+                  //
+                  //     height: 45,
+                  //     fit: BoxFit.fill,
+                  //   ),
+                  // ),
                 ),
               ),
             ],

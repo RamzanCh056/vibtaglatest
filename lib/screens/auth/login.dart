@@ -67,9 +67,7 @@ class _LoginState extends State<Login> {
     };
     final result = await API().postData(data);
     final response = json.decode(result.body);
-    print(response);
-
-    if (response['api_text'] == 'success') {
+    if (response['api_status'] == '200') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString('userId', response['user_id']);
       loginUserId = response['user_id'];
@@ -87,6 +85,11 @@ class _LoginState extends State<Login> {
         context: context,
         screen: const FrontPage(),
       );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      ToastMessage(message: response['errors']['error_text']);
     }
   }
 

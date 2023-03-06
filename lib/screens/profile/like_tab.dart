@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:vibetag/model/user.dart';
+import 'package:vibetag/screens/profile/like_page_bar.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
@@ -22,7 +23,7 @@ class LikeTab extends StatefulWidget {
 }
 
 class _LikeTabState extends State<LikeTab> {
-  late List<dynamic> pages;
+  List<Widget> likedPages = [];
   bool isLoading = false;
   @override
   void initState() {
@@ -42,7 +43,18 @@ class _LikeTabState extends State<LikeTab> {
       'after_post_id': '0',
     };
     final result = await API().postData(data);
-    pages = jsonDecode(result.body)['posts_data'];
+    final pages = jsonDecode(result.body)['posts_data'];
+
+    if (pages.length > 0) {
+      for (var i = 0; i < pages.length; i++) {
+        likedPages.add(
+          LikedPageBar(
+            context: context,
+            pages: pages[i],
+          ),
+        );
+      }
+    }
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -54,125 +66,15 @@ class _LikeTabState extends State<LikeTab> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    return isLoading
-        ? loadingSpinner()
-        : Center(
-            child: pages.length == 0
-                ? Text('No liked pages')
-                : Container(
-                    height: height * 0.7,
-                    width: width * 0.95,
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: pages.length,
-                        itemBuilder: (context, i) {
-                          return Container(
-                            height: width * 0.25,
-                            width: width * 0.95,
-                            margin: spacing(
-                              vertical: 5,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10),
-                                  ),
-                                  child: Container(
-                                    height: width * 0.25,
-                                    width: width * 0.25,
-                                    child: Image.network(
-                                      pages[i]['avatar'].trim().toString(),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: spacing(horizontal: 10),
-                                  height: width * 0.25,
-                                  width: width * 0.7,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      )),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      gap(h: 10),
-                                      Container(
-                                        width: width * 0.6,
-                                        child: Text(
-                                          pages[i]['page_title'],
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ),
-                                      gap(h: 5),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Public Group',
-                                            style: TextStyle(
-                                              color: grayMed,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          gap(w: 5),
-                                          Container(
-                                            width: 4,
-                                            height: 4,
-                                            decoration: BoxDecoration(
-                                              borderRadius: borderRadius(4),
-                                              color: grayMed,
-                                            ),
-                                          ),
-                                          gap(w: 5),
-                                          Text(
-                                            '${getInK(number: int.parse(pages[i]['page_likes']))} Likes',
-                                            style: TextStyle(
-                                              color: grayMed,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      gap(h: 5),
-                                      Container(
-                                        width: width * 0.5,
-                                        padding: spacing(
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: orangePrimary,
-                                          borderRadius: borderRadius(5),
-                                        ),
-                                        child: Text(
-                                          'Liked',
-                                          style: TextStyle(
-                                            color: whitePrimary,
-                                            fontSize: 10,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      gap(h: 5),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        }),
-                  ),
-          );
+    return Column(
+      children: [
+        gap(h: 15),
+        isLoading
+            ? loadingSpinner()
+            : Column(
+                children: likedPages,
+              ),
+      ],
+    );
   }
 }

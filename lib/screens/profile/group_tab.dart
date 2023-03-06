@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/screens/groups/group.dart';
+import 'package:vibetag/screens/profile/group_tab_vertical.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
@@ -25,6 +26,7 @@ class GroupTab extends StatefulWidget {
 class _GroupTabState extends State<GroupTab> {
   late List<dynamic> groups;
   late List<dynamic> sGroups;
+  List<Widget> groupV = [];
   bool isLoading = false;
   @override
   void initState() {
@@ -45,13 +47,23 @@ class _GroupTabState extends State<GroupTab> {
     };
     final result = await API().postData(data);
     groups = jsonDecode(result.body)['posts_data'];
+
     final suggested = {
       'type': 'get_suggested_groups',
       'user_id': widget.user_id,
     };
+
     final sResults = await API().postData(suggested);
     sGroups = jsonDecode(sResults.body);
-
+    for (var i = 0; i < sGroups.length; i++) {
+      groupV.add(
+        verticalGroups(
+          context: context,
+          groups:sGroups[i],
+        ),
+      );
+      print(sGroups[i]);
+    }
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -63,280 +75,143 @@ class _GroupTabState extends State<GroupTab> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    return SingleChildScrollView(
-      child: isLoading
-          ? loadingSpinner()
-          : Column(
-              children: [
-                groups.length > 0
-                    ? Container(
-                        height: height * 0.38,
-                        width: double.infinity,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: groups.length,
-                            itemBuilder: (context, i) {
-                              return Container(
-                                width: width * 0.65,
-                                margin: spacing(
-                                  horizontal: 10,
-                                ),
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          pushRoute(
-                                              context: context,
-                                              screen: GroupScreen(
-                                                  group_id: groups[i]['id']));
-                                        },
-                                        child: Container(
-                                          height: height * 0.2,
-                                          width: width * 0.65,
-                                          child: Image.network(
-                                            groups[i]['avatar']
-                                                .trim()
-                                                .toString(),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
+    return isLoading
+        ? loadingSpinner()
+        : Column(
+            children: [
+              groups.length > 0
+                  ? Container(
+                      height: height * 0.38,
+                      width: double.infinity,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: groups.length,
+                          itemBuilder: (context, i) {
+                            return Container(
+                              width: width * 0.65,
+                              margin: spacing(
+                                horizontal: 10,
+                              ),
+                              child: Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
                                     ),
-                                    Container(
-                                      padding: spacing(horizontal: 10),
-                                      decoration: BoxDecoration(
-                                          color: white,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          )),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          gap(h: 10),
-                                          InkWell(
-                                            onTap: () {
-                                              pushRoute(
-                                                  context: context,
-                                                  screen: GroupScreen(
-                                                      group_id: groups[i]
-                                                          ['id']));
-                                            },
-                                            child: Container(
-                                              width: width * 0.6,
-                                              child: Text(
-                                                groups[i]['group_title'],
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          gap(h: 5),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Public Group',
-                                                style: TextStyle(
-                                                  color: grayMed,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                              gap(w: 5),
-                                              Container(
-                                                width: 4,
-                                                height: 4,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: borderRadius(4),
-                                                  color: grayMed,
-                                                ),
-                                              ),
-                                              gap(w: 5),
-                                              Text(
-                                                '${getInK(number: int.parse(groups[i]['members_count']))} members',
-                                                style: TextStyle(
-                                                  color: grayMed,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          gap(h: 10),
-                                          Center(
-                                            child: Container(
-                                              width: width * 0.55,
-                                              padding: spacing(
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: orangePrimary,
-                                                borderRadius: borderRadius(10),
-                                              ),
-                                              child: Text(
-                                                'Joined',
-                                                style: TextStyle(
-                                                  color: whitePrimary,
-                                                  fontSize: 12,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ),
-                                          gap(h: 20),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      )
-                    : gap(),
-                gap(h: 5),
-                Center(
-                  child: Container(
-                    height: height * 0.85,
-                    width: width * 0.95,
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: sGroups.length,
-                        itemBuilder: (context, i) {
-                          return Container(
-                            height: width * 0.25,
-                            width: width * 0.95,
-                            margin: spacing(
-                              vertical: 5,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      pushRoute(
-                                          context: context,
-                                          screen: GroupScreen(
-                                              group_id: groups[i]['id']));
-                                    },
-                                    child: Container(
-                                      height: width * 0.25,
-                                      width: width * 0.25,
-                                      child: Image.network(
-                                        sGroups[i]['avatar'].trim().toString(),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: spacing(horizontal: 10),
-                                  height: width * 0.25,
-                                  width: width * 0.7,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      )),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      gap(h: 10),
-                                      InkWell(
-                                        onTap: () {
-                                          pushRoute(
+                                    child: InkWell(
+                                      onTap: () {
+                                        pushRoute(
                                             context: context,
                                             screen: GroupScreen(
-                                              group_id: groups[i]['id'],
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          width: width * 0.6,
-                                          child: Text(
-                                            sGroups[i]['group_title'],
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
+                                                group_id: groups[i]['id']));
+                                      },
+                                      child: Container(
+                                        height: height * 0.2,
+                                        width: width * 0.65,
+                                        child: Image.network(
+                                          groups[i]['avatar'].trim().toString(),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                      gap(h: 5),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Public Group',
-                                            style: TextStyle(
-                                              color: grayMed,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          gap(w: 5),
-                                          Container(
-                                            width: 4,
-                                            height: 4,
-                                            decoration: BoxDecoration(
-                                              borderRadius: borderRadius(4),
-                                              color: grayMed,
-                                            ),
-                                          ),
-                                          gap(w: 5),
-                                          Text(
-                                            '${getInK(number: int.parse(sGroups[i]['members_count']))} members',
-                                            style: TextStyle(
-                                              color: grayMed,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      gap(h: 5),
-                                      Container(
-                                        width: width * 0.5,
-                                        padding: spacing(
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: orangePrimary,
-                                          borderRadius: borderRadius(5),
-                                        ),
-                                        child: Text(
-                                          'Join Now',
-                                          style: TextStyle(
-                                            color: whitePrimary,
-                                            fontSize: 10,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      gap(h: 5),
-                                    ],
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
-                          );
-                        }),
-                  ),
-                ),
-              ],
-            ),
-    );
+                                  Container(
+                                    padding: spacing(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: white,
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
+                                        )),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        gap(h: 10),
+                                        InkWell(
+                                          onTap: () {
+                                            pushRoute(
+                                                context: context,
+                                                screen: GroupScreen(
+                                                    group_id: groups[i]['id']));
+                                          },
+                                          child: Container(
+                                            width: width * 0.6,
+                                            child: Text(
+                                              groups[i]['group_title'],
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        gap(h: 5),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Public Group',
+                                              style: TextStyle(
+                                                color: grayMed,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            gap(w: 5),
+                                            Container(
+                                              width: 4,
+                                              height: 4,
+                                              decoration: BoxDecoration(
+                                                borderRadius: borderRadius(4),
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                            gap(w: 5),
+                                            Text(
+                                              '${getInK(number: int.parse(groups[i]['members_count']))} members',
+                                              style: TextStyle(
+                                                color: grayMed,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        gap(h: 10),
+                                        Center(
+                                          child: Container(
+                                            width: width * 0.55,
+                                            padding: spacing(
+                                              vertical: 10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: orangePrimary,
+                                              borderRadius: borderRadius(10),
+                                            ),
+                                            child: Text(
+                                              'Joined',
+                                              style: TextStyle(
+                                                color: whitePrimary,
+                                                fontSize: 12,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                        gap(h: 20),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          }),
+                    )
+                  : gap(),
+              gap(h: 5),
+              Column(
+                children: groupV,
+              )
+            ],
+          );
   }
 }

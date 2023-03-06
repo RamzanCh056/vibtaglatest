@@ -44,12 +44,7 @@ class _CartState extends State<Cart> {
                     children: [
                       NavBar(),
                       Header(
-                        onTap: () {
-                          setState(() {
-                            isShop = false;
-                          });
-                          key.currentState!.openDrawer();
-                        },
+                      
                       ),
                       ShopHeader(
                         onTap: () {

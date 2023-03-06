@@ -22,16 +22,17 @@ import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/page/page_old.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
+import 'package:vibetag/screens/playlists/playlists_detail.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
-import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
 import '../events/events.dart';
+import '../explore/explore.dart';
+import '../playlists/playlist.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
@@ -196,7 +197,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PlayLists(),
+                          screen: PlayList(),
                         );
                       },
                     ),

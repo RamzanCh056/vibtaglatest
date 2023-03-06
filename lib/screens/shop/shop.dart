@@ -61,14 +61,7 @@ class _ShopState extends State<Shop> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        setState(() {
-                          isShop = false;
-                        });
-                        if (key.currentState != null) {
-                          key.currentState!.openDrawer();
-                        }
-                      },
+                   
                     ),
                     ShopHeader(
                       onTap: () {

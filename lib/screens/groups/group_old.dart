@@ -46,9 +46,7 @@ class _GroupScreen_OldState extends State<GroupScreen_Old> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     )
                   ],
                 ),

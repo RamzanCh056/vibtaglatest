@@ -213,7 +213,6 @@ class _AddPhotoState extends State<AddPhoto> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {},
                     ),
                   ],
                 ),

@@ -42,9 +42,7 @@ class _CreateEventState extends State<CreateEvent> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                      
                     ),
                   ],
                 ),

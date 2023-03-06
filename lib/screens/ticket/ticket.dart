@@ -46,9 +46,7 @@ class _TicketState extends State<Ticket> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     )
                   ],
                 ),

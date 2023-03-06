@@ -39,6 +39,7 @@ class _PageScreenState extends State<PageScreen> {
   Map<String, dynamic> pageData = {};
   bool isLoading = false;
   bool isLiked = false;
+  int currenttab = 1;
 
   @override
   void initState() {
@@ -47,7 +48,6 @@ class _PageScreenState extends State<PageScreen> {
   }
 
   getPageData() async {
-   
     setState(() {
       isLoading = true;
     });
@@ -61,9 +61,6 @@ class _PageScreenState extends State<PageScreen> {
     pageData = jsonDecode(result.body)['page_data'];
     isLiked = pageData['is_liked'];
     addAboutItems();
-    setState(() {
-      isLoading = false;
-    });
   }
 
   addAboutItems() {
@@ -105,6 +102,9 @@ class _PageScreenState extends State<PageScreen> {
         buttonText: 'Apply',
       ),
     );
+    setState(() {
+      isLoading = false;
+    });
   }
 
   likePage() async {
@@ -122,7 +122,139 @@ class _PageScreenState extends State<PageScreen> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
-
+    List<Widget> screen = isLoading
+        ? []
+        : [
+            Container(
+              padding: spacing(
+                horizontal: 15,
+                vertical: 15,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bio',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    gap(h: 4),
+                    Container(
+                      child: Text(
+                        pageData['about'],
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: grayMed,
+                        ),
+                      ),
+                    ),
+                    gap(
+                      h: 10,
+                    ),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: grayMed,
+                    ),
+                    gap(
+                      h: 10,
+                    ),
+                    Text(
+                      'More Info',
+                      style: TextStyle(
+                        color: blackPrimary,
+                      ),
+                    ),
+                    gap(h: 10),
+                    Container(
+                      width: double.maxFinite,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            padding: spacing(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                            decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: borderRadius(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '2k',
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  'Likes',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: spacing(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                            decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: borderRadius(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${getInK(number: int.parse(pageData['post_count'].toString()))}',
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  'Posts',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    gap(h: 10),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: aboutItems,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            PostTabPage(
+              page_id: widget.page_id,
+            ),
+            PageVideoTab(
+              page_id: widget.page_id,
+            ),
+            PagePhotoTab(
+              page_id: widget.page_id,
+            ),
+            ShopTab(context: context),
+            ReviewTab(context: context),
+          ];
     return Scaffold(
       body: isLoading
           ? loadingSpinner()
@@ -392,8 +524,8 @@ class _PageScreenState extends State<PageScreen> {
                                         HomeTabBar(),
                                         gap(h: 10),
                                         widget.page_id == loginUserId
-                                            ?  createPost(user)
-                                        //HomeSearchBar(user: user)
+                                            ? createPost(user)
+                                            //HomeSearchBar(user: user)
                                             : gap(),
                                         gap(h: 10),
                                         Container(
@@ -409,6 +541,11 @@ class _PageScreenState extends State<PageScreen> {
                                                         isScrollable: true,
                                                         unselectedLabelColor:
                                                             blackLight,
+                                                        onTap: (i) {
+                                                          setState(() {
+                                                            currenttab = i;
+                                                          });
+                                                        },
                                                         labelColor:
                                                             orangePrimary,
                                                         labelStyle:
@@ -441,180 +578,12 @@ class _PageScreenState extends State<PageScreen> {
                                                         ],
                                                       ),
                                                     ),
-                                                    Container(
-                                                      width: double.maxFinite,
-                                                      height: height * 0.7,
-                                                      child: TabBarView(
-                                                          children: [
-                                                            Container(
-                                                              padding: spacing(
-                                                                horizontal: 15,
-                                                                vertical: 15,
-                                                              ),
-                                                              child:
-                                                                  SingleChildScrollView(
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Bio',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 4),
-                                                                    Container(
-                                                                      child:
-                                                                          Text(
-                                                                        pageData[
-                                                                            'about'],
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              grayMed,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    gap(
-                                                                      h: 10,
-                                                                    ),
-                                                                    Container(
-                                                                      height: 1,
-                                                                      width: double
-                                                                          .maxFinite,
-                                                                      color:
-                                                                          grayMed,
-                                                                    ),
-                                                                    gap(
-                                                                      h: 10,
-                                                                    ),
-                                                                    Text(
-                                                                      'More Info',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            blackPrimary,
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 10),
-                                                                    Container(
-                                                                      width: double
-                                                                          .maxFinite,
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceEvenly,
-                                                                        children: [
-                                                                          Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  '2k',
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Likes',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  '${getInK(number: int.parse(pageData['post_count'].toString()))}',
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Posts',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 10),
-                                                                    SingleChildScrollView(
-                                                                      child:
-                                                                          Column(
-                                                                        children:
-                                                                            aboutItems,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            PostTabPage(
-                                                              page_id: widget
-                                                                  .page_id,
-                                                            ),
-                                                            PageVideoTab(
-                                                              page_id: widget
-                                                                  .page_id,
-                                                            ),
-                                                            PagePhotoTab(
-                                                              page_id: widget
-                                                                  .page_id,
-                                                            ),
-                                                            ShopTab(
-                                                                context:
-                                                                    context),
-                                                            ReviewTab(
-                                                                context:
-                                                                    context),
-                                                          ]),
-                                                    )
                                                   ],
                                                 ),
                                               )),
                                         ),
+                                        gap(h: 15),
+                                        screen[currenttab],
                                       ],
                                     ),
                                   ),

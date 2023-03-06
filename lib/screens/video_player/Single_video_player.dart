@@ -4,20 +4,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
-import 'package:vibetag/screens/video_player/playlist_sheet.dart';
-import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
+import 'package:vibetag/screens/playlists/playlist/playlist_sheet.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:vibetag/screens/playlists/playlists_detail.dart';
 import 'package:vibetag/screens/video_player/video_player_landscap.dart';
 import 'package:vibetag/screens/video_player/video_setting.dart';
 import 'package:vibetag/utils/constant.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 
 import '../../methods/api.dart';
 
 /// Stateful widget to fetch and then display video content.
 class SingleVideoPlayer extends StatefulWidget {
   final VideoPlayerController controller;
+  final String post_id;
   bool showSlider = true;
   bool showTime = true;
   bool showFullScreen = true;
@@ -25,6 +26,7 @@ class SingleVideoPlayer extends StatefulWidget {
   SingleVideoPlayer({
     Key? key,
     required this.controller,
+    required this.post_id,
     this.showSlider = true,
     this.showTime = true,
     this.showFullScreen = true,
@@ -45,7 +47,6 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
   @override
   void initState() {
     super.initState();
-
     setMic();
   }
 
@@ -76,9 +77,12 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
     Timer(
       Duration(seconds: 3),
       () => {
-        setState(() {
-          hideButtton = true;
-        })
+        if (mounted)
+          {
+            setState(() {
+              hideButtton = true;
+            })
+          }
       },
     );
   }
@@ -215,7 +219,9 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
                 onTap: () {
                   createBottomModalSheet(
                     context: context,
-                    screen: PlayListOption(),
+                    screen: PlayListOption(
+                      music_id: widget.post_id,
+                    ),
                   );
                 },
                 child: Container(

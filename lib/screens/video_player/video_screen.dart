@@ -36,12 +36,13 @@ class _VideoScreenState extends State<VideoScreen> {
   ScrollController scrollController = ScrollController();
   double decreaseWidth = 0;
   double decreaseHeight = 0;
-  bool you_may_like = false;
-  List<dynamic> youMayLikePosts = [];
+  List<dynamic> posts = [];
   List<int> not_ids = [];
   bool isLoading = false;
   bool loadMore = false;
-  late Map<String, dynamic> post;
+  bool noMorePosts = false;
+  Map<String, dynamic> post = {};
+  int currentTab = 0;
 
   @override
   void initState() {
@@ -84,9 +85,6 @@ class _VideoScreenState extends State<VideoScreen> {
     final result = await API().postData(data);
     post = jsonDecode(result.body)['data'];
 
-    setState(() {
-      isLoading = false;
-    });
     getYouMayLike();
   }
 
@@ -99,9 +97,11 @@ class _VideoScreenState extends State<VideoScreen> {
 
   getYouMayLike() async {
     if (!loadMore) {
-      setState(() {
-        you_may_like = !you_may_like;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
     }
     final data = {
       'type': 'single_page',
@@ -111,29 +111,92 @@ class _VideoScreenState extends State<VideoScreen> {
           ? '0'
           : not_ids.toString().substring(1, (not_ids.length - 1)),
     };
+
     final result = await API().postData(data);
+    if (jsonDecode(result.body)['data'].length > 0) {
+      noMorePosts = false;
+    } else {
+      noMorePosts = true;
+    }
     if (loadMore) {
       final newLoadedPosts = jsonDecode(result.body)['data'];
       if (newLoadedPosts.length > 0) {
         for (var i = 0; i < newLoadedPosts.length; i++) {
-          youMayLikePosts.add(newLoadedPosts[i]);
+          posts.add(newLoadedPosts[i]);
         }
       }
     } else {
-      youMayLikePosts = jsonDecode(result.body)['data'];
+      posts = jsonDecode(result.body)['data'];
     }
-    if (youMayLikePosts.length > 0) {
-      for (var i = 0; i < youMayLikePosts.length; i++) {
-        not_ids.add(int.parse(youMayLikePosts[i]['post_id'].toString()));
+    if (posts.length > 0) {
+      for (var i = 0; i < posts.length; i++) {
+        not_ids.add(int.parse(posts[i]['post_id'].toString()));
       }
     }
     if (loadMore) {
       setState(() {
         loadMore = !loadMore;
       });
-    } else {
+    }
+    if (mounted) {
       setState(() {
-        you_may_like = !you_may_like;
+        isLoading = false;
+      });
+    }
+  }
+
+  relatedVideos() async {
+    if (!loadMore) {
+      print('++++++++++++++++++++++++++++++');
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+    }
+    final data = {
+      'type': 'single_page',
+      'action': 'get_related_videos',
+      'post_category': post['post_category'] != null
+          ? post['post_category'].toString()
+          : 0.toString(),
+      'user_id': loginUserId.toString(),
+      'not_id': not_ids.length == 0
+          ? '0'
+          : not_ids.toString().substring(1, (not_ids.length - 1)),
+    };
+
+    final result = await API().postData(data);
+    if (jsonDecode(result.body)['data'].length > 0) {
+      noMorePosts = false;
+    } else {
+      noMorePosts = true;
+    }
+    print(jsonDecode(result.body)['data']);
+
+    if (loadMore) {
+      final newLoadedPosts = jsonDecode(result.body)['data'];
+      if (newLoadedPosts.length > 0) {
+        for (var i = 0; i < newLoadedPosts.length; i++) {
+          posts.add(newLoadedPosts[i]);
+        }
+      }
+    } else {
+      posts = jsonDecode(result.body)['data'];
+    }
+    if (posts.length > 0) {
+      for (var i = 0; i < posts.length; i++) {
+        not_ids.add(int.parse(posts[i]['post_id'].toString()));
+      }
+    }
+    if (loadMore) {
+      setState(() {
+        loadMore = false;
+      });
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -170,6 +233,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                     decreaseHeight,
                                 child: Center(
                                   child: SingleVideoPlayer(
+                                    post_id: widget.post_id,
                                     controller: widget.controller,
                                     showFullScreen: true,
                                     showTime: true,
@@ -179,6 +243,7 @@ class _VideoScreenState extends State<VideoScreen> {
                             : Container(
                                 child: Center(
                                   child: SingleVideoPlayer(
+                                    post_id: widget.post_id,
                                     controller: widget.controller,
                                     showFullScreen: true,
                                     showTime: true,
@@ -196,7 +261,7 @@ class _VideoScreenState extends State<VideoScreen> {
                         itemCount: videoBar.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, i) {
-                          if (i == 0) {
+                          if (i == currentTab) {
                             return Container(
                               margin: spacing(
                                 horizontal: 10,
@@ -222,23 +287,36 @@ class _VideoScreenState extends State<VideoScreen> {
                               ),
                             );
                           }
-                          return Container(
-                            margin: spacing(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            padding: spacing(
-                              horizontal: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: borderRadius(width),
-                            ),
-                            child: Center(
-                              child: Text(
-                                videoBar[i],
-                                style: TextStyle(
-                                  color: grayMed,
+                          return InkWell(
+                            onTap: () {
+                              currentTab = i;
+                              not_ids = [];
+                              if (i == 0) {
+                                getYouMayLike();
+                              }
+                              if (i == 1) {
+                                relatedVideos();
+                              }
+                              setState(() {});
+                            },
+                            child: Container(
+                              margin: spacing(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              padding: spacing(
+                                horizontal: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: borderRadius(width),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  videoBar[i],
+                                  style: TextStyle(
+                                    color: grayMed,
+                                  ),
                                 ),
                               ),
                             ),
@@ -258,22 +336,33 @@ class _VideoScreenState extends State<VideoScreen> {
                                   color: grayLight,
                                   width: double.infinity,
                                   child: ListView.builder(
-                                      itemCount: youMayLikePosts.length + 2,
+                                      itemCount: posts.length + 2,
                                       itemBuilder: (context, i) {
-                                        if (i == (youMayLikePosts.length + 1)) {
+                                        if (i == (posts.length + 1)) {
                                           return Column(
                                             children: [
-                                              VisibilityDetector(
-                                                key: Key('loadingMore'),
-                                                child: loadingSpinner(),
-                                                onVisibilityChanged: (info) {
-                                                  if (info.visibleFraction >
-                                                      0.4) {
-                                                    loadMore = true;
-                                                    getYouMayLike();
-                                                  }
-                                                },
-                                              ),
+                                              noMorePosts
+                                                  ? Center(
+                                                      child:
+                                                          Text('No More Post'),
+                                                    )
+                                                  : VisibilityDetector(
+                                                      key: Key('loadingMore'),
+                                                      child: loadingSpinner(),
+                                                      onVisibilityChanged:
+                                                          (info) {
+                                                        if (info.visibleFraction >
+                                                            0.4) {
+                                                          loadMore = true;
+                                                          if (currentTab == 0) {
+                                                            getYouMayLike();
+                                                          }
+                                                          if (currentTab == 1) {
+                                                            relatedVideos();
+                                                          }
+                                                        }
+                                                      },
+                                                    ),
                                               gap(h: height * 0.25),
                                             ],
                                           );
@@ -548,28 +637,32 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           onTap: () {
                                                             if (post['publisher']
                                                                     [
-                                                                    'user_id'] !=
+                                                                    'page_id'] !=
                                                                 null) {
                                                               pushRoute(
-                                                                  context:
-                                                                      context,
-                                                                  screen:
-                                                                      Profile(
-                                                                    user_id: post['publisher']
-                                                                            [
-                                                                            'user_id']
-                                                                        .toString(),
-                                                                  ));
-                                                            } else {
-                                                              if (post['page_id']
-                                                                      .toString() !=
-                                                                  '0') {
-                                                                PageScreen(
+                                                                context:
+                                                                    context,
+                                                                screen:
+                                                                    PageScreen(
                                                                   page_id: post[
+                                                                              'publisher']
+                                                                          [
                                                                           'page_id']
                                                                       .toString(),
-                                                                );
-                                                              }
+                                                                ),
+                                                              );
+                                                            } else {
+                                                              pushRoute(
+                                                                context:
+                                                                    context,
+                                                                screen: Profile(
+                                                                  user_id: post[
+                                                                              'publisher']
+                                                                          [
+                                                                          'user_id']
+                                                                      .toString(),
+                                                                ),
+                                                              );
                                                             }
                                                           },
                                                           child: CircleAvatar(
@@ -589,26 +682,31 @@ class _VideoScreenState extends State<VideoScreen> {
                                                               onTap: () {
                                                                 if (post['publisher']
                                                                         [
-                                                                        'user_id'] !=
+                                                                        'page_id'] !=
                                                                     null) {
                                                                   pushRoute(
-                                                                      context:
-                                                                          context,
-                                                                      screen:
-                                                                          Profile(
-                                                                        user_id:
-                                                                            post['publisher']['user_id'].toString(),
-                                                                      ));
-                                                                } else {
-                                                                  if (post['page_id']
-                                                                          .toString() !=
-                                                                      '0') {
-                                                                    PageScreen(
-                                                                      page_id: post[
+                                                                    context:
+                                                                        context,
+                                                                    screen:
+                                                                        PageScreen(
+                                                                      page_id: post['publisher']
+                                                                              [
                                                                               'page_id']
                                                                           .toString(),
-                                                                    );
-                                                                  }
+                                                                    ),
+                                                                  );
+                                                                } else {
+                                                                  pushRoute(
+                                                                    context:
+                                                                        context,
+                                                                    screen:
+                                                                        Profile(
+                                                                      user_id: post['publisher']
+                                                                              [
+                                                                              'user_id']
+                                                                          .toString(),
+                                                                    ),
+                                                                  );
                                                                 }
                                                               },
                                                               child: Text(
@@ -700,7 +798,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                           );
                                         }
 
-                                        return you_may_like
+                                        return isLoading
                                             ? loadingSpinner()
                                             : Container(
                                                 width: double.infinity,
@@ -719,16 +817,13 @@ class _VideoScreenState extends State<VideoScreen> {
                                                         borderRadius:
                                                             borderRadius(7),
                                                         child: postFile(
-                                                          file: youMayLikePosts[
-                                                                  i - 1]
+                                                          file: posts[i - 1]
                                                               ['postFile_full'],
                                                           context: context,
                                                           thumbnail:
-                                                              '${serverUrl}${youMayLikePosts[i - 1]['postFileThumb']}',
-                                                          post_id:
-                                                              youMayLikePosts[
-                                                                      i - 1]
-                                                                  ['post_id'],
+                                                              '${serverUrl}${posts[i - 1]['postFileThumb']}',
+                                                          post_id: posts[i - 1]
+                                                              ['post_id'],
                                                           autoPlay: false,
                                                           videoTimer: true,
                                                         ),
@@ -754,7 +849,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                                                 width:
                                                                     width * 0.8,
                                                                 child: Html(
-                                                                  data: youMayLikePosts[
+                                                                  data: posts[
                                                                           i - 1]
                                                                       [
                                                                       'postText'],
@@ -797,7 +892,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                                                       ),
                                                                       gap(w: 3),
                                                                       Text(
-                                                                        '${getInK(number: int.parse(youMayLikePosts[i - 1]['videoViews'].toString()))} views',
+                                                                        '${getInK(number: int.parse(posts[i - 1]['videoViews'].toString()))} views',
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
@@ -831,7 +926,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                                                       ),
                                                                       gap(w: 3),
                                                                       Text(
-                                                                        '${getInK(number: int.parse(youMayLikePosts[i - 1]['reaction']['count'].toString()))} Reacts',
+                                                                        '${getInK(number: int.parse(posts[i - 1]['reaction']['count'].toString()))} Reacts',
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:

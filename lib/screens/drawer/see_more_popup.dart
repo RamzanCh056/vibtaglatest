@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
-import 'package:vibetag/screens/find%20friends/find_friends.dart';
+import 'package:vibetag/screens/find_friends_old/find_friends.dart';
 import 'package:vibetag/screens/funding/funding.dart';
 import 'package:vibetag/screens/job/job.dart';
 import 'package:vibetag/screens/livestream/create%20stream/live.dart';

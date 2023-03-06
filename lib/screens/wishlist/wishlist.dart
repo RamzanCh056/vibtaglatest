@@ -42,9 +42,7 @@ class _WishListState extends State<WishList> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

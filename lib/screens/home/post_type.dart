@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:vibetag/screens/home/audio_player.dart';
 import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:video_player/video_player.dart';
+import 'package:zoom_widget/zoom_widget.dart';
 
 import '../../utils/constant.dart';
 
@@ -47,11 +48,21 @@ Widget postFile({
       ex == '.gif' ||
       ex == '.PNG') {
     if ((file.contains(serverUrl))) {
-      return FadeInImage.assetNetwork(
-        placeholder: 'assets/new/gif/image_loading1.gif',
-        image: file,
-        fit: BoxFit.cover,
-        placeholderFit: BoxFit.fitWidth,
+      return Container(
+        height: deviceHeight(context: context) * 0.3,
+        width: deviceWidth(context: context),
+        child: Zoom(
+          child: Container(
+            height: deviceHeight(context: context) * 0.3,
+            width: deviceWidth(context: context),
+            child: FadeInImage.assetNetwork(
+              placeholder: 'assets/new/gif/image_loading1.gif',
+              image: file,
+              fit: BoxFit.cover,
+              placeholderFit: BoxFit.fitWidth,
+            ),
+          ),
+        ),
       );
     } else {
       String url = serverUrl + file;

@@ -46,9 +46,7 @@ class _PageScreen_OldState extends State<PageScreen_Old> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                      
                     )
                   ],
                 ),

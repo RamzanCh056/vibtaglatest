@@ -22,18 +22,86 @@ class PostMethods {
       'user_id': loginUserId,
     });
     List<dynamic> posts = jsonDecode(result.body)['posts_data'];
+
+    for (var i = 0; i < posts.length; i++) {
+      if (posts[i]['post_id'] != null) {
+        homePostIds.add(posts[i]['post_id'].toString());
+      } else {
+        homePostAdsIds.add(posts[i]['id'].toString());
+      }
+    }
+    if (homePostIds.length == 0) {
+      isNoMorePostsHome = true;
+    }
     Provider.of<PostProvider>(context, listen: false).setPosts(posts);
+    getCategories();
   }
 
-  Future loadMorePosts(
-      {required BuildContext context, required String lastPostId}) async {
+  getCategories() async {
+    getBuzzin();
+    playlistCategories = ['Select'];
     final data = {
-      'type': 'load_more_home_posts',
-      'after_post_id': lastPostId,
+      'type': 'playlist_api',
+      'action': 'get_playlist_categories',
+    };
+    final result = await API().postData(data);
+    final response = jsonDecode(result.body)['data'];
+    for (var i = 0; i < response.length; i++) {
+      playlistCategories.add(response[i]['name']);
+    }
+
+    playlistColors = [];
+    final colors = {
+      'type': 'playlist_api',
+      'action': 'get_playlist_bg_colors',
+    };
+    final resultColors = await API().postData(colors);
+    final responseColors = jsonDecode(resultColors.body)['data'];
+    for (var colors in responseColors) {
+      playlistColors.add(colors);
+    }
+    print('+++++++++++++++++++++++++++++++++++');
+    print(playlistColors);
+  }
+
+  getBuzzin() async {
+    final data = {
+      'type': 'buzzin',
+      'sub_type': 'get_buzzin',
       'user_id': loginUserId,
     };
     final result = await API().postData(data);
+    loadedBuzzin = jsonDecode(result.body)['data'];
+  }
+
+  Future loadMorePosts({required BuildContext context}) async {
+    final data = {
+      'type': 'load_more_home_posts',
+      'after_post_id': homePostIds[(homePostIds.length - 1)],
+      'not_ids': homePostIds
+          .toString()
+          .substring(1, (homePostIds.toString().length - 1)),
+      'ad_id': homePostAdsIds
+          .toString()
+          .substring(1, (homePostAdsIds.toString().length - 1)),
+      'user_id': loginUserId,
+    };
+
+    final result = await API().postData(data);
+
     List<dynamic> newPosts = jsonDecode(result.body)['posts_data'];
+    if (newPosts.length == 0) {
+      isNoMorePostsHome = true;
+    } else {
+      print(newPosts);
+      for (var i = 0; i < newPosts.length; i++) {
+        if (newPosts[i]['post_id'] != null) {
+          homePostIds.add(newPosts[i]['post_id'].toString());
+        } else {
+          homePostAdsIds.add(newPosts[i]['id'].toString());
+        }
+      }
+    }
     Provider.of<PostProvider>(context, listen: false).loadMorePosts(newPosts);
   }
 
@@ -124,9 +192,9 @@ class PostMethods {
                 postText: posts[i]['postText'],
                 postFile: posts[i]['postFile'],
                 videoViews: int.parse(posts[i]['videoViews']),
-                comments: posts[i]['post_comments'],
+                comments: posts[i]['post_comments'].toString(),
                 likes: posts[i]['reaction']['count'].toString(),
-                shares: posts[i]['post_shares'],
+                shares: posts[i]['post_shares'].toString(),
                 likeString: posts[i]['likes_string'],
               ),
             );
@@ -141,8 +209,8 @@ class PostMethods {
           } else {
             if (posts[i]['product_id'] != '0') {
               _posts.add(
-              InkWell(
-                onTap: (){},
+                InkWell(
+                  onTap: () {},
                   child: PostProduct(
                     post: posts[i],
                   ),

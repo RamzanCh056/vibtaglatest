@@ -36,9 +36,7 @@ class _Events_OldState extends State<Events_Old> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

@@ -38,9 +38,7 @@ class _CreateNewArticleState extends State<CreateNewArticle> {
               children: [
                 NavBar(),
                 Header(
-                  onTap: () {
-                    _key.currentState!.openDrawer();
-                  },
+                
                 ),
                 Container(
                   child: Container(

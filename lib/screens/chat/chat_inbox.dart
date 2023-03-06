@@ -37,9 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   NavBar(),
                   Header(
-                    onTap: () {
-                      _key.currentState!.openDrawer();
-                    },
+                   
                   ),
                 ],
               ),

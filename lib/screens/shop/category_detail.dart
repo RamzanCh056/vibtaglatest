@@ -43,7 +43,6 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {},
                     ),
                     ShopHeader(onTap: () {}),
                   ],

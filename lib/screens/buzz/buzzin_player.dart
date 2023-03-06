@@ -65,9 +65,11 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
                         ? controller.pause()
                         : controller.play();
                     Timer(Duration(seconds: 3), () {
-                      setState(() {
-                        hidebutton = true;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          hidebutton = true;
+                        });
+                      }
                     });
                   },
                   child: AspectRatio(

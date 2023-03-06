@@ -42,9 +42,7 @@ class _SaleState extends State<Sale> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

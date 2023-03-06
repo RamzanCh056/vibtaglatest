@@ -34,7 +34,6 @@ class _AddNewPagState extends State<AddNewPag> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {},
                     ),
                   ],
                 ),

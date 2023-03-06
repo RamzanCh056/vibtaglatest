@@ -25,4 +25,9 @@ class PostProvider with ChangeNotifier {
     _postModel = posts;
     notifyListeners();
   }
+
+  clear() {
+    _postModel = [];
+    notifyListeners();
+  }
 }

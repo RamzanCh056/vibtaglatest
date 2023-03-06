@@ -11,7 +11,7 @@ double deviceWidth({required BuildContext context}) {
 }
 
 //Colors
-Color backgroundColor = HexColor('#D3D3D3');
+Color backgroundColor = HexColor('#F1F4FB');
 Color primaryGray = HexColor('#818181');
 Color darkGray = HexColor('#B4B4B4');
 Color medGray = HexColor('#E6E6E6');
@@ -157,10 +157,10 @@ String getInK({required int number}) {
     return number.toString();
   } else if (number < 1000000) {
     return '${(number / 1000).round()}K';
-  } else if (number < 10000000) {
+  } else if (number < 1000000000) {
     return '${(number / 1000000).round()}M';
   } else {
-    return '${(number / 10000000).round()}B';
+    return '${(number / 1000000000).round()}B';
   }
 }
 
@@ -206,12 +206,17 @@ String readTimestamp(int timestamp) {
       diff.inSeconds > 0 && diff.inMinutes == 0 ||
       diff.inMinutes > 0 && diff.inHours == 0 ||
       diff.inHours > 0 && diff.inDays == 0) {
-    time = format.format(date);
+    DateTime setDate = DateTime.parse(date.toString());
+    // print(setDate);
+    // print('difference');
+    // print(now.hour - setDate.hour);
+
+    time = setDate.hour.toString() + ' hr';
   } else {
     if (diff.inDays == 1) {
-      time = diff.inDays.toString() + 'DAY AGO';
+      time = diff.inDays.toString() + ' day';
     } else {
-      time = diff.inDays.toString() + 'DAYS AGO';
+      time = diff.inDays.toString() + ' days';
     }
   }
 
@@ -275,3 +280,9 @@ List<BoxShadow> boxShadow = [
 pop(BuildContext context) {
   return Navigator.of(context).pop();
 }
+
+bool isNoMorePostsHome = false;
+List<String> homePostIds = [];
+List<String> homePostAdsIds = [];
+List<String> playlistCategories = [];
+List<String> playlistColors = [];

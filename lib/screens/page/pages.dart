@@ -41,9 +41,7 @@ class _PagesState extends State<Pages> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

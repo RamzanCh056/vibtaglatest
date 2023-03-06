@@ -46,9 +46,7 @@ class _CreateAlbumState extends State<CreateAlbum> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                    
                     ),
                   ],
                 ),

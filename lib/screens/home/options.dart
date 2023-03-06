@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 
 import '../../model/user.dart';
 import '../../provider/userProvider.dart';
@@ -17,13 +19,15 @@ import '../auth/login.dart';
 
 int feedType = 1;
 
-void changeFeeds() async {
+void changeFeeds(BuildContext context) async {
   final data = {
     'type': 'change_feeds',
     'feed_type': feedType.toString(),
     'user_id': loginUserId.toString(),
   };
   final result = await API().postData(data);
+  await PostMethods().getPosts(context: context);
+  print('++++++++++++++++++++++++++++++++++++++');
 }
 
 Options({required BuildContext context}) {
@@ -226,13 +230,16 @@ Options({required BuildContext context}) {
                             height: width * 0.045,
                             child: Switch(
                                 value: feeds,
-                                onChanged: (value) {
+                                onChanged: (value) async {
                                   setState(() {
                                     feeds = !feeds;
-
+                                    Provider.of<PostProvider>(
+                                      context,
+                                      listen: false,
+                                    ).clear();
                                     feedType = feeds ? 1 : 0;
                                   });
-                                  changeFeeds();
+                                  changeFeeds(context);
                                 }),
                           )
                         ],
@@ -284,6 +291,7 @@ Options({required BuildContext context}) {
                   gap(h: 10),
                   InkWell(
                     onTap: () async {
+                      Provider.of<PostProvider>(context, listen: false).clear();
                       SharedPreferences preferences =
                           await SharedPreferences.getInstance();
                       await preferences.clear().then((value) {

@@ -34,7 +34,6 @@ class _MyProductsState extends State<MyProducts> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {},
                     ),
                     const SizedBox(
                       height: 10,

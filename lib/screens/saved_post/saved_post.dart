@@ -43,9 +43,7 @@ class _SavedPostState extends State<SavedPost> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     )
                   ],
                 ),

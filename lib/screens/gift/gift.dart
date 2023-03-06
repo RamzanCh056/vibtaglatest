@@ -84,9 +84,7 @@ class _GiftState extends State<Gift> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                      
                     ),
                   ],
                 ),

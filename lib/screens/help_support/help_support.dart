@@ -44,9 +44,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     ),
                   ],
                 ),

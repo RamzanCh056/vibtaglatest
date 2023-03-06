@@ -12,10 +12,12 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:vibetag/model/user.dart';
+import 'package:vibetag/screens/home/create_post/create_post.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../model/colorspost_model.dart';
 import '../../../utils/constant.dart';
+import '../../../widgets/bottom_modal_sheet_widget.dart';
 import '../../../widgets/post_option.dart';
 import '../catagories/catagories_home.dart';
 import '../catagories/explore_catagorie.dart';
@@ -98,7 +100,7 @@ class _createPostState extends State<createPost> {
 
   // var youLoc;
 // var colorsPostId = [];
- List<ColorsPostModel> colorsPostId= [];
+  List<ColorsPostModel> colorsPostId = [];
   int maxSelectedCards = 1;
   int currentSelectedCards = 0;
   var selectedColor;
@@ -117,37 +119,37 @@ class _createPostState extends State<createPost> {
   File? imageFile;
   bool _isShow = false;
   bool _isShowColor = false;
- getColorsPost()async{
-   var headers = {
-     'Cookie': 'PHPSESSID=19145fc28d16e9773332b3725c704109; _us=1675848113; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-07%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
-   };
-   var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
-   request.fields.addAll({
-     'type': 'get_color_post_colors'
-   });
+  getColorsPost() async {
+    var headers = {
+      'Cookie':
+          'PHPSESSID=19145fc28d16e9773332b3725c704109; _us=1675848113; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-07%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({'type': 'get_color_post_colors'});
 
-   request.headers.addAll(headers);
+    request.headers.addAll(headers);
 
-   http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await request.send();
 
-   if (response.statusCode == 200) {
-    // print(await response.stream.bytesToString());
-     var res = await response.stream.bytesToString();
-     var body = jsonDecode(res);
-     List colorsPost = body;
-     final todo = colorsPost?.map((dynamic item) => ColorsPostModel.fromJson(item)).toList() ?? [];
-     todo;
-     colorsPostId = todo;
-     setState(() {
+    if (response.statusCode == 200) {
+      // print(await response.stream.bytesToString());
+      var res = await response.stream.bytesToString();
+      var body = jsonDecode(res);
+      List colorsPost = body;
+      final todo = colorsPost
+              ?.map((dynamic item) => ColorsPostModel.fromJson(item))
+              .toList() ??
+          [];
+      todo;
+      colorsPostId = todo;
+      setState(() {});
+      print("bodyy  == ${colorsPostId[0]}");
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
 
-     });
-     print("bodyy  == ${colorsPostId[0]}");
-   }
-   else {
-     print(response.reasonPhrase);
-   }
-
- }
   createPost() async {
     setState(() {
       isLoad = true;
@@ -157,7 +159,8 @@ class _createPostState extends State<createPost> {
       'Cookie':
           'PHPSESSID=f473f28ca40b056fd1a23e624a61bccc; _us=1667727587; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2022-11-05%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'new_post',
       'user_id': loginUserId.toString(),
@@ -174,7 +177,7 @@ class _createPostState extends State<createPost> {
       'feeling_type': '',
       'feeling': '',
       'postSticker': '',
-      'post_color': selectedId !=null? selectedId.toString() :"",
+      'post_color': selectedId != null ? selectedId.toString() : "",
       'postRecord': '',
       'answer[]': poll.text ?? '',
       //'answer[]': pollAnswer.text?? '',
@@ -183,12 +186,13 @@ class _createPostState extends State<createPost> {
       // setState(() {
       //   isLoad = false;
       // });
-      request.files.add(await http.MultipartFile.fromPath('postFile', imageFile!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('postFile', imageFile!.path));
       print("image file woth path is ${imageFile!.path}");
     }
     if (_video != null) {
-
-      request.files.add(await http.MultipartFile.fromPath('postVideo', _video!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('postVideo', _video!.path));
       print("video path is ${_video!.path}");
     }
     //  request.files.add(await http.MultipartFile.fromPath('postFile', '/path/to/file'));
@@ -208,7 +212,6 @@ class _createPostState extends State<createPost> {
         isLoad = false;
       });
       Navigator.pop(context);
-
     } else {
       print(response.reasonPhrase);
       setState(() {
@@ -234,7 +237,8 @@ class _createPostState extends State<createPost> {
             selectInitialPosition: true,
             onPlacePicked: (result) {
               location.text = result.formattedAddress!;
-              addressLatLng = LatLng(result.geometry!.location.lat, result.geometry!.location.lng);
+              addressLatLng = LatLng(
+                  result.geometry!.location.lat, result.geometry!.location.lng);
               latitude = result.geometry!.location.lat;
               longitude = result.geometry!.location.lng;
 
@@ -260,7 +264,8 @@ class _createPostState extends State<createPost> {
   }
 
   _pickVideo() async {
-    XFile? pickedFile = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    XFile? pickedFile =
+        await ImagePicker().pickVideo(source: ImageSource.gallery);
 
     _video = File(pickedFile!.path);
 
@@ -291,7 +296,6 @@ class _createPostState extends State<createPost> {
     required ModelUser user,
   }) {
     return StatefulBuilder(builder: (context, setState) {
-
       double width = deviceWidth(context: context);
       double height = deviceHeight(context: context);
       return Container(
@@ -335,17 +339,15 @@ class _createPostState extends State<createPost> {
                 borderRadius: borderRadius(width),
               ),
               child: SingleChildScrollView(
-
                 child: GestureDetector(
                   onTap: () {
                     getColorsPost();
-                  //
+                    //
                     showDialog(
                         context: context,
                         builder: (_) {
-                          return StatefulBuilder(
-                              builder: (BuildContext context, void Function(void Function()) setState) {
-
+                          return StatefulBuilder(builder: (BuildContext context,
+                              void Function(void Function()) setState) {
                             return Dialog(
                               // clipBehavior: Clip.none,
                               backgroundColor: Colors.white,
@@ -357,7 +359,8 @@ class _createPostState extends State<createPost> {
                                 children: [
                                   Container(
                                     // height: MediaQuery.of(context).size.height * 0.92,
-                                    padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14.0, vertical: 10.0),
                                     width: double.infinity,
                                     // decoration: BoxDecoration(
                                     //   borderRadius: BorderRadius.circular(15.0),
@@ -369,42 +372,57 @@ class _createPostState extends State<createPost> {
                                             height: 17.0,
                                           ),
                                           Container(
-
-                                            height: selectedImage  !=null ? 190 :190,
-                                            width: double.infinity,
-                                            color: selectedColor !=null ?HexColor(selectedColor): Colors.transparent,
-
-                                            child: Stack(children: [
-                                              selectedImage != null?
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            selectedImage
+                                              height: selectedImage != null
+                                                  ? 190
+                                                  : 190,
+                                              width: double.infinity,
+                                              color: selectedColor != null
+                                                  ? HexColor(selectedColor)
+                                                  : Colors.transparent,
+                                              child: Stack(
+                                                children: [
+                                                  selectedImage != null
+                                                      ? Container(
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      selectedImage),
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        )
+                                                      : Container(),
+                                                  Positioned.fill(
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            postController,
+                                                        maxLines: 3,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              const OutlineInputBorder(
+                                                            borderSide:
+                                                                BorderSide.none,
+                                                          ),
+                                                          hintStyle: TextStyle(
+                                                              color: textColor !=
+                                                                      null
+                                                                  ? HexColor(
+                                                                      textColor
+                                                                          .toString())
+                                                                  : Colors.grey,
+                                                              fontSize: 18.5),
+                                                          hintText:
+                                                              "What\'s happening",
+                                                          //hintStyle: TextStyle(fontSize: 18.5),
                                                         ),
-                                                        fit: BoxFit.cover
-                                                    )
-                                                ),
-                                              ): Container(),
-
-                                              Positioned.fill(child: Align(
-                                                alignment: Alignment.center,
-
-                                                child: TextFormField(
-                                                  controller: postController,
-                                                  maxLines: 3,
-                                                  decoration:  InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide.none,
+                                                      ),
                                                     ),
-                                                    hintStyle: TextStyle(color:textColor!=null? HexColor(textColor.toString()) :Colors.grey , fontSize: 18.5),
-                                                    hintText: "What\'s happening",
-                                                    //hintStyle: TextStyle(fontSize: 18.5),
-                                                  ),
-                                                ),
-                                              ),)
-                                            ],)
-                                          ),
+                                                  )
+                                                ],
+                                              )),
                                           _video != null
                                               ?
                                               // _videoPlayerController!.value.initialized
@@ -412,7 +430,8 @@ class _createPostState extends State<createPost> {
                                                   height: 350,
                                                   width: double.infinity,
                                                   child: Chewie(
-                                                    controller: chewieController!,
+                                                    controller:
+                                                        chewieController!,
                                                   ))
                                               : Container(),
                                           imageFile != null
@@ -420,7 +439,9 @@ class _createPostState extends State<createPost> {
                                                   height: 300,
                                                   width: double.infinity,
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(15),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
 
                                                     color: Colors.grey.shade100,
                                                     // image: DecorationImage(
@@ -436,141 +457,188 @@ class _createPostState extends State<createPost> {
                                           location.text != ""
                                               ? Container(
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    color: const Color(0xffFF9200),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    color:
+                                                        const Color(0xffFF9200),
                                                   ),
                                                   height: 50,
                                                   child: Row(
                                                     children: [
                                                       const Icon(
-                                                        Icons.location_on_outlined,
+                                                        Icons
+                                                            .location_on_outlined,
                                                         color: Colors.white,
                                                       ),
                                                       Expanded(
                                                           child: Text(
                                                         location.text,
                                                         style: const TextStyle(
-                                                            color: Colors.white, fontWeight: FontWeight.w400),
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                       )),
                                                     ],
                                                   ))
                                               : Container(),
-                                      Visibility(
-                                        visible: _isShowColor,
-                                        child: SizedBox(height: 50,
-                                          child: ListView.builder(
-                                              itemCount: colorsPostId.length,
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-
-                                              itemBuilder: (context, index){
-                                                return Padding(
-                                                  padding: const EdgeInsets.all(1.0),
-                                                  child: Stack(children: [
-                                                    GestureDetector(
-                                                      onTap:(){
-                                                        setState(() {
-                                                          selectedId = colorsPostId[index].id;
-                                                          selectedColor =  colorsPostId[index].color_1;
-                                                          selectedImage = colorsPostId[index].image;
-                                                          textColor =  colorsPostId[index].text_color;
-                                                          print("id is ==${selectedId.toString()}");
-                                                          print("colror is ==${selectedColor.toString()}");
-                                                          print("colror text ==${textColor.toString()}");
-
-                                                        });
-                                                },
-                                                      child: Container(
-                                                        // margin: EdgeInsets.symmetric(vertical: 5),
-                                                          height: 50,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(70),
-                                                            color:colorsPostId[index].type == "color"?
-                                                            HexColor(colorsPostId[index].color_1.toString()) : Colors.transparent,
-
+                                          Visibility(
+                                            visible: _isShowColor,
+                                            child: SizedBox(
+                                              height: 50,
+                                              child: ListView.builder(
+                                                  itemCount:
+                                                      colorsPostId.length,
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              1.0),
+                                                      child: Stack(
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedId =
+                                                                    colorsPostId[
+                                                                            index]
+                                                                        .id;
+                                                                selectedColor =
+                                                                    colorsPostId[
+                                                                            index]
+                                                                        .color_1;
+                                                                selectedImage =
+                                                                    colorsPostId[
+                                                                            index]
+                                                                        .image;
+                                                                textColor =
+                                                                    colorsPostId[
+                                                                            index]
+                                                                        .text_color;
+                                                                print(
+                                                                    "id is ==${selectedId.toString()}");
+                                                                print(
+                                                                    "colror is ==${selectedColor.toString()}");
+                                                                print(
+                                                                    "colror text ==${textColor.toString()}");
+                                                              });
+                                                            },
+                                                            child: Container(
+                                                                // margin: EdgeInsets.symmetric(vertical: 5),
+                                                                height: 50,
+                                                                width: 50,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              70),
+                                                                  color: colorsPostId[index]
+                                                                              .type ==
+                                                                          "color"
+                                                                      ? HexColor(colorsPostId[
+                                                                              index]
+                                                                          .color_1
+                                                                          .toString())
+                                                                      : Colors
+                                                                          .transparent,
+                                                                ),
+                                                                child: colorsPostId[index]
+                                                                            .type ==
+                                                                        "image"
+                                                                    ? ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                70),
+                                                                        child: Image
+                                                                            .network(
+                                                                          colorsPostId[index]
+                                                                              .image
+                                                                              .toString(),
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                        ))
+                                                                    : Container()),
                                                           ),
-                                                          child: colorsPostId[index].type == "image"?
-
-                                                          ClipRRect(
-                                                              borderRadius: BorderRadius.circular(70),
-                                                              child: Image.network(colorsPostId[index].image.toString(), fit: BoxFit.cover,)) : Container()
-
+                                                          // Positioned.fill(child: Align(
+                                                          //   alignment: Alignment.center,
+                                                          //   child:Theme(
+                                                          //     data:
+                                                          //     Theme.of(context).copyWith(
+                                                          //       unselectedWidgetColor:
+                                                          //       Colors.transparent,
+                                                          //       disabledColor:
+                                                          //       Colors.transparent,
+                                                          //     ),
+                                                          //     child: Checkbox(
+                                                          //       focusColor:
+                                                          //       Colors.transparent,
+                                                          //       checkColor: Colors.black,
+                                                          //       activeColor:
+                                                          //       Colors.transparent,
+                                                          //       value:
+                                                          //       colorsPostId[index].isSelected!,
+                                                          //       onChanged: (value) {
+                                                          //         if(currentSelectedCards <= maxSelectedCards ){
+                                                          //           setState(() {
+                                                          //             colorsPostId[index].isSelected =
+                                                          //             !colorsPostId[index]
+                                                          //                 .isSelected!;
+                                                          //             if( colorsPostId[index].isSelected!){
+                                                          //               setState(() {
+                                                          //                 currentSelectedCards += 1;
+                                                          //               });
+                                                          //               print("curent slected card ${currentSelectedCards}");
+                                                          //             }
+                                                          //             else{
+                                                          //               setState(() {
+                                                          //                 currentSelectedCards -= 1;
+                                                          //                 !colorsPostId[index]
+                                                          //                     .isSelected!;
+                                                          //
+                                                          //               });
+                                                          //               print("curent slected card ${currentSelectedCards}");
+                                                          //             };
+                                                          //
+                                                          //
+                                                          //
+                                                          //             setState(() {});
+                                                          //           });
+                                                          //         }
+                                                          //         if(currentSelectedCards ==2){
+                                                          //           setState(() {
+                                                          //             colorsPostId[index].isSelected =false;
+                                                          //             currentSelectedCards -= 1;
+                                                          //           });
+                                                          //
+                                                          //
+                                                          //
+                                                          //           Fluttertoast.showToast(msg: "You can select max 1 ");
+                                                          //         }
+                                                          //
+                                                          //
+                                                          //
+                                                          //       },
+                                                          //     ),
+                                                          //   ),
+                                                          //
+                                                          //   // colorsPostId[index].isSelected == true?
+                                                          //   // Icon(
+                                                          //   //   Icons.gpp_good_rounded, color: Colors.black,
+                                                          //   // )
+                                                          //   //     :Container(),
+                                                          // ))
+                                                        ],
                                                       ),
-                                                    ),
-                                                    // Positioned.fill(child: Align(
-                                                    //   alignment: Alignment.center,
-                                                    //   child:Theme(
-                                                    //     data:
-                                                    //     Theme.of(context).copyWith(
-                                                    //       unselectedWidgetColor:
-                                                    //       Colors.transparent,
-                                                    //       disabledColor:
-                                                    //       Colors.transparent,
-                                                    //     ),
-                                                    //     child: Checkbox(
-                                                    //       focusColor:
-                                                    //       Colors.transparent,
-                                                    //       checkColor: Colors.black,
-                                                    //       activeColor:
-                                                    //       Colors.transparent,
-                                                    //       value:
-                                                    //       colorsPostId[index].isSelected!,
-                                                    //       onChanged: (value) {
-                                                    //         if(currentSelectedCards <= maxSelectedCards ){
-                                                    //           setState(() {
-                                                    //             colorsPostId[index].isSelected =
-                                                    //             !colorsPostId[index]
-                                                    //                 .isSelected!;
-                                                    //             if( colorsPostId[index].isSelected!){
-                                                    //               setState(() {
-                                                    //                 currentSelectedCards += 1;
-                                                    //               });
-                                                    //               print("curent slected card ${currentSelectedCards}");
-                                                    //             }
-                                                    //             else{
-                                                    //               setState(() {
-                                                    //                 currentSelectedCards -= 1;
-                                                    //                 !colorsPostId[index]
-                                                    //                     .isSelected!;
-                                                    //
-                                                    //               });
-                                                    //               print("curent slected card ${currentSelectedCards}");
-                                                    //             };
-                                                    //
-                                                    //
-                                                    //
-                                                    //             setState(() {});
-                                                    //           });
-                                                    //         }
-                                                    //         if(currentSelectedCards ==2){
-                                                    //           setState(() {
-                                                    //             colorsPostId[index].isSelected =false;
-                                                    //             currentSelectedCards -= 1;
-                                                    //           });
-                                                    //
-                                                    //
-                                                    //
-                                                    //           Fluttertoast.showToast(msg: "You can select max 1 ");
-                                                    //         }
-                                                    //
-                                                    //
-                                                    //
-                                                    //       },
-                                                    //     ),
-                                                    //   ),
-                                                    //
-                                                    //   // colorsPostId[index].isSelected == true?
-                                                    //   // Icon(
-                                                    //   //   Icons.gpp_good_rounded, color: Colors.black,
-                                                    //   // )
-                                                    //   //     :Container(),
-                                                    // ))
-                                                  ],),
-                                                );
-                                              }),
-                                        ),
-                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
                                           //colorPost(),
                                           Visibility(
                                             visible: _isShow,
@@ -578,19 +646,25 @@ class _createPostState extends State<createPost> {
                                               children: [
                                                 Container(
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
                                                     color: Colors.grey.shade300,
                                                   ),
                                                   height: 55,
                                                   child: TextFormField(
                                                     controller: poll,
                                                     maxLines: 3,
-                                                    decoration: const InputDecoration(
-                                                      border: OutlineInputBorder(
-                                                        borderSide: BorderSide.none,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide.none,
                                                       ),
                                                       hintText: "Answer",
-                                                      hintStyle: TextStyle(fontSize: 18.5),
+                                                      hintStyle: TextStyle(
+                                                          fontSize: 18.5),
                                                     ),
                                                   ),
                                                 ),
@@ -629,21 +703,25 @@ class _createPostState extends State<createPost> {
                                             height: 15,
                                           ),
                                           Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Row(
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
                                                         setState(() {
-                                                          _isShowColor = !_isShowColor;
+                                                          _isShowColor =
+                                                              !_isShowColor;
                                                         });
-
                                                       },
                                                       child: const Image(
-                                                        image: AssetImage('assets/images/color_pick.png'),
+                                                        image: AssetImage(
+                                                            'assets/images/color_pick.png'),
                                                         width: 23,
                                                         height: 23,
                                                       ),
@@ -654,24 +732,36 @@ class _createPostState extends State<createPost> {
                                                     Container(
                                                       // height: 30.0,
                                                       // width: MediaQuery.of(context).size.width * 0.235,
-                                                      padding: const EdgeInsets.symmetric(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
                                                         vertical: 6,
                                                         horizontal: 6,
                                                       ),
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(8.0),
-                                                        color: Colors.grey.withOpacity(0.5),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.5),
                                                       ),
                                                       child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
                                                         children: [
                                                           Container(
                                                             height: 14,
                                                             width: 14,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(50),
-                                                              image: const DecorationImage(
-                                                                image: AssetImage("assets/images/eveyone.png"),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50),
+                                                              image:
+                                                                  const DecorationImage(
+                                                                image: AssetImage(
+                                                                    "assets/images/eveyone.png"),
                                                               ),
                                                             ),
                                                           ),
@@ -680,7 +770,10 @@ class _createPostState extends State<createPost> {
                                                           ),
                                                           const Text(
                                                             'Everyone',
-                                                            style: TextStyle(fontSize: 11.0, color: Colors.black),
+                                                            style: TextStyle(
+                                                                fontSize: 11.0,
+                                                                color: Colors
+                                                                    .black),
                                                           ),
                                                         ],
                                                       ),
@@ -689,53 +782,89 @@ class _createPostState extends State<createPost> {
                                                       width: 6.0,
                                                     ),
                                                     GestureDetector(
-                                                      onTap: (){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CatagoriesHome()));
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const CatagoriesHome()));
                                                       },
                                                       child: Container(
                                                         // height: 25.0,
-                                                        padding: const EdgeInsets.symmetric(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
                                                           vertical: 5,
                                                           horizontal: 5,
                                                         ),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(8.0),
-                                                          color: Colors.grey.withOpacity(0.5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey
+                                                              .withOpacity(0.5),
                                                         ),
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
                                                           children: [
                                                             const Text(
                                                               'Categories',
-                                                              style: TextStyle(fontSize: 11.0, color: Colors.black),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      11.0,
+                                                                  color: Colors
+                                                                      .black),
                                                             ),
                                                             const SizedBox(
                                                               width: 8.0,
                                                             ),
                                                             Container(
-                                                              color: Colors.grey.withOpacity(0.5),
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.5),
                                                               child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Container(
-                                                                    alignment: Alignment.center,
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
                                                                     height: 7.0,
                                                                     width: 10.0,
-                                                                    color: Colors.grey.withOpacity(0.5),
-                                                                    child: const Image(
-                                                                      image: AssetImage('assets/images/arrow-up.png'),
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    child:
+                                                                        const Image(
+                                                                      image: AssetImage(
+                                                                          'assets/images/arrow-up.png'),
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 2.5,
                                                                   ),
                                                                   Container(
-                                                                    alignment: Alignment.center,
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
                                                                     height: 7.0,
                                                                     width: 10.0,
-                                                                    color: Colors.grey.withOpacity(0.5),
-                                                                    child: const Image(
-                                                                      image: AssetImage('assets/images/arrow-down.png'),
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    child:
+                                                                        const Image(
+                                                                      image: AssetImage(
+                                                                          'assets/images/arrow-down.png'),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -751,22 +880,30 @@ class _createPostState extends State<createPost> {
                                                   children: const [
                                                     Text(
                                                       '#',
-                                                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                                                      style: TextStyle(
+                                                          fontSize: 20.0,
+                                                          fontWeight:
+                                                              FontWeight.w600),
                                                     ),
                                                     SizedBox(
                                                       width: 8.0,
                                                     ),
                                                     Text(
                                                       '@',
-                                                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                                                      style: TextStyle(
+                                                          fontSize: 20.0,
+                                                          fontWeight:
+                                                              FontWeight.w600),
                                                     ),
                                                     SizedBox(
                                                       width: 8.0,
                                                     ),
                                                     CircleAvatar(
-                                                      backgroundImage: AssetImage('assets/images/emoji.png'),
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/emoji.png'),
                                                       radius: 9.0,
-                                                      backgroundColor: Colors.white,
+                                                      backgroundColor:
+                                                          Colors.white,
                                                     ),
                                                   ],
                                                 ),
@@ -779,7 +916,8 @@ class _createPostState extends State<createPost> {
                                           Container(
                                             height: 1.0,
                                             width: double.infinity,
-                                            color: Colors.black.withOpacity(0.3),
+                                            color:
+                                                Colors.black.withOpacity(0.3),
                                           ),
                                           const SizedBox(
                                             height: 20.0,
@@ -792,37 +930,34 @@ class _createPostState extends State<createPost> {
                                             ),
                                             child: GridView.builder(
                                               itemCount: 10,
-                                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 2,
                                                 crossAxisSpacing: 10,
                                                 mainAxisSpacing: 10,
                                                 childAspectRatio: 6 / 2,
                                               ),
                                               itemBuilder: (context, i) {
-
-
-
                                                 return GestureDetector(
-                                                  onTap: ()async{
-                                                    if (i == 0)  {
-                                                      await getImageGallery();
-                                                      setState(() {});
-                                                    }
-                                                    if (i == 1) {
-                                                      await _pickVideo();
-                                                      setState(() {});
-                                                    }
-                                                    if (i == 7) {
-                                                      setState(() {
-                                                           _isShow = !_isShow;
-                                                      });
-                                                    }
-                                                    if (i == 8) {
-                                                      await    showPlacePicker();
-                                                      setState(() {});
-                                                    }
-
-                                                  },
+                                                    onTap: () async {
+                                                      if (i == 0) {
+                                                        await getImageGallery();
+                                                        setState(() {});
+                                                      }
+                                                      if (i == 1) {
+                                                        await _pickVideo();
+                                                        setState(() {});
+                                                      }
+                                                      if (i == 7) {
+                                                        setState(() {
+                                                          _isShow = !_isShow;
+                                                        });
+                                                      }
+                                                      if (i == 8) {
+                                                        await showPlacePicker();
+                                                        setState(() {});
+                                                      }
+                                                    },
                                                     child: postOptions[i]);
                                               },
                                             ),
@@ -832,43 +967,49 @@ class _createPostState extends State<createPost> {
                                             height: 25.0,
                                           ),
                                           isLoad
-                                              ? const Center(child:  CircularProgressIndicator()):
-                                          GestureDetector(
-                                            onTap: () async {
-                                              setState(() {
-                                                isLoad = !isLoad;
-                                              });
+                                              ? const Center(
+                                                  child:
+                                                      CircularProgressIndicator())
+                                              : GestureDetector(
+                                                  onTap: () async {
+                                                    setState(() {
+                                                      isLoad = !isLoad;
+                                                    });
 
-                                              print("click");
-                                              await createPost();
-                                              print("is load in dilaouge click == ${isLoad}");
-                                              // setState(() {
-                                              //  // Navigator.pop(context);
-                                              //   postController.clear();
-                                              //   imageFile = null;
-                                              //   _video = null;
-                                              //   _videoPlayerController!.dispose();
-                                              //   location.text = "";
-                                              // });
-                                            },
-                                            child: Container(
-                                                alignment: Alignment.center,
-                                                height: 50,
-                                                width: 140,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.orange,
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                                child:
-                                                    const Text(
+                                                    print("click");
+                                                    await createPost();
+                                                    print(
+                                                        "is load in dilaouge click == ${isLoad}");
+                                                    // setState(() {
+                                                    //  // Navigator.pop(context);
+                                                    //   postController.clear();
+                                                    //   imageFile = null;
+                                                    //   _video = null;
+                                                    //   _videoPlayerController!.dispose();
+                                                    //   location.text = "";
+                                                    // });
+                                                  },
+                                                  child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      height: 50,
+                                                      width: 140,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.orange,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                      child: const Text(
                                                         'Publish',
                                                         style: TextStyle(
                                                           fontSize: 18.0,
                                                           color: Colors.white,
-                                                          fontWeight: FontWeight.w600,
+                                                          fontWeight:
+                                                              FontWeight.w600,
                                                         ),
                                                       )),
-                                          ),
+                                                ),
                                         ],
                                       ),
                                     ),
@@ -898,7 +1039,8 @@ class _createPostState extends State<createPost> {
                                           shape: BoxShape.circle,
                                         ),
                                         child: const Image(
-                                          image: AssetImage('assets/images/reject.png'),
+                                          image: AssetImage(
+                                              'assets/images/reject.png'),
                                         ),
                                       ),
                                     ),
@@ -908,7 +1050,6 @@ class _createPostState extends State<createPost> {
                             );
                           });
                         });
-
                   },
                   child: TextFormField(
                     enabled: false,
@@ -932,11 +1073,19 @@ class _createPostState extends State<createPost> {
                 ),
               ),
             ),
-            Container(
-              height: width * 0.11,
-              width: width * 0.11,
-              child: SvgPicture.asset(
-                'assets/svg/chat/plus.svg',
+            InkWell(
+              onTap: () {
+                createBottomModalSheet(
+                  context: context,
+                  screen: CreatePost(),
+                );
+              },
+              child: Container(
+                height: width * 0.11,
+                width: width * 0.11,
+                child: SvgPicture.asset(
+                  'assets/svg/chat/plus.svg',
+                ),
               ),
             )
           ],

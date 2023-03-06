@@ -42,9 +42,7 @@ class _JobState extends State<Job> {
           children: [
             const NavBar(),
             Header(
-              onTap: () {
-                key.currentState!.openDrawer();
-              },
+             
             ),
             const SizedBox(
               height: 10,

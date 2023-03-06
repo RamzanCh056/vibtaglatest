@@ -124,9 +124,9 @@ class GroupMessages extends StatelessWidget {
                               icon: const Icon(Icons.more_vert,color: Colors.white,),
                               onSelected: (value){
                                 if (value == "View Profile"){
-                                  Navigator.push(context, MaterialPageRoute(builder: (_){
-                                    return const ProfileScreen();
-                                  },),);
+                                  // Navigator.push(context, MaterialPageRoute(builder: (_){
+                                  //  // return const ProfileScreen();
+                                  // },),);
                                 }
                               },
                               shape: const RoundedRectangleBorder(

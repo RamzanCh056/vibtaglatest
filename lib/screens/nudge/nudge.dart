@@ -44,9 +44,7 @@ class _NudgeState extends State<Nudge> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

@@ -14,6 +14,7 @@ class MessageList {
   String? is_map;
   String? lat;
   String? lng;
+  String? id;
 
 
 
@@ -33,6 +34,7 @@ class MessageList {
     this.lng,
     this.lat,
     this.is_map,
+    this.id,
 
   });
 
@@ -53,6 +55,8 @@ class MessageList {
       "lng": this.lng,
       "lat": this.lat,
       "is_map": this.is_map,
+      "id": this.id,
+
 
 
 
@@ -77,6 +81,7 @@ class MessageList {
       lng: json["lng"] ?? "",
       lat: json["lat"] ?? "",
       is_map: json["is_map"] ?? "",
+      id: json["id"] ?? "",
 
 
 

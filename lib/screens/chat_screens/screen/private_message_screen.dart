@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +22,7 @@ import '../video_call/video_call.dart';
 import '../widgets/reusable_listtile.dart';
 import 'audio_player.dart';
 
+// ignore: must_be_immutable
 class PrivateMessageScreen extends StatefulWidget {
   PrivateMessageScreen(this.list, this.currentIndex, {key});
 
@@ -38,6 +39,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   var newComaSpreated;
   var coomas;
   var checker;
+  String? messageId;
   bool notification = false;
   String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
   TextEditingController message = TextEditingController();
@@ -85,6 +87,56 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     'Intellectual property violation',
     'Something else',
   ];
+  //deleteChat
+  deleteUserChat()async{
+    var headers = {
+      'Cookie': 'PHPSESSID=4b08ad7934d732a61e99022f394ece54; _us=1677938630; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-03%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'messages',
+      'area': 'delete_user_messages',
+      'user_id':loginUserId.toString(),
+      'id':  widget.list[widget.currentIndex].rec_id.toString()
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      Navigator.pop(context);
+    }
+    else {
+    print(response.reasonPhrase);
+    }
+
+  }
+  deleteSingleMessage()async{
+    var headers = {
+      'Cookie': 'PHPSESSID=4b08ad7934d732a61e99022f394ece54; _us=1677931513; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-03%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'messages',
+      'sub_type': 'delete_message',
+      'user_id':loginUserId.toString(),
+      'id': messageId.toString(),
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      Navigator.pop(context);
+    }
+    else {
+    print(response.reasonPhrase);
+    }
+  }
   late GoogleMapController _googleMapController;
   final Set<Marker> markers = Set();
   var showLocation;
@@ -96,7 +148,38 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   double? longitude;
   double? latitude;
   LatLng addressLatLng = const LatLng(31.5204, 74.3587);
+  PlatformFile? file;
+  String? docName;
+  String? docPath;
+   selectFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
 
+
+      allowedExtensions: ['pdf', 'doc'],
+    );
+    if (result == null) return;
+    file = result.files.first;
+    //   final path = result.files.single.path!;
+    print(file!.name);
+    print(file!.path);
+
+
+    setState(() {
+      docName = file!.name;
+      docPath = file!.path;
+      print("file path == ${docPath}");
+      if(docPath !=null || docPath !=""){
+        setState(() {
+
+          uploadMessageFile();
+        });
+      }
+
+
+
+    });
+  }
 
   showPlacePicker() async {
     await Navigator.push(
@@ -205,6 +288,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       Future.delayed(const Duration(seconds: 4), () {
         imageFileList = [];
         comaSepread = '';
+        docPath =null;
       });
     } else {
       setState(() {
@@ -414,7 +498,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) {
-                                          return const ProfileScreen();
+
+                                          return  ProfileScreen(
+                                            widget.currentIndex,   widget.list,
+                                          );
                                         },
                                       ),
                                     );
@@ -512,39 +599,39 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         shrinkWrap: true,
                         itemCount: User.length,
                         itemBuilder: (context, index) {
-                          checker = DateFormat('hh:mm a').format(DateTime.now());
-                          print("cheker == $checker");
-                          checker == DateFormat('hh:mm a').format(
-                              DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                User[index].sent_time.toString(),
-                              ) *
-                                  1000)) && loginUserId == User[index].rec_id ?
-
-                          AwesomeNotifications().createNotification(
-
-                              content: NotificationContent(
-                                //   autoDismissible: true,
-                                  id: 123,
-                                  channelKey: 'basic',
-                                  //set configuration wuth key "basic"
-                                  title: loginUserId != widget.list[widget.currentIndex].rec_id
-                                      ? widget.list[widget.currentIndex].rec_name.toString()
-                                      : widget.list[widget.currentIndex].sen_name.toString(),
-                                  body: User.last.message,
-                                  payload: {"name": "FlutterCampus"}
-
-                              )
-                          ) : Container();
-                          Future.delayed(
-
-                              const Duration(seconds: 5), () {
-                            print("call");
-                            checker == "u";
-                            print("checker==$checker");
-
-                            // AwesomeNotifications().dismissAllNotifications();
-                            //AwesomeNotifications().dismiss(123);
-                          });
+                          // checker = DateFormat('hh:mm a').format(DateTime.now());
+                          // print("cheker == $checker");
+                          // checker == DateFormat('hh:mm a').format(
+                          //     DateTime.fromMillisecondsSinceEpoch(int.parse(
+                          //       User[index].sent_time.toString(),
+                          //     ) *
+                          //         1000)) && loginUserId == User[index].rec_id ?
+                          //
+                          // AwesomeNotifications().createNotification(
+                          //
+                          //     content: NotificationContent(
+                          //       //   autoDismissible: true,
+                          //         id: 123,
+                          //         channelKey: 'basic',
+                          //         //set configuration wuth key "basic"
+                          //         title: loginUserId != widget.list[widget.currentIndex].rec_id
+                          //             ? widget.list[widget.currentIndex].rec_name.toString()
+                          //             : widget.list[widget.currentIndex].sen_name.toString(),
+                          //         body: User.last.message,
+                          //         payload: {"name": "FlutterCampus"}
+                          //
+                          //     )
+                          // ) : Container();
+                          // Future.delayed(
+                          //
+                          //     const Duration(seconds: 5), () {
+                          //   print("call");
+                          //   checker == "u";
+                          //   print("checker==$checker");
+                          //
+                          //   // AwesomeNotifications().dismissAllNotifications();
+                          //   //AwesomeNotifications().dismiss(123);
+                          // });
 
 
                           showLocation = LatLng(
@@ -557,6 +644,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           addres = User[index].message.toString();
                           return GestureDetector(
                             onLongPress: () {
+                              messageId = User[index].id.toString();
                               showModalBottomSheet(
                                 context: context,
                                 backgroundColor: Colors.white,
@@ -611,7 +699,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                         ReusableListTile(
                                           image: "assets/images/Group 77268.png",
                                           title: "Delete message",
-                                          handler: () {},
+                                          handler: () {
+
+                                            deleteSingleMessage();
+
+
+
+                                          },
                                         ),
                                         const SizedBox(
                                           height: 10,
@@ -763,10 +857,50 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                   : Container(),
                                               const SizedBox(height: 10,),
                                               User[index].attachment_type == "image/png" ||
-                                                  User[index].attachment_type == "application/octet-st" ?
-                                              Image.network(
-                                                Url + User[index].attachment_url.toString(),
-                                              ) : Container(),
+                                                  User[index].attachment_type == "application/octet-stream" ?
+                                                  Column(children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(right: 10,),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                          Text(
+                                                            DateFormat('hh:mm a').format(DateTime
+                                                                .fromMillisecondsSinceEpoch(
+                                                                int.parse(
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
+                                                                ) *
+                                                                    1000)),
+                                                            style: TextStyle(
+                                                              color: Colors.grey.shade400,
+                                                              fontSize: 12.0,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    User[index].attachment_url.toString().contains(".pdf")?
+                                                    Container(
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(Icons.file_copy_rounded,),
+                                                          SizedBox(width: 10,),
+                                                          Text("File"),
+                                                        ],
+                                                      )
+                                                    ):
+                                                    Image.network(
+                                                      Url + User[index].attachment_url.toString(),
+                                                    )
+                                                  ],)
+                                               : Container(),
+                                              // User[index].attachment_url.toString().contains(".pdf")?Container(
+                                              //   child: Text("pdf a"),
+                                              // ):Container(),
                                               const SizedBox(
                                                 height: 15,
                                               ),
@@ -961,6 +1095,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         IconButton(
                             onPressed: () {
                               sendMessage();
+                            // print("doc path =${docPath}");
                               // Future.delayed(const Duration(seconds: 2), () {
                               //   message.text = "";
                               // });
@@ -1042,8 +1177,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           itemBuilder: (BuildContext ctx, index) {
                             return GestureDetector(
                               onTap: () async {
+
                                 if (index == 4) {
                                   await showPlacePicker();
+                                  Navigator.pop(context);
+                                }
+                                if (index == 0) {
+                                  await  selectFile();
                                   Navigator.pop(context);
                                 }
                                 if (index == 2) {
@@ -1110,80 +1250,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     sendMessage();
   }
 
-  // pictureShow(context) async{
-  //
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) {
-  //         return StatefulBuilder(builder: (BuildContext
-  //         context,
-  //             void Function(void Function()) setState)  {
-  //           return Dialog(
-  //             backgroundColor: Colors.white,
-  //             insetPadding: const EdgeInsets.all(12),
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius:
-  //               BorderRadius.circular(15.0),
-  //             ),
-  //             child: Container(
-  //               padding: const EdgeInsets.symmetric(
-  //                   horizontal: 14.0,
-  //                   vertical: 10.0),
-  //               width: double.infinity,
-  //               child: Stack(
-  //                 children: [
-  //                   GridView.builder(
-  //                       shrinkWrap: true,
-  //                       itemCount: imageFileList!.length,
-  //                       gridDelegate:
-  //                       const SliverGridDelegateWithFixedCrossAxisCount(
-  //                           crossAxisSpacing: 15,
-  //                           mainAxisSpacing: 15,
-  //                           crossAxisCount: 3),
-  //                       itemBuilder: (BuildContext context, int index) => isUploadFile? CircularProgressIndicator():
-  //                         Image.file(
-  //                         File(imageFileList![index].path),
-  //                         fit: BoxFit.cover,
-  //                         )),
-  //                   Positioned(
-  //                     right: 10,
-  //                     top: 5,
-  //                     child: GestureDetector(
-  //                       onTap: () {
-  //                         setState(
-  //                               () {
-  //                                 for (int i = 0; i < imageFileList!.length; i++) {
-  //                                   imageFileList![i].path == "";
-  //                               }
-  //                           },
-  //                         );
-  //                        // Navigator.pop(context);
-  //                       },
-  //                       child: Container(
-  //
-  //
-  //                         padding: EdgeInsets.all(3),
-  //                         height: 50,
-  //                         width: 50,
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.blue
-  //                               .withOpacity(0.2),
-  //                           shape: BoxShape.circle,
-  //                         ),
-  //                         child:  const Center(
-  //                             child: Icon(Icons.close, color: Colors.white,)
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         });
-  //       });
-  // }
+
   uploadMessageFile() async {
     setState(() {
       isUploadFile = true;
@@ -1204,10 +1271,23 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     // request.files.add(
     //     await http.MultipartFile.fromPath('attachment[]', '/path/to/file')
     // );
-    for (int i = 0; i < imageFileList!.length; i++) {
+    //docPath
+    if(docPath != null){
       request.files.add(
-          await http.MultipartFile.fromPath('attachment[]', imageFileList![i].path));
+          await http.MultipartFile.fromPath('attachment[]', docPath! )
+      );
+   }
+    // for (int i = 0; i < imageFileList!.length; i++) {
+    //   request.files.add(
+    //       await http.MultipartFile.fromPath('attachment[]',  imageFileList![i].path));
+    // }
+    if(docPath ==null){
+      for (int i = 0; i < imageFileList!.length; i++) {
+        request.files.add(
+            await http.MultipartFile.fromPath('attachment[]',  imageFileList![i].path));
+      }
     }
+
 
     request.headers.addAll(headers);
 
@@ -1219,6 +1299,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       var body = jsonDecode(res);
       comaSepread = body['comma_seperated_string'];
       setState(() {
+        comaSepread;
+      });
+
+      setState(() {
         isUploadFile = false;
       });
 
@@ -1228,7 +1312,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       // newComaSpreated = coomas;
       // newComaSpreated.toString().replaceFirst('application/octet-stream', 'image/png');
 
-      print("user message double  == ${comaSepread.toString()}");
+      print("comaSepread== ${comaSepread.toString()}");
     }
     else {
       print(response.reasonPhrase);
@@ -1608,14 +1692,20 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   ),
                   const SizedBox(width: 10,),
                   Expanded(
-                    child: Container(
-                      height: 60,
-                      width: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: const Color(0xffFD4585)
+                    child: GestureDetector(
+                      onTap: (){
+                        deleteUserChat();
+
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: const Color(0xffFD4585)
+                        ),
+                        child: const Center(child: Text('Yes', style: TextStyle(color: Colors.white),),),
                       ),
-                      child: const Center(child: Text('Yes', style: TextStyle(color: Colors.white),),),
                     ),
                   ),
                   const SizedBox(width: 5,),

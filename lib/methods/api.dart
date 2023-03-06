@@ -1,9 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:vibetag/utils/constant.dart';
 
 class API {
@@ -43,23 +39,23 @@ class API {
     return response;
   }
 
-  Future pictureComment({
+  Future MultiPartRequest({
     required String path,
     required Map<String, String> data,
+    String fileName = 'image',
   }) async {
     var req = http.MultipartRequest("POST", Uri.parse(API_Url));
     req.fields.addAll(data);
     if (path != '') {
       req.files.add(
         await http.MultipartFile.fromPath(
-          'image',
+          fileName,
           path,
         ),
       );
     }
     final result = await req.send();
     final response = await result.stream.bytesToString();
-    print(response);
     return response;
   }
 }

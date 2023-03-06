@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
+import 'package:vibetag/screens/profile/edit_profile.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/about_items.dart';
 import 'package:vibetag/screens/profile/group_tab.dart';
@@ -45,6 +46,7 @@ class _ProfileState extends State<Profile> {
   bool followLoading = false;
   bool isFollowing = false;
   bool isScrollDown = false;
+  int currentTab = 1;
 
   ScrollController scrollController = ScrollController();
 
@@ -191,6 +193,164 @@ class _ProfileState extends State<Profile> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    List<Widget> screen = isLoading
+        ? []
+        : [
+            Container(
+              padding: spacing(
+                horizontal: 15,
+                vertical: 15,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bio',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    gap(h: 4),
+                    profileUser['about'] != null
+                        ? Container(
+                            child: Text(
+                              profileUser['about'],
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: grayMed,
+                              ),
+                            ),
+                          )
+                        : gap(),
+                    gap(
+                      h: 10,
+                    ),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: grayMed,
+                    ),
+                    gap(
+                      h: 10,
+                    ),
+                    Text(
+                      'More Info',
+                      style: TextStyle(
+                        color: blackPrimary,
+                      ),
+                    ),
+                    gap(h: 10),
+                    Container(
+                      width: double.maxFinite,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              pushRoute(context: context, screen: Followers());
+                            },
+                            child: Container(
+                              padding: spacing(
+                                horizontal: 40,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: borderRadius(7),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    getInK(
+                                            number: int.parse(
+                                                profileUserDetails[
+                                                    'followers_count']))
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: blackPrimary,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Followers',
+                                    style: TextStyle(
+                                      color: grayMed,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              pushRoute(context: context, screen: Followers());
+                            },
+                            child: Container(
+                              padding: spacing(
+                                horizontal: 40,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: borderRadius(7),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    getInK(
+                                            number: int.parse(
+                                                profileUserDetails[
+                                                    'following_count']))
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: blackPrimary,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Following',
+                                    style: TextStyle(
+                                      color: grayMed,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    gap(h: 10),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: aboutItems,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            PostTabProfile(
+              user_id: widget.user_id,
+              user: user,
+            ),
+            GroupTab(
+              user_id: widget.user_id,
+            ),
+            LikeTab(
+              user_id: widget.user_id,
+            ),
+            UserVideoTab(
+              user_id: widget.user_id,
+            ),
+            PhotoTab(
+              user_id: widget.user_id,
+            )
+          ];
 
     return Scaffold(
       body: SafeArea(
@@ -206,12 +366,10 @@ class _ProfileState extends State<Profile> {
                       isScrollDown ? gap() : NavBar(),
                       Header(),
                       Container(
-                        width: double.infinity,
-                        height: isScrollDown ? height * 0.93 : height * 0.875,
-                        child: ListView.builder(
-                          itemCount: 1,
-                          controller: scrollController,
-                          itemBuilder: (context, index) => Column(
+                        height: height * 0.88,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
                                 width: width,
@@ -305,147 +463,148 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
                               Container(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        color: white,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Container(
-                                              padding: spacing(
-                                                horizontal: 10,
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: blackLight),
-                                                borderRadius: borderRadius(7),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    '${getInK(number: profileUserDetails['total_reactions'] != '[]' ? int.parse(profileUserDetails['total_reactions'].toString()) : 0)}',
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Reactions',
-                                                    style: TextStyle(
-                                                      color: blackLight,
-                                                      fontSize: 8,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      color: white,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            padding: spacing(
+                                              horizontal: 10,
+                                              vertical: 10,
                                             ),
-                                            Container(
-                                              padding: spacing(
-                                                horizontal: 10,
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: blackLight),
-                                                borderRadius: borderRadius(7),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    '${getInK(number: profileUserDetails['followers_count'] != null ? int.parse(profileUserDetails['followers_count'].toString()) : 0)}',
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Followers',
-                                                    style: TextStyle(
-                                                      color: blackLight,
-                                                      fontSize: 8,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: blackLight),
+                                              borderRadius: borderRadius(7),
                                             ),
-                                            Container(
-                                              padding: spacing(
-                                                horizontal: 10,
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: blackLight),
-                                                borderRadius: borderRadius(7),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    '${getInK(number: profileUserDetails['following_count'] != null ? int.parse(profileUserDetails['following_count'].toString()) : 0)}',
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${getInK(number: profileUserDetails['total_reactions'] != '[]' ? int.parse(profileUserDetails['total_reactions'].toString()) : 0)}',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
                                                   ),
-                                                  Text(
-                                                    'Following',
-                                                    style: TextStyle(
-                                                      color: blackLight,
-                                                      fontSize: 8,
-                                                    ),
+                                                ),
+                                                Text(
+                                                  'Reactions',
+                                                  style: TextStyle(
+                                                    color: blackLight,
+                                                    fontSize: 8,
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                            Container(
-                                              padding: spacing(
-                                                horizontal: 10,
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: blackLight),
-                                                borderRadius: borderRadius(7),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    '${getInK(number: profileUserDetails['video_views'] != null ? int.parse(profileUserDetails['video_views'].toString()) : 0)}',
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
+                                          ),
+                                          Container(
+                                            padding: spacing(
+                                              horizontal: 10,
+                                              vertical: 10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: blackLight),
+                                              borderRadius: borderRadius(7),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${getInK(number: profileUserDetails['followers_count'] != null ? int.parse(profileUserDetails['followers_count'].toString()) : 0)}',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
                                                   ),
-                                                  Text(
-                                                    'Views',
-                                                    style: TextStyle(
-                                                      color: blackLight,
-                                                      fontSize: 8,
-                                                    ),
+                                                ),
+                                                Text(
+                                                  'Followers',
+                                                  style: TextStyle(
+                                                    color: blackLight,
+                                                    fontSize: 8,
                                                   ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: spacing(
+                                              horizontal: 10,
+                                              vertical: 10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: blackLight),
+                                              borderRadius: borderRadius(7),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${getInK(number: profileUserDetails['following_count'] != null ? int.parse(profileUserDetails['following_count'].toString()) : 0)}',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Following',
+                                                  style: TextStyle(
+                                                    color: blackLight,
+                                                    fontSize: 8,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: spacing(
+                                              horizontal: 10,
+                                              vertical: 10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: blackLight),
+                                              borderRadius: borderRadius(7),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${getInK(number: profileUserDetails['video_views'] != null ? int.parse(profileUserDetails['video_views'].toString()) : 0)}',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Views',
+                                                  style: TextStyle(
+                                                    color: blackLight,
+                                                    fontSize: 8,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      Container(
-                                        color: white,
-                                        padding: spacing(vertical: 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            widget.user_id == loginUserId
-                                                ? Container(
+                                    ),
+                                    Container(
+                                      color: white,
+                                      padding: spacing(vertical: 15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          widget.user_id == loginUserId
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    pushRoute(
+                                                        context: context,
+                                                        screen: EditProfile());
+                                                  },
+                                                  child: Container(
                                                     padding: spacing(
-                                                      horizontal: width * 0.15,
+                                                      horizontal: width * 0.12,
                                                       vertical: 10,
                                                     ),
                                                     decoration: BoxDecoration(
@@ -470,342 +629,154 @@ class _ProfileState extends State<Profile> {
                                                         ),
                                                       ],
                                                     ),
-                                                  )
-                                                : InkWell(
-                                                    onTap: followUser,
-                                                    child: Container(
-                                                      padding: spacing(
-                                                        horizontal:
-                                                            width * 0.15,
-                                                        vertical: 10,
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: followUser,
+                                                  child: Container(
+                                                    padding: spacing(
+                                                      horizontal: width * 0.12,
+                                                      vertical: 10,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: orangePrimary,
+                                                      borderRadius:
+                                                          borderRadius(5),
+                                                    ),
+                                                    child: Text(
+                                                      isFollowing
+                                                          ? 'Following'
+                                                          : 'Follow',
+                                                      style: TextStyle(
+                                                        color: white,
+                                                        fontSize: 12,
                                                       ),
-                                                      decoration: BoxDecoration(
-                                                        color: orangePrimary,
-                                                        borderRadius:
-                                                            borderRadius(5),
+                                                    ),
+                                                  ),
+                                                ),
+                                          widget.user_id == loginUserId
+                                              ? Container(
+                                                  padding: spacing(
+                                                    horizontal: width * 0.12,
+                                                    vertical: 10,
+                                                  ),
+                                                  margin: spacing(
+                                                    horizontal: 2,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        borderRadius(5),
+                                                    color: orange,
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.list,
+                                                        size: 16,
+                                                        color: white,
                                                       ),
-                                                      child: Text(
-                                                        isFollowing
-                                                            ? 'Following'
-                                                            : 'Follow',
+                                                      gap(w: 5),
+                                                      Text(
+                                                        'Activities',
                                                         style: TextStyle(
                                                           color: white,
                                                           fontSize: 12,
                                                         ),
                                                       ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(
+                                                  padding: spacing(
+                                                    horizontal: width * 0.12,
+                                                    vertical: 10,
+                                                  ),
+                                                  margin: spacing(
+                                                    horizontal: 2,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        borderRadius(5),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: orangePrimary,
                                                     ),
                                                   ),
-                                            widget.user_id == loginUserId
-                                                ? Container(
-                                                    padding: spacing(
-                                                      horizontal: width * 0.15,
-                                                      vertical: 10,
-                                                    ),
-                                                    margin: spacing(
-                                                      horizontal: 2,
-                                                      vertical: 2,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          borderRadius(5),
-                                                      color: orange,
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.list,
-                                                          size: 16,
-                                                          color: white,
-                                                        ),
-                                                        gap(w: 5),
-                                                        Text(
-                                                          'Activities',
-                                                          style: TextStyle(
-                                                            color: white,
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    padding: spacing(
-                                                      horizontal: width * 0.15,
-                                                      vertical: 10,
-                                                    ),
-                                                    margin: spacing(
-                                                      horizontal: 2,
-                                                      vertical: 2,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          borderRadius(5),
-                                                      border: Border.all(
-                                                        width: 1,
-                                                        color: orangePrimary,
-                                                      ),
-                                                    ),
-                                                    child: Text(
-                                                      'Message',
-                                                      style: TextStyle(
-                                                        color: orangePrimary,
-                                                        fontSize: 12,
-                                                      ),
+                                                  child: Text(
+                                                    'Message',
+                                                    style: TextStyle(
+                                                      color: orangePrimary,
+                                                      fontSize: 12,
                                                     ),
                                                   ),
-                                            widget.user_id == loginUserId
-                                                ? gap()
-                                                : Icon(
-                                                    Icons.more_vert_rounded,
-                                                    color: grayMed,
-                                                  )
-                                          ],
-                                        ),
+                                                ),
+                                          widget.user_id == loginUserId
+                                              ? gap()
+                                              : Icon(
+                                                  Icons.more_vert_rounded,
+                                                  color: grayMed,
+                                                )
+                                        ],
                                       ),
-                                      Container(
-                                        color: backgroundColor,
-                                        child: DefaultTabController(
-                                            initialIndex: 1,
-                                            length: 6,
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    height: height * 0.04,
-                                                    child: TabBar(
-                                                      isScrollable: true,
-                                                      unselectedLabelColor:
-                                                          blackLight,
-                                                      labelColor: orangePrimary,
-                                                      labelStyle:
-                                                          const TextStyle(
-                                                        fontSize: 14,
-                                                      ),
-                                                      unselectedLabelStyle:
-                                                          const TextStyle(
-                                                        fontSize: 14,
-                                                      ),
-                                                      tabs: const [
-                                                        Tab(
-                                                          text: 'About',
-                                                        ),
-                                                        Tab(
-                                                          text: 'Timeline',
-                                                        ),
-                                                        Tab(
-                                                          text: 'Groups',
-                                                        ),
-                                                        Tab(
-                                                          text: 'Likes',
-                                                        ),
-                                                        Tab(
-                                                          text: 'Videos',
-                                                        ),
-                                                        Tab(
-                                                          text: 'Photos',
-                                                        ),
-                                                      ],
+                                    ),
+                                    Container(
+                                      color: grayLight,
+                                      child: DefaultTabController(
+                                          initialIndex: 1,
+                                          length: 6,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height: height * 0.04,
+                                                  child: TabBar(
+                                                    onTap: (i) {
+                                                      currentTab = i;
+                                                      setState(() {});
+                                                    },
+                                                    isScrollable: true,
+                                                    unselectedLabelColor:
+                                                        blackLight,
+                                                    labelColor: orangePrimary,
+                                                    labelStyle: const TextStyle(
+                                                      fontSize: 14,
                                                     ),
+                                                    unselectedLabelStyle:
+                                                        const TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                    tabs: const [
+                                                      Tab(
+                                                        text: 'About',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Timeline',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Groups',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Likes',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Videos',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Photos',
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Container(
-                                                    width: double.maxFinite,
-                                                    height: height * 0.89,
-                                                    child: TabBarView(
-                                                        children: [
-                                                          Container(
-                                                            padding: spacing(
-                                                              horizontal: 15,
-                                                              vertical: 15,
-                                                            ),
-                                                            child:
-                                                                SingleChildScrollView(
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    'Bio',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          16,
-                                                                    ),
-                                                                  ),
-                                                                  gap(h: 4),
-                                                                  profileUser['about'] !=
-                                                                          null
-                                                                      ? Container(
-                                                                          child:
-                                                                              Text(
-                                                                            profileUser['about'],
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 14,
-                                                                              color: grayMed,
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      : gap(),
-                                                                  gap(
-                                                                    h: 10,
-                                                                  ),
-                                                                  Container(
-                                                                    height: 1,
-                                                                    width: double
-                                                                        .maxFinite,
-                                                                    color:
-                                                                        grayMed,
-                                                                  ),
-                                                                  gap(
-                                                                    h: 10,
-                                                                  ),
-                                                                  Text(
-                                                                    'More Info',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color:
-                                                                          blackPrimary,
-                                                                    ),
-                                                                  ),
-                                                                  gap(h: 10),
-                                                                  Container(
-                                                                    width: double
-                                                                        .maxFinite,
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceEvenly,
-                                                                      children: [
-                                                                        InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            pushRoute(
-                                                                                context: context,
-                                                                                screen: Followers());
-                                                                          },
-                                                                          child:
-                                                                              Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  getInK(number: int.parse(profileUserDetails['followers_count'])).toString(),
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Followers',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            pushRoute(
-                                                                                context: context,
-                                                                                screen: Followers());
-                                                                          },
-                                                                          child:
-                                                                              Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  getInK(number: int.parse(profileUserDetails['following_count'])).toString(),
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Following',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  gap(h: 10),
-                                                                  SingleChildScrollView(
-                                                                    child:
-                                                                        Column(
-                                                                      children:
-                                                                          aboutItems,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          PostTabProfile(
-                                                            user_id:
-                                                                widget.user_id,
-                                                            user: user,
-                                                          ),
-                                                          GroupTab(
-                                                            user_id:
-                                                                widget.user_id,
-                                                          ),
-                                                          LikeTab(
-                                                            user_id:
-                                                                widget.user_id,
-                                                          ),
-                                                          UserVideoTab(
-                                                            user_id:
-                                                                widget.user_id,
-                                                          ),
-                                                          PhotoTab(
-                                                            user_id:
-                                                                widget.user_id,
-                                                          )
-                                                        ]),
-                                                  )
-                                                ],
-                                              ),
-                                            )),
-                                      ),
-                                    ],
-                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              screen[currentTab]
                             ],
                           ),
                         ),

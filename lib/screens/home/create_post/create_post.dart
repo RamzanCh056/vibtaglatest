@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:vibetag/screens/home/create_post/create_poll.dart';
+import 'package:vibetag/screens/home/create_post/post_audience.dart';
+import 'package:vibetag/screens/home/create_post/post_category.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 
 import '../../../utils/constant.dart';
 
@@ -105,78 +109,96 @@ class _CreatePostState extends State<CreatePost> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  padding: spacing(
-                    horizontal: 15,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1.5,
-                      color: grayMed,
+                InkWell(
+                  onTap: () {
+                    pop(context);
+                    createBottomModalSheet(
+                      context: context,
+                      screen: PostAudience(),
+                    );
+                  },
+                  child: Container(
+                    padding: spacing(
+                      horizontal: 15,
+                      vertical: 10,
                     ),
-                    borderRadius: borderRadius(10),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 10,
-                        child: Image.asset(
-                          'assets/icons/lock.png',
-                        ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1.5,
+                        color: grayMed,
                       ),
-                      gap(w: 5),
-                      Text(
-                        'Public',
-                        style: TextStyle(
-                          color: grayPrimary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                      borderRadius: borderRadius(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 10,
+                          child: Image.asset(
+                            'assets/icons/lock.png',
+                          ),
                         ),
-                      ),
-                      gap(w: 10),
-                      Container(
-                        width: 15,
-                        child: Image.asset(
-                          'assets/new/icons/livestream/arrow_down.png',
+                        gap(w: 5),
+                        Text(
+                          'Public',
+                          style: TextStyle(
+                            color: grayPrimary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )
-                    ],
+                        gap(w: 10),
+                        Container(
+                          width: 15,
+                          child: Image.asset(
+                            'assets/new/icons/livestream/arrow_down.png',
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 gap(w: 7),
-                Container(
-                  padding: spacing(
-                    horizontal: 15,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1.5,
-                      color: grayMed,
+                InkWell(
+                  onTap: () {
+                    pop(context);
+                    createBottomModalSheet(
+                      context: context,
+                      screen: PostCategory(),
+                    );
+                  },
+                  child: Container(
+                    padding: spacing(
+                      horizontal: 15,
+                      vertical: 10,
                     ),
-                    borderRadius: borderRadius(10),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Category',
-                        style: TextStyle(
-                          color: grayPrimary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1.5,
+                        color: grayMed,
                       ),
-                      gap(w: 10),
-                      Container(
-                        width: 15,
-                        child: Image.asset(
-                          'assets/new/icons/livestream/arrow_down.png',
+                      borderRadius: borderRadius(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Category',
+                          style: TextStyle(
+                            color: grayPrimary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )
-                    ],
+                        gap(w: 10),
+                        Container(
+                          width: 15,
+                          child: Image.asset(
+                            'assets/new/icons/livestream/arrow_down.png',
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 gap(w: 7),
@@ -256,27 +278,38 @@ class _CreatePostState extends State<CreatePost> {
             ),
             itemCount: createPost.length,
             itemBuilder: (context, i) {
-              return Container(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      padding: spacing(
-                        horizontal: 10,
-                        vertical: 10,
+              return InkWell(
+                onTap: () {
+                  if (i == 8) {
+                    pop(context);
+                    createBottomModalSheet(
+                      context: context,
+                      screen: CreatePoll(),
+                    );
+                  }
+                },
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        padding: spacing(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: HexColor('#FFF2E1'),
+                          borderRadius: borderRadius(width),
+                        ),
+                        child: Image.asset(
+                          createPost[i]['Icon'],
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: HexColor('#FFF2E1'),
-                        borderRadius: borderRadius(width),
-                      ),
-                      child: Image.asset(
-                        createPost[i]['Icon'],
-                      ),
-                    ),
-                    gap(h: 10),
-                    Text(createPost[i]['name']),
-                  ],
+                      gap(h: 10),
+                      Text(createPost[i]['name']),
+                    ],
+                  ),
                 ),
               );
             },

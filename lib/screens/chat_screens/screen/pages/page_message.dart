@@ -182,14 +182,14 @@ class _PageMessageState extends State<PageMessage> {
                               ),
                               onSelected: (value) {
                                 if (value == "View Profile") {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) {
-                                        return const ProfileScreen();
-                                      },
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (_) {
+                                  //       return const ProfileScreen();
+                                  //     },
+                                  //   ),
+                                  // );
                                 } else if (value == "View Media") {
                                   Navigator.push(
                                     context,

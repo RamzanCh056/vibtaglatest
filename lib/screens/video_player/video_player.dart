@@ -37,6 +37,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
   bool hideButtton = false;
   bool isIcreased = false;
   bool isDecreased = false;
+  bool isTapped = false;
 
   @override
   void initState() {
@@ -133,7 +134,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
               }
             },
             child: Center(
-              child: !isFocused
+              child: !isFocused && !isTapped
                   ? InkWell(
                       onTap: () {
                         if (!(widget.isAds)) {
@@ -160,6 +161,9 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                       ? InkWell(
                           onTap: () {
                             if (!(widget.isAds)) {
+                              isTapped = true;
+                              print('++++++++++++++++++++++++++++');
+                              print(isTapped);
                               pushRoute(
                                 context: context,
                                 screen: VideoScreen(

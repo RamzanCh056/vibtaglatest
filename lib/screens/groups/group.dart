@@ -36,6 +36,7 @@ class _GroupScreenState extends State<GroupScreen> {
   bool isLoading = false;
   List<Widget> aboutItems = [];
   bool isJoined = false;
+  int currentIndex = 1;
 
   @override
   void initState() {
@@ -113,7 +114,279 @@ class _GroupScreenState extends State<GroupScreen> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-
+    List<Widget> screen = isLoading
+        ? []
+        : [
+            Container(
+              padding: spacing(
+                horizontal: 15,
+                vertical: 15,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bio',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    gap(h: 4),
+                    Container(
+                      child: Text(
+                        '${group['about']}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: grayMed,
+                        ),
+                      ),
+                    ),
+                    gap(
+                      h: 10,
+                    ),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: grayMed,
+                    ),
+                    gap(
+                      h: 10,
+                    ),
+                    Text(
+                      'More Info',
+                      style: TextStyle(
+                        color: blackPrimary,
+                      ),
+                    ),
+                    gap(h: 10),
+                    Container(
+                      width: double.maxFinite,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            padding: spacing(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                            decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: borderRadius(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${getInK(number: int.parse(group['members_count'].toString()))}',
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  'Members',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: spacing(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                            decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: borderRadius(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${getInK(number: int.parse(group['post_count'].toString()))}',
+                                  style: TextStyle(
+                                    color: blackPrimary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  'Posts',
+                                  style: TextStyle(
+                                    color: grayMed,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    gap(h: 10),
+                    Column(
+                      children: aboutItems,
+                    ),
+                    gap(h: 10),
+                  ],
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  gap(h: 10),
+                  Container(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: spacing(horizontal: 10),
+                            child: const Text(
+                              'Suggested Groups',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          gap(h: 10),
+                          Padding(
+                            padding: spacing(horizontal: 10),
+                            child: Container(
+                              height: height * 0.38,
+                              width: double.infinity,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 10,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      width: width * 0.65,
+                                      margin: spacing(
+                                        horizontal: 10,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10),
+                                            ),
+                                            child: Container(
+                                              height: height * 0.2,
+                                              width: width * 0.65,
+                                              child: Image.asset(
+                                                'assets/new/images/wwe.png',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: spacing(horizontal: 10),
+                                            decoration: BoxDecoration(
+                                                color: white,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(10),
+                                                  bottomRight:
+                                                      Radius.circular(10),
+                                                )),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                gap(h: 10),
+                                                Container(
+                                                  width: width * 0.6,
+                                                  child: const Text(
+                                                    'WWE Wrestling',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                                gap(h: 5),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      'Public Group',
+                                                      style: TextStyle(
+                                                        color: grayMed,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    gap(w: 5),
+                                                    Container(
+                                                      width: 4,
+                                                      height: 4,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            borderRadius(4),
+                                                        color: grayMed,
+                                                      ),
+                                                    ),
+                                                    gap(w: 5),
+                                                    Text(
+                                                      '170k members',
+                                                      style: TextStyle(
+                                                        color: grayMed,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                gap(h: 10),
+                                                Center(
+                                                  child: Container(
+                                                    width: width * 0.55,
+                                                    padding: spacing(
+                                                      vertical: 10,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: orangePrimary,
+                                                      borderRadius:
+                                                          borderRadius(10),
+                                                    ),
+                                                    child: Text(
+                                                      isJoined
+                                                          ? 'Joined'
+                                                          : 'Join Now',
+                                                      style: TextStyle(
+                                                        color: whitePrimary,
+                                                        fontSize: 12,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                                gap(h: 20),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                          Container(
+                            child: PostTabGroup(
+                              group_id: widget.group_id,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ];
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -130,7 +403,7 @@ class _GroupScreenState extends State<GroupScreen> {
                         Header(),
                         Container(
                           width: double.infinity,
-                          height: height * 0.875,
+                          height: height * 0.89,
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -433,6 +706,10 @@ class _GroupScreenState extends State<GroupScreen> {
                                                     Container(
                                                       height: height * 0.05,
                                                       child: TabBar(
+                                                        onTap: (i) {
+                                                          currentIndex = i;
+                                                          setState(() {});
+                                                        },
                                                         isScrollable: true,
                                                         unselectedLabelColor:
                                                             blackLight,
@@ -456,305 +733,6 @@ class _GroupScreenState extends State<GroupScreen> {
                                                         ],
                                                       ),
                                                     ),
-                                                    Container(
-                                                      width: double.maxFinite,
-                                                      height: height * 0.8,
-                                                      child: TabBarView(
-                                                          children: [
-                                                            Container(
-                                                              padding: spacing(
-                                                                horizontal: 15,
-                                                                vertical: 15,
-                                                              ),
-                                                              child:
-                                                                  SingleChildScrollView(
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Bio',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 4),
-                                                                    Container(
-                                                                      child:
-                                                                          Text(
-                                                                        '${group['about']}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              grayMed,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    gap(
-                                                                      h: 10,
-                                                                    ),
-                                                                    Container(
-                                                                      height: 1,
-                                                                      width: double
-                                                                          .maxFinite,
-                                                                      color:
-                                                                          grayMed,
-                                                                    ),
-                                                                    gap(
-                                                                      h: 10,
-                                                                    ),
-                                                                    Text(
-                                                                      'More Info',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            blackPrimary,
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 10),
-                                                                    Container(
-                                                                      width: double
-                                                                          .maxFinite,
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceEvenly,
-                                                                        children: [
-                                                                          Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  '${getInK(number: int.parse(group['members_count'].toString()))}',
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Members',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            padding:
-                                                                                spacing(
-                                                                              horizontal: 40,
-                                                                              vertical: 15,
-                                                                            ),
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: white,
-                                                                              borderRadius: borderRadius(7),
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                Text(
-                                                                                  '${getInK(number: int.parse(group['post_count'].toString()))}',
-                                                                                  style: TextStyle(
-                                                                                    color: blackPrimary,
-                                                                                    fontSize: 14,
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  'Posts',
-                                                                                  style: TextStyle(
-                                                                                    color: grayMed,
-                                                                                    fontSize: 10,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                    gap(h: 10),
-                                                                    Column(
-                                                                      children:
-                                                                          aboutItems,
-                                                                    ),
-                                                                    gap(h: 10),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SingleChildScrollView(
-                                                              child: Column(
-                                                                children: [
-                                                                  gap(h: 10),
-                                                                  Container(
-                                                                    child:
-                                                                        SingleChildScrollView(
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding:
-                                                                                spacing(horizontal: 10),
-                                                                            child:
-                                                                                const Text(
-                                                                              'Suggested Groups',
-                                                                              style: TextStyle(
-                                                                                fontSize: 16,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          gap(h: 10),
-                                                                          Padding(
-                                                                            padding:
-                                                                                spacing(horizontal: 10),
-                                                                            child:
-                                                                                Container(
-                                                                              height: height * 0.38,
-                                                                              width: double.infinity,
-                                                                              child: ListView.builder(
-                                                                                  scrollDirection: Axis.horizontal,
-                                                                                  itemCount: 10,
-                                                                                  itemBuilder: (context, index) {
-                                                                                    return Container(
-                                                                                      width: width * 0.65,
-                                                                                      margin: spacing(
-                                                                                        horizontal: 10,
-                                                                                      ),
-                                                                                      child: Column(
-                                                                                        children: [
-                                                                                          ClipRRect(
-                                                                                            borderRadius: const BorderRadius.only(
-                                                                                              topLeft: Radius.circular(10),
-                                                                                              topRight: Radius.circular(10),
-                                                                                            ),
-                                                                                            child: Container(
-                                                                                              height: height * 0.2,
-                                                                                              width: width * 0.65,
-                                                                                              child: Image.asset(
-                                                                                                'assets/new/images/wwe.png',
-                                                                                                fit: BoxFit.cover,
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                          Container(
-                                                                                            padding: spacing(horizontal: 10),
-                                                                                            decoration: BoxDecoration(
-                                                                                                color: white,
-                                                                                                borderRadius: const BorderRadius.only(
-                                                                                                  bottomLeft: Radius.circular(10),
-                                                                                                  bottomRight: Radius.circular(10),
-                                                                                                )),
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              children: [
-                                                                                                gap(h: 10),
-                                                                                                Container(
-                                                                                                  width: width * 0.6,
-                                                                                                  child: const Text(
-                                                                                                    'WWE Wrestling',
-                                                                                                    style: TextStyle(
-                                                                                                      fontSize: 14,
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                gap(h: 5),
-                                                                                                Row(
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                      'Public Group',
-                                                                                                      style: TextStyle(
-                                                                                                        color: grayMed,
-                                                                                                        fontSize: 12,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    gap(w: 5),
-                                                                                                    Container(
-                                                                                                      width: 4,
-                                                                                                      height: 4,
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        borderRadius: borderRadius(4),
-                                                                                                        color: grayMed,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    gap(w: 5),
-                                                                                                    Text(
-                                                                                                      '170k members',
-                                                                                                      style: TextStyle(
-                                                                                                        color: grayMed,
-                                                                                                        fontSize: 12,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ],
-                                                                                                ),
-                                                                                                gap(h: 10),
-                                                                                                Center(
-                                                                                                  child: Container(
-                                                                                                    width: width * 0.55,
-                                                                                                    padding: spacing(
-                                                                                                      vertical: 10,
-                                                                                                    ),
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: orangePrimary,
-                                                                                                      borderRadius: borderRadius(10),
-                                                                                                    ),
-                                                                                                    child: Text(
-                                                                                                      isJoined ? 'Joined' : 'Join Now',
-                                                                                                      style: TextStyle(
-                                                                                                        color: whitePrimary,
-                                                                                                        fontSize: 12,
-                                                                                                      ),
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                gap(h: 20),
-                                                                                              ],
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      ),
-                                                                                    );
-                                                                                  }),
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            child:
-                                                                                PostTabGroup(
-                                                                              group_id: widget.group_id,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ]),
-                                                    )
                                                   ],
                                                 ),
                                               )),
@@ -762,7 +740,9 @@ class _GroupScreenState extends State<GroupScreen> {
                                       ],
                                     ),
                                   ),
-                                )
+                                ),
+                                screen[currentIndex],
+                                gap(h: height * 0.1),
                               ],
                             ),
                           ),

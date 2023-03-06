@@ -22,11 +22,13 @@ import 'package:vibetag/screens/home/post_poll.dart';
 import 'package:vibetag/screens/home/post_photo.dart';
 import 'package:vibetag/screens/home/post_event.dart';
 import 'package:vibetag/screens/home/post_product.dart';
+import 'package:vibetag/screens/home/stories/home_story.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../methods/api.dart';
+import '../story/add_story.dart';
 import 'post_methods/post_methods.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
@@ -43,9 +45,6 @@ class _HomeState extends State<Home> {
   bool yourFeeds = true;
   bool activeTheme = true;
   bool isScrollDown = false;
-  bool isNoMorePosts = false;
-  int postsLength = 0;
-
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
   late ModelUser user;
@@ -53,6 +52,13 @@ class _HomeState extends State<Home> {
   List<dynamic> posts = [];
   ScrollController scrollController = ScrollController();
   List<Widget> postWidgets = [];
+  late NavigatorState _navigator;
+
+  @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -105,7 +111,7 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = false;
     });
-    getBuzzin();
+
     userDetails = Provider.of<UsersDetailsProvider>(
       context,
       listen: false,
@@ -116,16 +122,6 @@ class _HomeState extends State<Home> {
         screen: const AddPhoto(),
       );
     }
-  }
-
-  getBuzzin() async {
-    final data = {
-      'type': 'buzzin',
-      'sub_type': 'get_buzzin',
-      'user_id': loginUserId,
-    };
-    final result = await API().postData(data);
-    loadedBuzzin = jsonDecode(result.body)['data'];
   }
 
   @override
@@ -144,20 +140,8 @@ class _HomeState extends State<Home> {
   ];
   String lastPostId = '';
   loadMore() async {
-    bool isFindId = false;
-
-    for (var i = 0; i < posts.length; i++) {
-      if (!isFindId) {
-        if (posts[(posts.length - (1 + i))]['post_id'] != null) {
-          lastPostId = posts[(posts.length - (1 + i))]['post_id'].toString();
-          isFindId = true;
-        }
-      }
-    }
-
     await PostMethods().loadMorePosts(
       context: context,
-      lastPostId: lastPostId.toString(),
     );
     if (mounted) {
       setState(() {});
@@ -168,14 +152,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-
-    posts = Provider.of<PostProvider>(context, listen: false).posts;
-    postWidgets = PostMethods().setPosts(posts: posts);
-    if (postWidgets.length > postsLength) {
-      postsLength = postWidgets.length;
-    } else {
-      isNoMorePosts = true;
+    if (mounted) {
+      posts = Provider.of<PostProvider>(context).posts;
     }
+    postWidgets = PostMethods().setPosts(posts: posts);
 
     return Scaffold(
       key: _key,
@@ -199,7 +179,7 @@ class _HomeState extends State<Home> {
                     Container(
                       alignment: Alignment.topCenter,
                       width: width,
-                      height: height * 0.85,
+                      height: isScrollDown ? height * 0.84 : height * 0.79,
                       decoration: BoxDecoration(
                         color: whiteSecondary,
                       ),
@@ -213,20 +193,25 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             HomeTabBar(),
-                            HomeStory(user: user),
+                            AddStroy(user),
                             createPost(user),
                             Column(
                               children: postWidgets,
                             ),
-                            VisibilityDetector(
-                              key: Key('loadMore'),
-                              child: loadingSpinner(),
-                              onVisibilityChanged: (info) {
-                                if (info.visibleFraction > 0.3) {
-                                  loadMore();
-                                }
-                              },
-                            ),
+                            isNoMorePostsHome
+                                ? Center(
+                                    child: Text('No More Posts'),
+                                  )
+                                : VisibilityDetector(
+                                    key: Key('loadMore'),
+                                    child: loadingSpinner(),
+                                    onVisibilityChanged: (info) {
+                                      if (info.visibleFraction > 0.3) {
+                                        loadMore();
+                                      }
+                                    },
+                                  ),
+                            gap(h: height * 0.1),
                           ],
                         ),
                       ),

@@ -23,17 +23,23 @@ import 'package:vibetag/screens/my_articles/my_article_main_screen.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/page/page_old.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
+import 'package:vibetag/screens/playlists/playlists_detail.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
-import 'package:vibetag/screens/shop/market/explore.dart';
 import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
+import '../album/my_album.dart';
 import '../events/events.dart';
+import '../explore/explore.dart';
+import '../find_friend/filter_screen.dart';
+import '../job/job.dart';
 import '../my_page_screen/browse_event_screen.dart';
+import '../my_page_screen/my_page.dart';
+import '../playlists/playlist.dart';
+import '../vibtag_boster/boster_home.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
@@ -165,7 +171,18 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Album(),
+                          screen: MyAlbum(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/Saved posts.svg',
+                      title: 'Find friends',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: FilterScreen(),
                         );
                       },
                     ),
@@ -210,7 +227,7 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: PlayLists(),
+                          screen: PlayList(),
                         );
                       },
                     ),
@@ -222,6 +239,17 @@ BottomDrawer({required BuildContext context}) {
                         pushReplacement(
                           context: context,
                           screen: Gift(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/booster.svg',
+                      title: 'Vib Booster',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: BoosterHome(),
                         );
                       },
                     ),
@@ -336,6 +364,7 @@ BottomDrawer({required BuildContext context}) {
                         );
                       },
                     ),
+                    
                     BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/seemore.svg',
                       title: 'See More',

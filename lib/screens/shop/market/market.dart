@@ -45,9 +45,7 @@ class _MarketState extends State<Market> {
                   children: [
                     const NavBar(),
                     Header(
-                      onTap: () {
-                        key.currentState!.openDrawer();
-                      },
+                     
                     ),
                   ],
                 ),

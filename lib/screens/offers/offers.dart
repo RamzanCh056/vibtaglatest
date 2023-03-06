@@ -39,9 +39,7 @@ class _OfferState extends State<Offer> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                     
                     )
                   ],
                 ),

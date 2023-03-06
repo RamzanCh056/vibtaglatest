@@ -96,22 +96,30 @@ class _FundingState extends State<Funding> {
                               ),
                             );
                           }
-                          return Container(
-                            padding: spacing(horizontal: 20, vertical: 7),
-                            margin: spacing(horizontal: 5, vertical: 5),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: orange,
+                          return InkWell(
+                            onTap: () {
+                              createBottomModalSheet(
+                                context: context,
+                                screen: CreateFundingRequest(),
+                              );
+                            },
+                            child: Container(
+                              padding: spacing(horizontal: 20, vertical: 7),
+                              margin: spacing(horizontal: 5, vertical: 5),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color: orange,
+                                ),
+                                borderRadius: borderRadius(width),
                               ),
-                              borderRadius: borderRadius(width),
-                            ),
-                            child: Text(
-                              buttonText[i],
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: orange,
+                              child: Text(
+                                buttonText[i],
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: orange,
+                                ),
                               ),
                             ),
                           );
@@ -294,34 +302,6 @@ class _FundingState extends State<Funding> {
                         },
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        createBottomModalSheet(
-                            context: context, screen: CreateFundingRequest(),);
-                      },
-                      child: Container(
-                        padding: spacing(
-                          horizontal: 15,
-                          vertical: 15,
-                        ),
-                        width: double.maxFinite,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: orangePrimary,
-                          ),
-                          borderRadius: borderRadius(15),
-                        ),
-                        child: Text(
-                          'Donate',
-                          style: TextStyle(
-                            color: orange,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ],

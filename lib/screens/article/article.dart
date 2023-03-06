@@ -45,9 +45,7 @@ class _ArticleState extends State<Article> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                     
                     )
                   ],
                 ),

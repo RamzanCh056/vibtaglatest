@@ -43,9 +43,7 @@ class _SettingState extends State<Setting> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                  
                     )
                   ],
                 ),

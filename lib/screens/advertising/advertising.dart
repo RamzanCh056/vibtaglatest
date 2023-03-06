@@ -37,9 +37,7 @@ class _AdvertisingState extends State<Advertising> {
                 Column(
                   children: [
                     NavBar(),
-                    Header(onTap: () {
-                      _key.currentState!.openDrawer();
-                    })
+                    Header()
                   ],
                 ),
                 Container(

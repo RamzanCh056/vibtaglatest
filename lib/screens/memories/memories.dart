@@ -43,9 +43,7 @@ class _MemoriesState extends State<Memories> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
+                    
                     )
                   ],
                 ),

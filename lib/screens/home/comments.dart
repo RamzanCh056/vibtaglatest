@@ -55,9 +55,11 @@ class _CommentsState extends State<Comments> {
     };
     final result = await API().postData(data);
     comments = jsonDecode(result.body)['data'];
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   loadSticker() async {
@@ -97,7 +99,7 @@ class _CommentsState extends State<Comments> {
         'user_id': loginUserId.toString(),
       };
       print(data);
-      await API().pictureComment(path: image, data: data);
+      await API().MultiPartRequest(path: image, data: data);
     }
   }
 
@@ -126,7 +128,7 @@ class _CommentsState extends State<Comments> {
         'user_id': loginUserId.toString(),
       };
       print(data);
-      await API().pictureComment(path: image, data: data);
+      await API().MultiPartRequest(path: image, data: data);
       loadCommets();
     }
   }

@@ -48,12 +48,7 @@ class _SingleProductState extends State<SingleProduct> {
                   children: [
                     NavBar(),
                     Header(
-                      onTap: () {
-                        setState(() {
-                          isShop = false;
-                        });
-                        _key.currentState!.openDrawer();
-                      },
+                      
                     ),
                     ShopHeader(
                       onTap: () {

@@ -185,7 +185,7 @@ class _BuzzinState extends State<Buzzin> {
                   scrollDirection: Axis.vertical,
                   itemCount: buzzin.length,
                   itemBuilder: (context, i) {
-                    if (i == (buzzin.length - 1)) {
+                    if (i == (buzzin.length - 5)) {
                       loadMoreBuzzin();
                     }
                     return Container(
@@ -261,10 +261,12 @@ class _BuzzinState extends State<Buzzin> {
                                                   });
                                                 },
                                                 onTapOutside: (e) {
-                                                  // setState(() {
-                                                  //   isFocusCategory =
-                                                  //       !isFocusCategory;
-                                                  // });
+                                                  if (!isFocusCategory) {
+                                                    setState(() {
+                                                      showSearchbar =
+                                                          !showSearchbar;
+                                                    });
+                                                  }
                                                 },
                                                 keyboardType:
                                                     TextInputType.none,

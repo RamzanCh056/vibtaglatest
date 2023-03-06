@@ -55,9 +55,7 @@ class _FindVibesState extends State<FindVibes> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const NavBar(),
-                  Header(onTap: () {
-                    _key.currentState!.openDrawer();
-                  })
+                  Header()
                 ],
               ),
               SingleChildScrollView(

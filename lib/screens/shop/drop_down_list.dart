@@ -24,7 +24,7 @@ class DropDownList extends StatefulWidget {
     this.padding = 0,
     this.fontSize = 18,
     this.isUnderline = false,
-    this.fieldHeight = 0.8,
+    this.fieldHeight = 0.05,
   }) : super(key: key);
 
   @override
@@ -43,6 +43,7 @@ class _DropDownListState extends State<DropDownList> {
         Container(
           height: height * widget.fieldHeight,
           decoration: BoxDecoration(
+            color: widget.bgColor,
             borderRadius: BorderRadius.circular(width * 0.04),
           ),
           child: DropdownButton<String>(

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/screens/activties/activities.dart';
 import 'package:vibetag/screens/album/album.dart';
@@ -8,26 +6,23 @@ import 'package:vibetag/screens/article/article.dart';
 import 'package:vibetag/screens/advertising/advertising.dart';
 import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
-import 'package:vibetag/screens/compaign/boost.dart';
 import 'package:vibetag/screens/funding/funding.dart';
 import 'package:vibetag/screens/gift/gift.dart';
 import 'package:vibetag/screens/job/job.dart';
 import 'package:vibetag/screens/memories/memories.dart';
 import 'package:vibetag/screens/offers/offers.dart';
 import 'package:vibetag/screens/profile/profile.dart';
-import 'package:vibetag/screens/shop/market/explore.dart';
-import 'package:vibetag/screens/shop/market/market.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
-import 'package:vibetag/screens/profile/profile_old.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
-import 'package:vibetag/screens/find%20friends/find_friends.dart';
+import 'package:vibetag/screens/find_friends_old/find_friends.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/page/pages.dart';
 import 'package:vibetag/screens/drawer/drawer_item.dart';
 import 'package:vibetag/screens/shop/shop.dart';
+import '../explore/explore.dart';
+import '../playlists/playlist.dart';
 import '../shop/product/my_products.dart';
 import '../../utils/constant.dart';
 
@@ -376,7 +371,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const PlayLists(),
+                                screen: const PlayList(),
                               );
                             },
                             child: DrawerItems(
