@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -13,7 +15,11 @@ import 'my_playlist.dart';
 import 'other_playlist.dart';
 
 class PlayListScreen extends StatefulWidget {
-  const PlayListScreen({super.key});
+  final String playlist_id;
+  const PlayListScreen({
+    Key? key,
+    required this.playlist_id,
+  }) : super(key: key);
 
   @override
   State<PlayListScreen> createState() => _PlayListScreenState();
@@ -46,7 +52,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
     final data = {
       'type': 'playlist_api',
       'action': 'get_playlist_videos',
-      'playlist_id': '10',
+      'playlist_id': widget.playlist_id.toString(),
     };
     final result = await API().postData(data);
     final response = jsonDecode(result.body);
@@ -75,7 +81,12 @@ class _PlayListScreenState extends State<PlayListScreen> {
           width: double.infinity,
           child: SingleChildScrollView(
             child: isLoading
-                ? loadingSpinner()
+                ? Container(
+                    height: height,
+                    child: Center(
+                      child: loadingSpinner(),
+                    ),
+                  )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [

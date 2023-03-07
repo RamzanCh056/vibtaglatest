@@ -5,10 +5,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
 import 'package:vibetag/screens/find_friends_old/find_friends.dart';
 import 'package:vibetag/screens/funding/funding.dart';
-import 'package:vibetag/screens/job/job.dart';
 import 'package:vibetag/screens/livestream/create%20stream/live.dart';
 import 'package:vibetag/screens/offers/offers.dart';
 import '../../utils/constant.dart';
+import '../job/job.dart';
 import '../memories/memories.dart';
 
 SeeMoreMenu({required BuildContext context}) {
@@ -41,6 +41,7 @@ SeeMoreMenu({required BuildContext context}) {
                       context: context,
                       screen: Job(),
                     );
+                  
                   },
                 ),
                 BottomModalItems(

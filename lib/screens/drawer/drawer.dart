@@ -8,7 +8,6 @@ import 'package:vibetag/screens/auth/login.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
 import 'package:vibetag/screens/funding/funding.dart';
 import 'package:vibetag/screens/gift/gift.dart';
-import 'package:vibetag/screens/job/job.dart';
 import 'package:vibetag/screens/memories/memories.dart';
 import 'package:vibetag/screens/offers/offers.dart';
 import 'package:vibetag/screens/profile/profile.dart';
@@ -483,20 +482,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              pushRoute(
-                                context: context,
-                                screen: const Job(),
-                              );
-                            },
-                            child: DrawerItems(
-                              title: 'Jobs',
-                              imgUrl: 'assets/images/drawer/jobs.png',
-                              notifications: 1,
-                              isNewNotification: false,
-                            ),
-                          ),
+                          
                           InkWell(
                             onTap: () {
                               pushRoute(

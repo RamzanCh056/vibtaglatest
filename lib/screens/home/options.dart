@@ -27,7 +27,6 @@ void changeFeeds(BuildContext context) async {
   };
   final result = await API().postData(data);
   await PostMethods().getPosts(context: context);
-  print('++++++++++++++++++++++++++++++++++++++');
 }
 
 Options({required BuildContext context}) {

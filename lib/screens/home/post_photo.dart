@@ -132,7 +132,7 @@ class _PostState extends State<Post> {
     bool isAudio = fileExtension == '.mp3' || fileExtension == '.wave';
     bool is_video = isVideo(ex: fileExtension);
 
-    return !(widget.post['postFile'].toString().contains('https'))
+    return is_video? gap():  !(widget.post['postFile'].toString().contains('https'))
         ? gap()
         : Container(
             width: double.maxFinite,

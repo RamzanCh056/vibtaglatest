@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -18,6 +20,7 @@ import '../drawer/shop_drawer.dart';
 import 'package:readmore/readmore.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../shop/shop_header.dart';
+import 'package:http/http.dart' as http;
 
 class Job extends StatefulWidget {
   const Job({super.key});
@@ -29,6 +32,50 @@ class Job extends StatefulWidget {
 class _JobState extends State<Job> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
   TextEditingController search = TextEditingController();
+  var jobs = [];
+  String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
+  getJob()async{
+
+    var headers = {
+      'Cookie': 'PHPSESSID=de56e7493c31255f741b7134a874b256; _us=1676723040; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-17%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'jobs',
+      'sub_type': 'get'
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      //print(await response.stream.bytesToString());
+      var res = await response.stream.bytesToString();
+      var body = jsonDecode(res);
+      jobs = body['data'];
+      print("jobs == ${jobs}");
+      setState(() {
+        isLoading = false;
+
+      });
+    }
+    else {
+    print(response.reasonPhrase);
+    setState(() {
+      isLoading = false;
+
+    });
+    }
+
+  }
+  @override
+  void initState() {
+    super.initState();
+    getJob();
+
+  }
+  bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +89,7 @@ class _JobState extends State<Job> {
           children: [
             const NavBar(),
             Header(
-             
+            
             ),
             const SizedBox(
               height: 10,
@@ -109,9 +156,12 @@ class _JobState extends State<Job> {
           const SizedBox(
             height: 20,
           ),
+          isLoading?
+          Center(child: CircularProgressIndicator()):
           Expanded(
 
             child: ListView.builder(
+              itemCount: jobs.length,
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (_, index) {
@@ -134,9 +184,15 @@ class _JobState extends State<Job> {
                                   Container(
                                     height: 50,
                                     width: 50,
-                                    decoration: const BoxDecoration(
+                                    decoration:  BoxDecoration(
+                                      image: DecorationImage(image: NetworkImage(
+                                        Url+jobs[index]['image'],
+                                      ),
+                                        fit: BoxFit.cover
+                                      ),
                                         shape: BoxShape.circle,
-                                        color: Colors.grey),
+                                        color: Colors.grey,
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -144,8 +200,8 @@ class _JobState extends State<Job> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "Microsoft",
+                                       Text(
+                                        jobs[index]['title'],
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 16,
@@ -155,13 +211,13 @@ class _JobState extends State<Job> {
                                         height: 5,
                                       ),
                                       Row(
-                                        children: const [
+                                        children:  [
                                           Icon(
                                             Icons.location_on,
                                             color: Colors.grey,
                                           ),
                                           Text(
-                                            "New York, USA",
+                                            jobs[index]['location'],
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.grey),
@@ -175,8 +231,9 @@ class _JobState extends State<Job> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const Text(
-                                "Looking for Product Designer",
+                               Text(
+
+                                "Looking for ${jobs[index]['title']}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 15,
@@ -185,8 +242,8 @@ class _JobState extends State<Job> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              const ReadMoreText(
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's",
+                               ReadMoreText(
+                                jobs[index]['description'],
                                 trimLines: 2,
                                 colorClickableText: Colors.black,
                                 trimMode: TrimMode.Line,
@@ -224,7 +281,7 @@ class _JobState extends State<Job> {
                                           height: 5,
                                         ),
                                         Text(
-                                          "Male only",
+                                          "Not Specified",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               color: Colors.black),
@@ -243,7 +300,7 @@ class _JobState extends State<Job> {
                                     child: Column(
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
-                                      children: const [
+                                      children:  [
                                         Text(
                                           "Type",
                                           style: TextStyle(
@@ -255,7 +312,7 @@ class _JobState extends State<Job> {
                                           height: 5,
                                         ),
                                         Text(
-                                          "Full-Time",
+                                          jobs[index]['job_type'],
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               color: Colors.black),
@@ -286,7 +343,7 @@ class _JobState extends State<Job> {
                                           height: 5,
                                         ),
                                         Text(
-                                          "02 Seats",
+                                          "Not Specified",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               color: Colors.black),
@@ -307,8 +364,8 @@ class _JobState extends State<Job> {
                               ),
                               Row(
                                 children: [
-                                  const Text(
-                                    "\$1500",
+                                   Text(
+                                    "${jobs[index]['minimum']}-${jobs[index]['maximum']} \$",
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w800,
@@ -369,7 +426,7 @@ class _JobState extends State<Job> {
                 },
 
 
-                itemCount: 5
+
             ),
           ),
 

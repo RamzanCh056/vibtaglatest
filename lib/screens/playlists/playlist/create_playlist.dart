@@ -37,7 +37,6 @@ class _CreatePlaylistState extends State<CreatePlaylist> {
     if (image != null) {
       selectedImage = await image.readAsBytes();
       ToastMessage(message: 'Image selected successfully');
-
       file = image.path;
       setState(() {
         isImageSelected = true;
@@ -60,6 +59,7 @@ class _CreatePlaylistState extends State<CreatePlaylist> {
           playlistCategories.indexOf(category.text.toString()).toString(),
       'music_id': widget.music_id.toString(),
     };
+    print(data);
     final result = await API().MultiPartRequest(
       path: file,
       data: data,

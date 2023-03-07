@@ -73,7 +73,6 @@ class _PostProductState extends State<PostProduct> {
   }
 
   followOrLike() async {
-    print('+++++++++++++++++++++++++++++++++++++++++');
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {

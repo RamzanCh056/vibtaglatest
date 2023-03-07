@@ -88,7 +88,6 @@ class _PoolPostState extends State<PoolPost> {
   }
 
   followOrLike() async {
-    print('+++++++++++++++++++++++++++++++++++++++++');
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {

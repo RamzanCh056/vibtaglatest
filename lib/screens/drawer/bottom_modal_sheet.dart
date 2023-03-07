@@ -35,7 +35,6 @@ import '../album/my_album.dart';
 import '../events/events.dart';
 import '../explore/explore.dart';
 import '../find_friend/filter_screen.dart';
-import '../job/job.dart';
 import '../my_page_screen/browse_event_screen.dart';
 import '../my_page_screen/my_page.dart';
 import '../playlists/playlist.dart';
@@ -197,7 +196,7 @@ BottomDrawer({required BuildContext context}) {
                         );
                       },
                     ),
-                    BottomModalItems(
+                   BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/nodge.svg',
                       title: 'Nudge',
                       notifications: 0,

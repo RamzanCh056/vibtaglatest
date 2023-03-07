@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -13,8 +12,9 @@ import 'package:http/http.dart' as http;
 import '../../../utils/constant.dart';
 import '../../story/add_story.dart';
 import 'add_story.dart';
+
 class AddStroy extends StatefulWidget {
-   AddStroy(this.user,{Key? key}) : super(key: key);
+  AddStroy(this.user, {Key? key}) : super(key: key);
   late ModelUser user;
 
   @override
@@ -27,9 +27,11 @@ class _AddStroyState extends State<AddStroy> {
   var liststory = [];
   getStoryList() async {
     var headers = {
-      'Cookie': 'PHPSESSID=9f5192eb317f0b598a24d8925ec60701; _us=1676630640; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-16%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+      'Cookie':
+          'PHPSESSID=9f5192eb317f0b598a24d8925ec60701; _us=1676630640; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-02-16%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'view_story_api',
       'sub_type': 'view_all_stories',
@@ -44,21 +46,25 @@ class _AddStroyState extends State<AddStroy> {
     if (response.statusCode == 200) {
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
-       tempList = body['story'];
+      tempList = body['story'];
       // liststory = tempList[''];
       // print("list == ${liststory}");
       // print("story == ${tempList}");
       // final todo = tempList?.map((dynamic item) => StoryModel.fromJson(item)).toList() ?? [];
       // todo;
       // story = todo;
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+
       print("user message == $story");
     } else {
       print(response.reasonPhrase);
     }
   }
+
   File? imageFile;
   getImageGallery() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
@@ -67,23 +73,27 @@ class _AddStroyState extends State<AddStroy> {
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateStroyWithEdit(
-            imageFile,
-        )));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CreateStroyWithEdit(
+                      imageFile,
+                    )));
       });
     }
   }
+
   @override
   void initState() {
     super.initState();
     getStoryList();
-
   }
+
   bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
-  return  StatefulBuilder(builder: ((context, setState) {
+    return StatefulBuilder(builder: ((context, setState) {
       double width = deviceWidth(context: context);
       double height = deviceHeight(context: context);
       return Container(
@@ -148,9 +158,8 @@ class _AddStroyState extends State<AddStroy> {
                           onTap: () {
                             //print("object ${ tempList['thumbnail'].toString()}");
                             // addStory(context: context);
-                          //  getStoryList();
+                            //  getStoryList();
                             getImageGallery();
-
                           },
                           child: Center(
                             child: Container(
@@ -175,15 +184,17 @@ class _AddStroyState extends State<AddStroy> {
                   ),
                 ),
               );
-
             }
             if (i == 1) {
               return InkWell(
                 onTap: () {
-                 // print("temlist ==${tempList}");
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>MoreStories(
-                    tempList,
-                  )));
+                  // print("temlist ==${tempList}");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MoreStories(
+                                tempList,
+                              )));
                 },
                 child: Container(
                   width: width * 0.45,
@@ -207,48 +218,45 @@ class _AddStroyState extends State<AddStroy> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child:
-                        // tempList ['thumbnail']!=""?
-                        Container(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              width * 0.015,
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child:
+                              // tempList ['thumbnail']!=""?
+                              Container(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                width * 0.015,
+                              ),
+                              child: isLoading
+                                  ? Image.network(
+                                      widget.user.avatar!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      tempList['thumbnail'].toString(),
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
-                            child:
-                            isLoading?
-                            Image.network(
-                              widget.user.avatar!,
-                              fit: BoxFit.cover,
-                            ):
-                            Image.network(
-                              tempList['thumbnail'].toString(),
-                              fit: BoxFit.cover,
-                            ),
+                          )
+                          // : Container(
+                          //   child: ClipRRect(
+                          //     borderRadius: BorderRadius.circular(
+                          //       width * 0.015,
+                          //     ),
+                          //     child:
+                          //     Image.asset(
+                          //       'assets/images/cover.jpg',
+                          //       fit: BoxFit.cover,
+                          //     )
+                          //   ),
+                          // )
                           ),
-                        )
-                        // : Container(
-                        //   child: ClipRRect(
-                        //     borderRadius: BorderRadius.circular(
-                        //       width * 0.015,
-                        //     ),
-                        //     child:
-                        //     Image.asset(
-                        //       'assets/images/cover.jpg',
-                        //       fit: BoxFit.cover,
-                        //     )
-                        //   ),
-                        // )
-                      ),
-
                     ],
                   ),
                 ),
               );
-
             }
 
             return Stack(
@@ -329,7 +337,6 @@ class _AddStroyState extends State<AddStroy> {
       );
     }));
   }
-
 }
 
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -8,21 +9,10 @@ import 'package:vibetag/front.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
-import 'package:vibetag/screens/auth/login.dart';
-import 'package:vibetag/screens/funding/funding.dart';
-import 'package:vibetag/screens/job/job.dart';
-import 'package:vibetag/screens/my_page_screen/my_page.dart';
-import 'package:vibetag/screens/playlists/playlists_detail.dart';
+import 'package:vibetag/screens/playlists/playlist.dart';
 import 'package:vibetag/utils/constant.dart';
 
-import 'screens/activties/activities.dart';
-import 'screens/album/album.dart';
-import 'screens/album/create_album.dart';
-import 'screens/album/my_album.dart';
-import 'screens/events/create_event.dart';
-import 'screens/livestream/create/show_pop.dart';
-import 'screens/my_page_screen/browse_event_screen.dart';
-import 'screens/playlists/playlist.dart';
+import 'screens/auth/login.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -69,33 +59,31 @@ class MyApp extends StatelessWidget {
           fontFamily: 'HelveticalNeueLTStd',
           scaffoldBackgroundColor: backgroundColor,
         ),
-        home: true
-            ? Funding()
-            : FutureBuilder(
-                future: SharedPreferences.getInstance(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Some Issue has occurred!'),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    SharedPreferences preferences = snapshot.data!;
-                    final userId = preferences.getString('userId');
-                    if (userId == null) {
-                      return const Login();
-                    } else {
-                      loginUserId = userId;
-                      return const FrontPage();
-                    }
-                  }
-                  return const Login();
-                },
-              ),
+        home: FutureBuilder(
+          future: SharedPreferences.getInstance(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('Some Issue has occurred!'),
+              );
+            }
+            if (snapshot.hasData) {
+              SharedPreferences preferences = snapshot.data!;
+              final userId = preferences.getString('userId');
+              if (userId == null) {
+                return const Login();
+              } else {
+                loginUserId = userId;
+                return const FrontPage();
+              }
+            }
+            return const Login();
+          },
+        ),
       ),
     );
   }

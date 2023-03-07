@@ -60,7 +60,6 @@ class PostMethods {
     for (var colors in responseColors) {
       playlistColors.add(colors);
     }
-    print('+++++++++++++++++++++++++++++++++++');
     print(playlistColors);
   }
 

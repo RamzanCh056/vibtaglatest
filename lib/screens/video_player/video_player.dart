@@ -162,8 +162,6 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                           onTap: () {
                             if (!(widget.isAds)) {
                               isTapped = true;
-                              print('++++++++++++++++++++++++++++');
-                              print(isTapped);
                               pushRoute(
                                 context: context,
                                 screen: VideoScreen(

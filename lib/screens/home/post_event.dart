@@ -102,7 +102,6 @@ class _PostEventState extends State<PostEvent> {
     });
   }
 followOrLike() async {
-    print('+++++++++++++++++++++++++++++++++++++++++');
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {

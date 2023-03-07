@@ -130,7 +130,6 @@ class _ColoredPostState extends State<ColoredPost> {
   }
 
   followOrLike() async {
-    print('+++++++++++++++++++++++++++++++++++++++++');
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {
