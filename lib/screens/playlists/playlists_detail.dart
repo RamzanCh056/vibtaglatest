@@ -108,6 +108,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                 videoUrl: video_url,
                                 thumbnail: thumbnail,
                                 videoTimer: true,
+                                isAds:true,
                               ),
                               gap(h: 15),
                               Container(
