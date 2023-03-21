@@ -15,6 +15,7 @@ import 'package:vibetag/screens/page/page.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
+import '../hast_tag/tred_screen.dart';
 import '../profile/profile.dart';
 
 class PostProduct extends StatefulWidget {
@@ -526,6 +527,17 @@ class _PostProductState extends State<PostProduct> {
                         ),
                         Html(
                           data: '${widget.post['is_offer_product']['text']}',
+                          onAnchorTap: (str, rndr, map, e) {
+                            pushRoute(
+                              context: context,
+                              screen: HashTrend(
+                                  hashTag: e!.text.toString().contains('#')
+                                      ? e.text
+                                          .toString()
+                                          .replaceFirst(RegExp(r'#'), '')
+                                      : e.text.toString()),
+                            );
+                          },
                           style: {
                             "body": Style(
                               fontSize: FontSize(12.0),
@@ -536,6 +548,17 @@ class _PostProductState extends State<PostProduct> {
                         ),
                         Html(
                           data: '${widget.post['is_offer_product']['expiry']}',
+                          onAnchorTap: (str, rndr, map, e) {
+                            pushRoute(
+                              context: context,
+                              screen: HashTrend(
+                                  hashTag: e!.text.toString().contains('#')
+                                      ? e.text
+                                          .toString()
+                                          .replaceFirst(RegExp(r'#'), '')
+                                      : e.text.toString()),
+                            );
+                          },
                           style: {
                             "body": Style(
                               fontSize: FontSize(12.0),
@@ -565,6 +588,18 @@ class _PostProductState extends State<PostProduct> {
                           width: double.maxFinite,
                           child: Html(
                             data: widget.post['product']['name'],
+                            onAnchorTap: (str, rndr, map, e) {
+                              pushRoute(
+                                context: context,
+                                screen: HashTrend(
+                                  hashTag: e!.text.toString().contains('#')
+                                      ? e.text
+                                          .toString()
+                                          .replaceFirst(RegExp(r'#'), '')
+                                      : e.text.toString(),
+                                ),
+                              );
+                            },
                             style: {
                               "body": Style(
                                 fontSize: FontSize(12.0),

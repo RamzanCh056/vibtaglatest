@@ -46,47 +46,49 @@ class _ToFollowTrendWidgetState extends State<ToFollowTrendWidget> {
               width: width * 0.12,
               height: width * 0.12,
               decoration: BoxDecoration(
-                color: white,
-                borderRadius: borderRadius(5),
+                borderRadius: borderRadius(width),
               ),
               child: ClipRRect(
-                borderRadius: borderRadius(5),
+                borderRadius: borderRadius(width),
                 child: Image.network(
                   widget.user['avatar'],
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            gap(
-              w: 10,
-            ),
+            gap(w: 5),
             Container(
-              width: width * 0.7,
+              width: width * 0.75,
+              height: width * 0.12,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Text(
-                          widget.user['name'],
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.clip,
+                  Container(
+                    height: width * 0.12,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          child: Text(
+                            widget.user['name'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.clip,
+                            ),
                           ),
                         ),
-                      ),
-                      Text(
-                        widget.user['username'],
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: grayMed,
+                        Text(
+                          widget.user['username'],
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: grayMed,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   InkWell(
                     onTap: () {
@@ -100,13 +102,16 @@ class _ToFollowTrendWidgetState extends State<ToFollowTrendWidget> {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: orangePrimary,
+                        border: Border.all(
+                          color: orangePrimary,
+                          width: 2,
+                        ),
                         borderRadius: borderRadius(5),
                       ),
                       child: Text(
                         isFollowing ? 'Following' : 'Follow',
                         style: TextStyle(
-                          color: whitePrimary,
+                          color: orangePrimary,
                           fontSize: 10,
                         ),
                       ),
@@ -120,8 +125,8 @@ class _ToFollowTrendWidgetState extends State<ToFollowTrendWidget> {
         gap(h: 10),
         Container(
           width: double.maxFinite,
-          color: grayMed,
-          height: 1.5,
+          color: grayLight,
+          height: 1,
         ),
         gap(h: 10),
       ],

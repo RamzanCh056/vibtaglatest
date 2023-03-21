@@ -16,12 +16,13 @@ CategoryItem({required String title}) {
     decoration: BoxDecoration(
       color: HexColor('#232323'),
       borderRadius: borderRadius(15),
+      boxShadow: lightShadow,
     ),
     child: Text(
       title,
       style: TextStyle(
         color: white,
-        fontSize: 12,
+        fontSize: 8,
       ),
     ),
   );

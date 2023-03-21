@@ -30,7 +30,7 @@ class _MyPlaylistState extends State<MyPlaylist> {
     final data = {
       'type': 'playlist_api',
       'action': 'get_my_playlist',
-      'user_id': loginUserId == '' ? '1780409' : loginUserId.toString(),
+      'user_id': loginUserId == '' ? '1724025' : loginUserId.toString(),
       'music_id': '0',
     };
     final result = await API().postData(data);

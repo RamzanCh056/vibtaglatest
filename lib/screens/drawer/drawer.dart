@@ -370,7 +370,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const PlayList(),
+                                screen: PlayList(),
                               );
                             },
                             child: DrawerItems(
@@ -482,7 +482,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          
                           InkWell(
                             onTap: () {
                               pushRoute(

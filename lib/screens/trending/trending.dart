@@ -3,11 +3,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/trending/widgets/hash_trend_widget.dart';
+import 'package:vibetag/screens/trending/widgets/lastest_videos_widget.dart';
 import 'package:vibetag/screens/trending/widgets/page_trend_widget.dart';
 import 'package:vibetag/screens/trending/widgets/suggested_groups_trend_widget.dart';
 import 'package:vibetag/screens/trending/widgets/tofollow_trend_widget.dart';
+import 'package:vibetag/screens/trending/widgets/trend_activities.dart';
+import 'package:vibetag/screens/trending/widgets/trend_latest_products.dart';
+import 'package:vibetag/screens/trending/widgets/trend_sponsor_widget.dart';
 import 'package:vibetag/screens/trending/widgets/word_news_trend_widget.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -15,6 +21,7 @@ import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import 'widgets/blog_trend_widget.dart';
+import 'widgets/trending_post.dart';
 
 class Trending extends StatefulWidget {
   const Trending({super.key});
@@ -27,11 +34,17 @@ class _TrendingState extends State<Trending> {
   List<Widget> trendingWorldNews = [];
   List<Widget> trendingHashTag = [];
   List<Widget> trendingPopularBlogs = [];
+  List<Widget> trendingPopularArticles = [];
   List<Widget> trendingToFollow = [];
   List<Widget> trendingPages = [];
+  List<Widget> trendActivities = [];
+  List<Widget> trendVideos = [];
+  List<Widget> trendProducts = [];
+  List<Widget> trendVibesToday = [];
   List<Widget> suggestedGroupsList = [];
   List<dynamic> latestProduct = [];
   Map<String, dynamic> getTrending = {};
+
   bool isLoading = false;
   @override
   void initState() {
@@ -43,80 +56,127 @@ class _TrendingState extends State<Trending> {
     setState(() {
       isLoading = true;
     });
-    final data = {
-      'type': 'trending_area_get_all',
-      'user_id': loginUserId.toString(),
-    };
-    final result = await API().postData(data);
-    getTrending = jsonDecode(result.body);
-
-    if (getTrending['world_news'].length > 0) {
-      for (var i = 0; i < getTrending['world_news'].length; i++) {
-        if (getTrending['world_news'][i]['post_id'] != null) {
-          trendingWorldNews.add(
-            WordNewsTrend(
-              context: context,
-              worldnews: getTrending['world_news'][i],
-            ),
-          );
-        }
-      }
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getString('trending') == null) {
+      final data = {
+        'type': 'trending_area_get_all',
+        'user_id': loginUserId.toString(),
+      };
+      final result = await API().postData(data);
+      getTrending = jsonDecode(result.body);
+      String trending = jsonEncode(getTrending);
+      pref.setString('trending', trending);
+    } else {
+      getTrending = jsonDecode(pref.getString('trending')!);
     }
+    setTrending();
 
-    if (getTrending['trending_hashtags'].length > 0) {
-      for (var i = 0; i < getTrending['trending_hashtags'].length; i++) {
-        trendingHashTag.add(HashTrendWidget(
-            hash: '#${getTrending['trending_hashtags'][i]['tag']}'));
-      }
-    }
-
-    if (getTrending['popular_blogs_today'].length > 0) {
-      for (var i = 0; i < getTrending['popular_blogs_today'].length; i++) {
-        trendingPopularBlogs.add(
-          blogTrendingWidget(
-            context: context,
-            blog: getTrending['popular_blogs_today'][i],
-          ),
-        );
-      }
-    }
-
-    if (getTrending['people_to_follow'].length > 0) {
-      for (var i = 0; i < getTrending['people_to_follow'].length; i++) {
-        trendingToFollow.add(
-          ToFollowTrendWidget(
-            user: getTrending['people_to_follow'][i],
-          ),
-        );
-      }
-    }
-
-    if (getTrending['pages_you_may_like'].length > 0) {
-      for (var i = 0; i < getTrending['pages_you_may_like'].length; i++) {
-        trendingPages.add(
-          PagesTrendWidget(
-            page: getTrending['pages_you_may_like'][i],
-          ),
-        );
-      }
-    }
-
-    if (getTrending['groups_you_may_like'].length > 0) {
-      for (var i = 0; i < getTrending['groups_you_may_like'].length; i++) {
-        suggestedGroupsList.add(SuggestedGroupsTrend(
-          group: getTrending['groups_you_may_like'][i],
-        ));
-      }
-    }
     setState(() {
       isLoading = false;
     });
+
+    if (pref.getString('trending') != null) {
+      final data = {
+        'type': 'trending_area_get_all',
+        'user_id': loginUserId.toString(),
+      };
+      final result = await API().postData(data);
+      getTrending = jsonDecode(result.body);
+      String trending = jsonEncode(getTrending);
+      pref.setString('trending', trending);
+      setTrending();
+      setState(() {});
+    }
+  }
+
+  setTrending() {
+    for (var product in getTrending['latest_products']) {
+      trendProducts.add(
+        TrendProductWidget(product: product),
+      );
+    }
+
+    for (var post in getTrending['world_news']) {
+      if (post['post_id'] != null) {
+        trendingWorldNews.add(
+          WordNewsTrend(
+            context: context,
+            worldnews: post,
+          ),
+        );
+      }
+    }
+
+    for (var tag in getTrending['trending_hashtags']) {
+      trendingHashTag.add(HashTrendWidget(hash: tag['tag']));
+    }
+
+    for (var video in getTrending['latest_videos']) {
+      trendVideos.add(TrendLatestVideos(video: video));
+    }
+    for (var vibe in getTrending['popular_vibes_today']) {
+      trendVibesToday.add(
+        TrendPostWidget(
+          post: vibe,
+        ),
+      );
+    }
+
+    for (var activity in getTrending['popular_articles']) {
+      trendingPopularArticles.add(
+        blogTrendingWidget(
+          context: context,
+          blog: activity,
+        ),
+      );
+    }
+    for (var blog in getTrending['popular_blogs_today']) {
+      trendingPopularBlogs.add(
+        blogTrendingWidget(
+          context: context,
+          blog: blog,
+        ),
+      );
+    }
+
+    for (var people in getTrending['people_to_follow']) {
+      trendingToFollow.add(
+        ToFollowTrendWidget(
+          user: people,
+        ),
+      );
+    }
+
+    for (var page in getTrending['pages_you_may_like']) {
+      trendingPages.add(
+        PagesTrendWidget(
+          page: page,
+        ),
+      );
+    }
+
+    for (var group in getTrending['groups_you_may_like']) {
+      suggestedGroupsList.add(SuggestedGroupsTrend(
+        group: group,
+      ));
+    }
+
+    for (var activity in getTrending['activities']) {
+      trendActivities.add(
+        TrendActivitiesWidget(
+          activity: activity,
+        ),
+      );
+    }
+    trendActivities.add(
+      gap(h: 25),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
+    width = deviceWidth(context: context);
+    height = deviceHeight(context: context);
     return isLoading
         ? loadingSpinner()
         : Container(
@@ -128,8 +188,7 @@ class _TrendingState extends State<Trending> {
                   Column(
                     children: [
                       NavBar(),
-                      Header(
-                      ),
+                      Header(),
                     ],
                   ),
                   Container(
@@ -139,42 +198,18 @@ class _TrendingState extends State<Trending> {
                         children: [
                           Container(
                             margin: spacing(
-                              horizontal: 15,
-                              vertical: 15,
+                              horizontal: 7,
+                              vertical: 10,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Icons.trending_up,
-                                      color: orangePrimary,
-                                      size: 40,
-                                    ),
-                                    gap(w: 5),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'What is Trending on',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          'World news',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: grayMed,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                const Text(
+                                  'World News',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 gap(h: 10),
                                 SingleChildScrollView(
@@ -184,14 +219,35 @@ class _TrendingState extends State<Trending> {
                                 ),
                                 gap(h: 10),
                                 const Text(
-                                  'Trending',
+                                  'Hashtags',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                gap(h: 10),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: trendingHashTag,
+                                  ),
+                                ),
+                                gap(h: 10),
+                                const Text(
+                                  'Popular Vibes Today',
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),
                                 ),
                                 gap(h: 10),
-                                Wrap(
-                                  children: trendingHashTag,
+                                LatestPostSlider(
+                                  posts: trendVibesToday,
+                                ),
+                                gap(h: 10),
+                                Container(
+                                  width: double.maxFinite,
+                                  height: 1,
+                                  color: grayMed,
                                 ),
                                 gap(h: 10),
                                 const Text(
@@ -201,23 +257,38 @@ class _TrendingState extends State<Trending> {
                                   ),
                                 ),
                                 gap(h: 10),
-                                Column(
-                                  children: trendingPopularBlogs,
-                                ),
-
-                                gap(h: 15),
-                                const Text(
-                                  'People to follow',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: trendingPopularBlogs,
                                   ),
                                 ),
                                 gap(h: 10),
-                                //To Follow Widget
-                                Column(
-                                  children: trendingToFollow,
+                                Container(
+                                  width: double.maxFinite,
+                                  height: 1,
+                                  color: grayMed,
                                 ),
-                                gap(h: 15),
+                                gap(h: 10),
+                                const Text(
+                                  'Most Recent Articles',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                gap(h: 10),
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: trendingPopularArticles,
+                                  ),
+                                ),
+                                gap(h: 10),
+                                Container(
+                                  width: double.maxFinite,
+                                  height: 1,
+                                  color: grayMed,
+                                ),
+                                gap(h: 10),
                                 Container(
                                   padding: spacing(
                                     horizontal: 10,
@@ -225,7 +296,7 @@ class _TrendingState extends State<Trending> {
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: borderRadius(7),
-                                    color: whiteGray,
+                                    color: white,
                                   ),
                                   child: Column(
                                     children: [
@@ -240,10 +311,22 @@ class _TrendingState extends State<Trending> {
                                               fontSize: 16,
                                             ),
                                           ),
-                                          Text(
-                                            'See more',
-                                            style: TextStyle(
-                                              color: blue,
+                                          Container(
+                                            padding: spacing(
+                                                horizontal: 15, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              borderRadius: borderRadius(width),
+                                              border: Border.all(
+                                                width: 2,
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'See all',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: grayMed,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -261,13 +344,19 @@ class _TrendingState extends State<Trending> {
                                 ),
                                 gap(h: 15),
                                 Container(
+                                  width: double.maxFinite,
+                                  height: 1,
+                                  color: grayMed,
+                                ),
+                                gap(h: 10),
+                                Container(
                                   padding: spacing(
                                     horizontal: 10,
                                     vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: borderRadius(7),
-                                    color: whiteGray,
+                                    color: white,
                                   ),
                                   child: Column(
                                     children: [
@@ -282,10 +371,22 @@ class _TrendingState extends State<Trending> {
                                               fontSize: 16,
                                             ),
                                           ),
-                                          Text(
-                                            'See more',
-                                            style: TextStyle(
-                                              color: blue,
+                                          Container(
+                                            padding: spacing(
+                                                horizontal: 15, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              borderRadius: borderRadius(width),
+                                              border: Border.all(
+                                                width: 2,
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'See all',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: grayMed,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -296,7 +397,8 @@ class _TrendingState extends State<Trending> {
                                         child: Row(
                                           children: suggestedGroupsList,
                                         ),
-                                      )
+                                      ),
+                                      gap(h: 10),
                                     ],
                                   ),
                                 ),
@@ -364,7 +466,104 @@ class _TrendingState extends State<Trending> {
                                     ],
                                   ),
                                 ),
-                                gap(h: 15),
+                                gap(h: 10),
+                                Container(
+                                  width: double.maxFinite,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    borderRadius: borderRadius(7),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      gap(h: 25),
+
+                                      // Container(
+                                      //   margin: spacing(horizontal: 7),
+                                      //   padding: spacing(
+                                      //     horizontal: 7,
+                                      //     vertical: 10,
+                                      //   ),
+                                      //   width: double.maxFinite,
+                                      //   child: Row(
+                                      //     mainAxisAlignment:
+                                      //         MainAxisAlignment.spaceBetween,
+                                      //     children: [
+                                      //       const Text(
+                                      //         'Trending Post',
+                                      //         style: TextStyle(
+                                      //           fontSize: 16,
+                                      //         ),
+                                      //       ),
+                                      //       Container(
+                                      //         padding: spacing(
+                                      //             horizontal: 15, vertical: 5),
+                                      //         decoration: BoxDecoration(
+                                      //           borderRadius:
+                                      //               borderRadius(width),
+                                      //           border: Border.all(
+                                      //             width: 2,
+                                      //             color: grayMed,
+                                      //           ),
+                                      //         ),
+                                      //         child: Text(
+                                      //           'See all',
+                                      //           style: TextStyle(
+                                      //             fontSize: 12,
+                                      //             color: grayMed,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                      // gap(h: 10),
+                                      // SingleChildScrollView(
+                                      //   scrollDirection: Axis.horizontal,
+                                      //   child: Row(
+                                      //     children: trendVideos,
+                                      //   ),
+                                      // ),
+                                      // gap(h: 25),
+                                      Container(
+                                        width: width * 0.9,
+                                        height: height * 0.12,
+                                        padding: spacing(horizontal: 15),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              HexColor('#FFE08A'),
+                                              HexColor('#FFF0C8'),
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          ),
+                                          borderRadius: borderRadius(7),
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              padding: spaceOnly(top: 25),
+                                              height: height * 0.12,
+                                              child: Text(
+                                                'Get your friend to join your spark',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ),
+                                            Image.asset('assets/invite.png'),
+                                          ],
+                                        ),
+                                      ),
+                                      gap(h: 25)
+                                    ],
+                                  ),
+                                ),
+                                gap(h: 10),
                                 Container(
                                   padding: spacing(
                                     horizontal: 10,
@@ -382,117 +581,155 @@ class _TrendingState extends State<Trending> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           const Text(
-                                            'Latest Products',
+                                            'Trending Products',
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
                                           ),
-                                          Text(
-                                            'See more',
-                                            style: TextStyle(
-                                              color: blue,
+                                          Container(
+                                            padding: spacing(
+                                                horizontal: 15, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              borderRadius: borderRadius(width),
+                                              border: Border.all(
+                                                width: 2,
+                                                color: grayMed,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'See all',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: grayMed,
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
                                       gap(h: 10),
-                                      Container(
-                                        height: height * 0.52,
-                                        width: double.maxFinite,
-                                        child: GridView.builder(
-                                            itemCount:
-                                                getTrending['latest_products']
-                                                    .length,
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              mainAxisSpacing: 10,
-                                              crossAxisSpacing: 10,
-                                              childAspectRatio: 0.85,
-                                            ),
-                                            itemBuilder: (context, i) {
-                                              return Container(
-                                                margin: spacing(
-                                                  horizontal: 5,
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      borderRadius(12),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        height: height * 0.15,
-                                                        width: width * 0.45,
-                                                        child: Image.network(
-                                                          getTrending['latest_products']
-                                                                          [i]
-                                                                      ['images']
-                                                                  [0]['image']
-                                                              .toString()
-                                                              .trim(),
-                                                          fit: BoxFit.cover,
-                                                          width: width * 0.08,
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: width * 0.45,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: white,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .only(
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    12),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    12),
-                                                          ),
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            gap(h: 5),
-                                                            Container(
-                                                              width:
-                                                                  width * 0.35,
-                                                              child: Text(
-                                                                getTrending[
-                                                                        'latest_products']
-                                                                    [i]['name'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 12,
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              '\£${getTrending['latest_products'][i]['price_max']}',
-                                                              style: TextStyle(
-                                                                color:
-                                                                    orangePrimary,
-                                                                fontSize: 12,
-                                                              ),
-                                                            ),
-                                                            gap(h: 5),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: trendProducts,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                gap(h: 15),
+                                gap(h: 10),
+                                Container(
+                                  color: white,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin: spacing(horizontal: 7),
+                                        padding: spacing(
+                                          horizontal: 7,
+                                          vertical: 10,
+                                        ),
+                                        width: double.maxFinite,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'People to follow',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: spacing(
+                                                  horizontal: 15, vertical: 5),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'See all',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      gap(h: 10),
+                                      //To Follow Widget
+                                      SingleChildScrollView(
+                                        child: Column(
+                                          children: trendingToFollow,
+                                        ),
+                                      ),
+                                      gap(h: 15),
+                                    ],
+                                  ),
+                                ),
+                                gap(h: 10),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    borderRadius: borderRadius(7),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin: spacing(horizontal: 7),
+                                        padding: spacing(
+                                          horizontal: 7,
+                                          vertical: 10,
+                                        ),
+                                        width: double.maxFinite,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Based on your interest',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: spacing(
+                                                  horizontal: 15, vertical: 5),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'See all',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      gap(h: 10),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: trendVideos,
+                                        ),
+                                      ),
+                                      gap(h: 25)
+                                    ],
+                                  ),
+                                ),
+                                gap(h: 10),
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: borderRadius(10),
@@ -507,127 +744,98 @@ class _TrendingState extends State<Trending> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Row(
-                                              children: [
-                                                const CircleAvatar(
-                                                  backgroundImage: AssetImage(
-                                                    'assets/images/streamer.jpg',
-                                                  ),
-                                                ),
-                                                gap(w: 10),
-                                                const Text(
-                                                  'Sponsors',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ],
+                                            const Text(
+                                              'Sponsored',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
                                             ),
                                             Container(
-                                              padding: const EdgeInsets.all(5),
+                                              padding: spacing(
+                                                  horizontal: 15, vertical: 5),
                                               decoration: BoxDecoration(
-                                                color: lightGray,
                                                 borderRadius:
                                                     borderRadius(width),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: grayMed,
+                                                ),
                                               ),
-                                              child: Icon(
-                                                Icons.refresh,
-                                                color: orangePrimary,
+                                              child: Text(
+                                                'See all',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: grayMed,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
                                       gap(h: 10),
+                                      TrendAdsBanner(
+                                        ads: getTrending['ads'],
+                                      ),
+                                      gap(h: 10),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                  ),
+                                  child: Column(
+                                    children: [
                                       Container(
-                                        width: double.maxFinite,
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                height: height * 0.3,
-                                                width: double.maxFinite,
-                                                decoration: BoxDecoration(
-                                                  color: lightGray,
-                                                ),
-                                                child: Center(
-                                                  child: Container(
-                                                    width: width * 0.08,
-                                                    height: width * 0.08,
-                                                    child: SvgPicture.asset(
-                                                      'assets/svg/photo.svg',
-                                                      color: white,
-                                                      width: width * 0.08,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: double.maxFinite,
-                                                padding: spacing(
-                                                  horizontal: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: white,
-                                                  borderRadius:
-                                                      const BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(12),
-                                                    bottomRight:
-                                                        Radius.circular(12),
-                                                  ),
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    gap(h: 10),
-                                                    Container(
-                                                      width: width * 0.8,
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: const Text(
-                                                        'Apple Watch Series',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'The most durable Apple Watch ever. Hard Knock',
-                                                      style: TextStyle(
-                                                        color: grayMed,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Apple.com',
-                                                      style: TextStyle(
-                                                        color: orangePrimary,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                    gap(h: 15),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        margin: spacing(horizontal: 7),
+                                        padding: spacing(
+                                          horizontal: 7,
+                                          vertical: 10,
                                         ),
+                                        width: double.maxFinite,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Latest Activity',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: spacing(
+                                                  horizontal: 15, vertical: 5),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    borderRadius(width),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'See all',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: grayMed,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        children: trendActivities,
                                       ),
                                     ],
                                   ),
                                 ),
+                                gap(h: 10),
                               ],
                             ),
                           ),
-                          gap(h: height * 0.02)
+                          gap(h: 10),
                         ],
                       ),
                     ),

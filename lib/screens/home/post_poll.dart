@@ -13,34 +13,17 @@ import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
+import '../hast_tag/tred_screen.dart';
 import '../profile/profile.dart';
 
 class PoolPost extends StatefulWidget {
   final dynamic post;
 
-  final String avatar;
-  final String name;
-  final String postId;
-  final String postTime;
-  final String postText;
-  final List<dynamic> poolOptions;
-
-  final String likes;
-  final String comments;
-  final String shares;
 
   const PoolPost({
     Key? key,
     required this.post,
-    required this.avatar,
-    required this.name,
-    required this.postId,
-    required this.postTime,
-    required this.postText,
-    required this.poolOptions,
-    required this.likes,
-    required this.comments,
-    required this.shares,
+   
   }) : super(key: key);
 
   @override
@@ -73,7 +56,7 @@ class _PoolPostState extends State<PoolPost> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id':widget.post['post_id'].toString(),
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
@@ -113,7 +96,7 @@ class _PoolPostState extends State<PoolPost> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
+    totalLikes = int.parse(widget.post['reaction']['count']) + userLike;
 
     return Container(
       margin: spacing(
@@ -177,7 +160,7 @@ class _PoolPostState extends State<PoolPost> {
                           child: CircleAvatar(
                             radius: width * 0.06,
                             foregroundImage: NetworkImage(
-                              widget.avatar,
+                             widget.post['publisher']['avatar'],
                             ),
                           ),
                         ),
@@ -202,7 +185,7 @@ class _PoolPostState extends State<PoolPost> {
                                       ));
                                 },
                                 child: Text(
-                                  widget.name,
+                                  widget.post['publisher']['name'],
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: blackPrimary,
@@ -238,7 +221,7 @@ class _PoolPostState extends State<PoolPost> {
                           Row(
                             children: [
                               Text(
-                                widget.postTime,
+                                widget.post['post_time'],
                                 style: TextStyle(
                                   color: grayMed,
                                   fontSize: 12,
@@ -270,7 +253,18 @@ class _PoolPostState extends State<PoolPost> {
                     horizontal: 10,
                   ),
                   child: Html(
-                    data: widget.postText,
+                    data: widget.post['postText'],
+                    onAnchorTap: (str, rndr, map, e) {
+                      pushRoute(
+                        context: context,
+                        screen: HashTrend(
+                            hashTag: e!.text.toString().contains('#')
+                                ? e.text
+                                    .toString()
+                                    .replaceFirst(RegExp(r'#'), '')
+                                : e.text.toString()),
+                      );
+                    },
                     style: {
                       "body": Style(
                         fontSize: FontSize(12.0),
@@ -292,7 +286,7 @@ class _PoolPostState extends State<PoolPost> {
                             h: 20,
                           ),
                           Container(
-                            height: height * 0.05 * widget.poolOptions.length,
+                            height: height * 0.05 * widget.post['options'].length,
                             width: double.maxFinite,
                             child: GridView.builder(
                               gridDelegate:
@@ -301,7 +295,7 @@ class _PoolPostState extends State<PoolPost> {
                                 mainAxisSpacing: 0,
                                 childAspectRatio: 10 / 1,
                               ),
-                              itemCount: widget.poolOptions.length,
+                              itemCount: widget.post['options'].length,
                               itemBuilder: (context, i) {
                                 return Container(
                                   decoration: BoxDecoration(
@@ -334,12 +328,12 @@ class _PoolPostState extends State<PoolPost> {
                                           ),
                                           gap(w: 10),
                                           Text(
-                                            widget.poolOptions[i]['text'],
+                                           widget.post['options'][i]['text'],
                                           ),
                                         ],
                                       ),
                                       Text(
-                                          '${widget.poolOptions[i]['percentage']}')
+                                          '${widget.post['options'][i]['percentage']}')
                                     ],
                                   ),
                                 );
@@ -374,7 +368,7 @@ class _PoolPostState extends State<PoolPost> {
                                 ),
                                 gap(w: 2),
                                 Text(
-                                  "${widget.poolOptions[0]['all']}",
+                                  "${widget.post['options'][0]['all']}",
                                   style: TextStyle(
                                     color: white,
                                   ),
@@ -429,7 +423,7 @@ class _PoolPostState extends State<PoolPost> {
                       vertical: 5,
                     ),
                     child: Text(
-                      "${widget.comments} Comments | ${widget.shares} Revibed",
+                      "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                       style: TextStyle(
                         color: grayMed,
                         fontSize: 10,
@@ -476,9 +470,8 @@ class _PoolPostState extends State<PoolPost> {
                 ),
                 InkWell(
                   onTap: () {
-                                                    PostComments(context:context,postId: widget.post['post_id']);
-
-
+                    PostComments(
+                        context: context, postId: widget.post['post_id']);
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

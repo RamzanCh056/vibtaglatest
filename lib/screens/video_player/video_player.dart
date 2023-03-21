@@ -17,6 +17,7 @@ class VideoMediaPlayer extends StatefulWidget {
   bool isAds;
   bool autoPlay;
   bool videoTimer;
+  bool playAfterLoad;
   VideoMediaPlayer({
     Key? key,
     required this.post_id,
@@ -25,6 +26,7 @@ class VideoMediaPlayer extends StatefulWidget {
     this.isAds = false,
     this.autoPlay = true,
     this.videoTimer = false,
+    this.playAfterLoad = false,
   }) : super(key: key);
 
   @override
@@ -47,6 +49,9 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
     )..initialize().then(
         (_) {
           if (mounted && widget.autoPlay) {
+            _controller.play();
+          }
+          if (mounted && widget.playAfterLoad) {
             _controller.play();
           }
           setMic();
@@ -112,7 +117,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
             key: Key('${widget.videoUrl}'),
             onVisibilityChanged: (info) {
               var isVisible = info.visibleFraction;
-              if (widget.autoPlay) {
+              if (widget.autoPlay && !widget.playAfterLoad) {
                 if (mounted) {
                   if (isVisible > 0.6) {
                     if (_controller.value.isInitialized &&
@@ -134,7 +139,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
               }
             },
             child: Center(
-              child: !isFocused && !isTapped
+              child: !isFocused && !isTapped && !widget.playAfterLoad
                   ? InkWell(
                       onTap: () {
                         if (!(widget.isAds)) {
@@ -149,6 +154,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                       },
                       child: Container(
                         width: double.maxFinite,
+                        height: height * 0.3,
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/new/gif/image_loading1.gif',
                           image: videoThumbnail,
@@ -190,6 +196,10 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                               ),
                             ),
                             Positioned(
+                              top: 0,
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
                               child: Center(
                                 child: CircularProgressIndicator(
                                   color: orangeLight,
@@ -325,7 +335,8 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                   style: TextStyle(
                     color: white,
                   ),
-                ))
+                ),
+              )
             : gap(),
         Positioned(
           right: 15,

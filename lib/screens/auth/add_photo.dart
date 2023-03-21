@@ -129,7 +129,6 @@ class _AddPhotoState extends State<AddPhoto> {
       ToastMessage(message: 'Image selected successfully');
 
       file = image.path;
-      print(file);
       setState(() {
         isImageSelected = true;
       });
@@ -165,7 +164,6 @@ class _AddPhotoState extends State<AddPhoto> {
       'user_id': loginUserId,
       'user': followingUsers,
     };
-    print(data);
     final result = await API().postData(data);
     final response = jsonDecode(result.body);
     if (response['status'] == 200) {
@@ -737,7 +735,6 @@ class _AddPhotoState extends State<AddPhoto> {
                                       selectedDate: selectedDate,
                                       isSelected: isdateSelected,
                                       onConfirm: (date) {
-                                        print('confirm $date');
                                         bday.text =
                                             DateFormat().add_yMd().format(date);
 

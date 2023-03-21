@@ -215,46 +215,46 @@ class _AddStroyState extends State<AddStroy> {
                       width * 0.015,
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child:
-                              // tempList ['thumbnail']!=""?
-                              Container(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                width * 0.015,
-                              ),
-                              child: isLoading
-                                  ? Image.network(
-                                      widget.user.avatar!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      tempList['thumbnail'].toString(),
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                          )
-                          // : Container(
-                          //   child: ClipRRect(
-                          //     borderRadius: BorderRadius.circular(
-                          //       width * 0.015,
-                          //     ),
-                          //     child:
-                          //     Image.asset(
-                          //       'assets/images/cover.jpg',
-                          //       fit: BoxFit.cover,
-                          //     )
-                          //   ),
-                          // )
-                          ),
-                    ],
-                  ),
+                  // child: Stack(
+                  //   children: [
+                  //     Positioned(
+                  //         top: 0,
+                  //         bottom: 0,
+                  //         left: 0,
+                  //         right: 0,
+                  //         child:
+                  //             // tempList ['thumbnail']!=""?
+                  //             Container(
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(
+                  //               width * 0.015,
+                  //             ),
+                  //             child: isLoading
+                  //                 ? Image.network(
+                  //                     widget.user.avatar!,
+                  //                     fit: BoxFit.cover,
+                  //                   )
+                  //                 : Image.network(
+                  //                     tempList['thumbnail'].toString(),
+                  //                     fit: BoxFit.cover,
+                  //                   ),
+                  //           ),
+                  //         )
+                  //         // : Container(
+                  //         //   child: ClipRRect(
+                  //         //     borderRadius: BorderRadius.circular(
+                  //         //       width * 0.015,
+                  //         //     ),
+                  //         //     child:
+                  //         //     Image.asset(
+                  //         //       'assets/images/cover.jpg',
+                  //         //       fit: BoxFit.cover,
+                  //         //     )
+                  //         //   ),
+                  //         // )
+                  //         ),
+                  //   ],
+                  // ),
                 ),
               );
             }

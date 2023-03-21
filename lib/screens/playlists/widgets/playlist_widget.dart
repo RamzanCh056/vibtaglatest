@@ -23,13 +23,12 @@ class _PlaylistWidgetState extends State<PlaylistWidget> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    print(widget.playlist);
     return InkWell(
       onTap: () {
         pushRoute(
           context: context,
           screen: PlayListScreen(
-            playlist_id: widget.playlist['p_id'].toString(),
+            playlist: widget.playlist,
           ),
         );
       },

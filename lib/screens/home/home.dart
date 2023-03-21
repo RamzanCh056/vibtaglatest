@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/model/user.dart';
 import 'package:vibetag/model/user_details.dart';
@@ -88,6 +89,31 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = true;
     });
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if (preferences.getString('userData') != null) {
+      Map<String, dynamic> userData =
+          jsonDecode(preferences.getString('userData')!);
+
+      Map<String, dynamic> userDetails =
+          jsonDecode(preferences.getString('userData')!)['details'];
+
+      Provider.of<UserProvider>(context, listen: false).setUser(
+        ModelUser.fromMap(userData),
+      );
+      Provider.of<UsersDetailsProvider>(context, listen: false).setUserDetails(
+        UserDetails.fromMap(userDetails),
+      );
+    }
+    if (preferences.getString('posts') != null) {
+      List<dynamic> preferencesPosts =
+          jsonDecode(preferences.getString('posts')!);
+      PostMethods().setSharedPreferencePosts(
+        posts: preferencesPosts,
+        context: context,
+      );
+    }
+
     user = Provider.of<UserProvider>(
       context,
       listen: false,
@@ -103,24 +129,29 @@ class _HomeState extends State<Home> {
         listen: false,
       ).user;
     }
+    feeds = user.order_posts_by == '1' ? true : false;
 
     posts = Provider.of<PostProvider>(context, listen: false).posts;
+
     if (posts.length == 0) {
       await PostMethods().getPosts(context: context);
     }
-    setState(() {
-      isLoading = false;
-    });
 
     userDetails = Provider.of<UsersDetailsProvider>(
       context,
       listen: false,
     ).userDetails;
+    setState(() {
+      isLoading = false;
+    });
     if (user.following_number == '0') {
       pushReplacement(
         context: context,
         screen: const AddPhoto(),
       );
+    }
+    if (preferences.getString('posts') != null) {
+      await PostMethods().getPosts(context: context);
     }
   }
 

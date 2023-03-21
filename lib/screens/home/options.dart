@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/methods/auth_method.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
@@ -17,24 +18,21 @@ import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
 import '../auth/login.dart';
 
-int feedType = 1;
-
 void changeFeeds(BuildContext context) async {
   final data = {
     'type': 'change_feeds',
-    'feed_type': feedType.toString(),
+    'feed_type': feeds ? '1' : '0',
     'user_id': loginUserId.toString(),
   };
   final result = await API().postData(data);
   await PostMethods().getPosts(context: context);
+  await AuthMethod().setUser(context: context, userId: loginUserId);
 }
 
 Options({required BuildContext context}) {
   double width = deviceWidth(context: context);
   double height = deviceHeight(context: context);
-  ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
 
-  bool feeds = user.order_posts_by == '1' ? true : false;
   bool darkMode = false;
   return showDialog(
     context: context,
@@ -230,14 +228,16 @@ Options({required BuildContext context}) {
                             child: Switch(
                                 value: feeds,
                                 onChanged: (value) async {
+                                  homePostAdsIds = [];
+                                  homePostIds = [];
                                   setState(() {
                                     feeds = !feeds;
                                     Provider.of<PostProvider>(
                                       context,
                                       listen: false,
                                     ).clear();
-                                    feedType = feeds ? 1 : 0;
                                   });
+
                                   changeFeeds(context);
                                 }),
                           )

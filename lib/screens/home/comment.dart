@@ -9,8 +9,6 @@ import 'package:vibetag/screens/chat/chat_details.dart';
 import '../../utils/constant.dart';
 
 Comments({required BuildContext context}) {
-  double width = deviceWidth(context: context);
-  double height = deviceHeight(context: context);
   return showBarModalBottomSheet(
     context: context,
     builder: (context) {

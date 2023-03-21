@@ -40,84 +40,127 @@ class _SuggestedGroupsTrendState extends State<SuggestedGroupsTrend> {
     double height = deviceHeight(context: context);
     return Container(
       margin: spacing(
-        horizontal: 5,
+        vertical: 5,
       ),
-      child: Column(
-        children: [
-          Container(
-            height: height * 0.2,
-            width: width * 0.3,
-            decoration: BoxDecoration(
-              borderRadius: borderRadius(15),
-              // image: DecorationImage(
-              //   image: NetworkImage(
-              //     widget.group['cover'].toString().trim(),
-              //   ),
-              // ),
-            ),
-            child: ClipRRect(
-              borderRadius: borderRadius(15),
-              child: Image.network(
-                widget.group['avatar'].toString().trim(),
-                fit: BoxFit.fill,
+      child: Container(
+        margin: spacing(
+          horizontal: 5,
+        ),
+        decoration: BoxDecoration(
+          boxShadow: lightShadow,
+          color: white,
+          borderRadius: borderRadius(15),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: height * 0.2,
+              width: width * 0.6,
+              decoration: BoxDecoration(
+                borderRadius: borderRadius(15),
+                // image: DecorationImage(
+                //   image: NetworkImage(
+                //     widget.group['cover'].toString().trim(),
+                //   ),
+                // ),
               ),
-            ),
-          ),
-          gap(h: 7),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              gap(h: 5),
-              Container(
-                width: width * 0.25,
-                child: Text(
-                  widget.group['name'],
-                  style: TextStyle(
-                    fontSize: 10,
-                  ),
-                  maxLines: 1,
+              child: ClipRRect(
+                borderRadius: radiusOnly(topLeft: 15, topRight: 15),
+                child: Image.network(
+                  widget.group['avatar'].toString().trim(),
+                  fit: BoxFit.fill,
                 ),
               ),
-              gap(h: 5),
-              InkWell(
-                onTap: () {
-                  isJoined = !isJoined;
-                  setState(() {});
-                  joinGroup();
-                },
-                child: Container(
-                  width: width * 0.3,
-                  padding: spacing(
-                    horizontal: 15,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: orangePrimary,
-                    borderRadius: borderRadius(5),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Join',
-                        style: TextStyle(
-                          color: whitePrimary,
-                          fontSize: 8,
-                        ),
+            ),
+            gap(h: 5),
+            Container(
+              width: width * 0.58,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                widget.group['name'],
+                style: TextStyle(
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.start,
+                maxLines: 1,
+              ),
+            ),
+            gap(h: 5),
+            Container(
+              width: width * 0.55,
+              child: Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Public Group',
+                      style: TextStyle(
+                        color: grayMed,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
-                      gap(w: 2.5),
-                      Icon(
-                        Icons.add,
-                        color: white,
-                        size: 16,
-                      )
-                    ],
+                      textAlign: TextAlign.start,
+                    ),
                   ),
+                  gap(w: 5),
+                  Container(
+                    height: 2,
+                    width: 2,
+                    decoration: BoxDecoration(
+                      color: grayMed,
+                      borderRadius: borderRadius(width),
+                    ),
+                  ),
+                  gap(w: 5),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '170k Members',
+                      style: TextStyle(
+                        color: grayMed,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            gap(h: 5),
+            InkWell(
+              onTap: () {
+                isJoined = !isJoined;
+                setState(() {});
+                joinGroup();
+              },
+              child: Container(
+                width: width * 0.45,
+                padding: spacing(
+                  horizontal: 15,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: orangePrimary,
+                  borderRadius: borderRadius(5),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  'Join',
+                  style: TextStyle(
+                    color: whitePrimary,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-            ],
-          )
-        ],
+            ),
+            gap(h: 15),
+          ],
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
+import '../hast_tag/tred_screen.dart';
 import '../profile/profile.dart';
 
 class BlogPost extends StatefulWidget {
@@ -453,6 +454,15 @@ class _BlogPostState extends State<BlogPost> {
               ),
               child: Html(
                 data: widget.post['blog']['title'],
+                onAnchorTap: (str, rndr, map, e) {
+                  pushRoute(
+                    context: context,
+                    screen: HashTrend(
+                        hashTag: e!.text.toString().contains('#')
+                            ? e.text.toString().replaceFirst(RegExp(r'#'), '')
+                            : e.text.toString()),
+                  );
+                },
                 style: {
                   "body": Style(
                     textOverflow: TextOverflow.ellipsis,

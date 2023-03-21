@@ -89,7 +89,7 @@ class _FrontPageState extends State<FrontPage> {
     super.initState();
   }
 
-  int currentIndex = 0;
+  int currentIndex =2;
 
   @override
   Widget build(BuildContext context) {

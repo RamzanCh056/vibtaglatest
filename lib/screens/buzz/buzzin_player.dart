@@ -35,6 +35,7 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
     )..initialize().then(
         (_) {
           controller.play();
+          controller.setLooping(true);
           Timer(Duration(seconds: 3), () {
             if (mounted) {
               setState(() {
@@ -80,11 +81,15 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
               )
             : Stack(
                 children: [
-                  Center(
-                    child:
-                        Image.network(widget.thumbnail, fit: BoxFit.fitHeight),
+                  Container(
+                    width: double.infinity,
+                    child: Center(
+                      child: Image.network(
+                        widget.thumbnail,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  loadingSpinner(),
                 ],
               ),
         Positioned(
@@ -105,6 +110,30 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
                             ),
                     )
                   : gap(),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: hidebutton
+              ? gap()
+              : Container(
+                  width: double.infinity,
+                  height: 5,
+                  child: SizedBox(
+                    height: 5,
+                    child: VideoProgressIndicator(
+                      controller,
+                      allowScrubbing: true,
+                      colors: VideoProgressColors(
+                        backgroundColor: white,
+                        bufferedColor: grayMed,
+                        playedColor: orange,
+                      ),
+                      padding: spacing(),
+                    ),
+                  ),
+                ),
         )
       ],
     );

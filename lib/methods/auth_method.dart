@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/user_detailsProvider.dart';
@@ -26,13 +27,15 @@ class AuthMethod {
   }) async {
     final data = {
       'type': 'get_user_data',
-      'sub_type':'profile_info',
+      'sub_type': 'profile_info',
       'user_profile_id': userId,
       'user_id': userId,
     };
-    print(userId);
     final result = await API().postData(data);
     final jsonData = jsonDecode(result.body)['user_data'];
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String userData = jsonEncode(jsonData);
+    pref.setString('userData', userData);
     Provider.of<UserProvider>(context, listen: false).setUser(
       ModelUser.fromMap(jsonData),
     );

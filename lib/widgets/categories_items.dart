@@ -21,7 +21,7 @@ Widget CategoriesProduct({
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              child: Image.asset(
+              child: Image.network(
                 img,
                 width: width * 0.1,
               ),

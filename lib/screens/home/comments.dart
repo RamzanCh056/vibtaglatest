@@ -42,7 +42,6 @@ class _CommentsState extends State<Comments> {
   }
 
   loadCommets() async {
-    print(widget.postId);
     setState(() {
       isLoading = true;
     });
@@ -84,12 +83,11 @@ class _CommentsState extends State<Comments> {
         'text': textController.text,
         'user_id': loginUserId.toString(),
       };
+      textController.text = '';
       final result = await API().postData(data);
       final response = jsonDecode(result.body);
       loadCommets();
-      textController.text = '';
     } else {
-      print('ooooooooooooooooooooooooooooooooo');
       final data = {
         'type': 'comment_add',
         'post_id': widget.postId,
@@ -98,7 +96,6 @@ class _CommentsState extends State<Comments> {
         'text': textController.text,
         'user_id': loginUserId.toString(),
       };
-      print(data);
       await API().MultiPartRequest(path: image, data: data);
     }
   }
@@ -161,7 +158,7 @@ class _CommentsState extends State<Comments> {
     'Gallery',
     'Gifts',
     'Sticker',
-    'Location',
+    'Location'
   ];
   List<String> mediaImage = [
     'assets/new/icons/commets_media/emoji.png',
@@ -176,7 +173,6 @@ class _CommentsState extends State<Comments> {
     XFile? pickedImage = await pickImageCamera();
     if (pickedImage != null) {
       image = pickedImage.path;
-      print(image);
     }
   }
 
@@ -191,6 +187,7 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+
     return Scaffold(
       body: isLoading
           ? loadingSpinner()
@@ -239,7 +236,7 @@ class _CommentsState extends State<Comments> {
                       Container(
                         width: double.maxFinite,
                         padding: spacing(horizontal: 15),
-                        height: height * 0.74,
+                        height: height * 0.7,
                         child: ListView.builder(
                           itemCount: comments.length,
                           itemBuilder: (context, i) {
@@ -416,13 +413,47 @@ class _CommentsState extends State<Comments> {
                                                               borderRadius(
                                                                   width),
                                                         ),
-                                                        child: Text(
-                                                          'React',
-                                                          style: TextStyle(
-                                                            color: grayPrimary,
-                                                            fontSize: 8,
-                                                          ),
-                                                        ),
+                                                        child: reactionValue !=
+                                                                    0 &&
+                                                                reactionCommentId ==
+                                                                    comments[i]
+                                                                        ['id']
+                                                            ? Row(
+                                                                children: [
+                                                                  Container(
+                                                                    width: 20,
+                                                                    height: 20,
+                                                                    child: Image
+                                                                        .asset(
+                                                                      reactions[
+                                                                          (reactionValue -
+                                                                              1)],
+                                                                    ),
+                                                                  ),
+                                                                  gap(w: 7),
+                                                                  Text(
+                                                                    reactionsText[
+                                                                        (reactionValue -
+                                                                            1)],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          grayPrimary,
+                                                                      fontSize:
+                                                                          8,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Text(
+                                                                'React',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      grayPrimary,
+                                                                  fontSize: 8,
+                                                                ),
+                                                              ),
                                                       ),
                                                     ),
                                                     InkWell(

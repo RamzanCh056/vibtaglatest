@@ -6,14 +6,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/buzz/buzzin_player.dart';
 import 'package:vibetag/screens/buzz/category_item.dart';
+import 'package:vibetag/screens/buzz/widget/buzz_bar.dart';
+import 'package:vibetag/screens/buzz/widget/comment_bar.dart';
+import 'package:vibetag/screens/buzz/widget/owner_bar.dart';
 
 import 'package:vibetag/screens/drawer/drawer.dart';
+import 'package:vibetag/screens/hast_tag/tred_screen.dart';
 import 'package:vibetag/screens/video_player/video_player.dart';
 
 import '../../utils/constant.dart';
+import '../../widgets/bottom_modal_sheet_widget.dart';
+import '../home/post_comment_bar.dart';
+import '../home/post_methods/post_methods.dart';
+import '../home/revibe.dart';
 
 class Buzzin extends StatefulWidget {
   const Buzzin({super.key});
@@ -24,93 +33,57 @@ class Buzzin extends StatefulWidget {
 
 class _BuzzinState extends State<Buzzin> {
   final TextEditingController search = TextEditingController();
-  int pageIndex = 0;
-  final PageController pageController = PageController(initialPage: 0);
+
   List<String> not_ids = [];
+  List<String> likedIds = [];
   bool showSearchbar = false;
   bool isFocusCategory = false;
   List<dynamic> categories = [];
   List<Widget> categoriesList = [];
   String buzzCategory = '';
-
-  void SliderScroll() {
-    Timer.periodic(
-      Duration(seconds: 5),
-      (Timer timer) {
-        if (mounted) {
-          if (pageIndex == (comments.length - 1)) {
-            setState(() {
-              pageIndex = 0;
-            });
-          } else {
-            setState(() {
-              pageIndex++;
-            });
-          }
-
-          // pageController.animateToPage(pageIndex,
-          //     duration: Duration(milliseconds: 1000), curve: Curves.easeInSine);
-        }
-      },
-    );
-  }
+  bool interest_search = true;
+  bool toggleBar = false;
 
   @override
   void initState() {
     super.initState();
     getBuzzin();
-    setComments();
-  }
-
-  List<String> comments = [
-    'Khan',
-    'Filler text is text that shares some characteristics of a real written text, but is random or otherwise generated. It may be used to display a sample of fonts, generate text for testing, or to spoof an e-mail spam filter',
-    'Umair'
-  ];
-
-  List<Widget> commentsList = [];
-  setComments() {
-    commentsList = [];
-    for (var i = 0; i < comments.length; i++) {
-      commentsList.add(Container(
-        padding: spacing(horizontal: 7),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          comments[i],
-          style: TextStyle(
-            color: white,
-            fontSize: 10,
-            overflow: TextOverflow.ellipsis,
-          ),
-          textAlign: TextAlign.start,
-        ),
-      ));
-    }
   }
 
   List<dynamic> buzzin = loadedBuzzin;
   bool isLoading = false;
 
   getBuzzin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    // if (pref.getString('buzzin') != null) {
+    //   buzzin = jsonDecode(pref.getString('buzzin')!);
+    // }
     if (buzzin.length == 0) {
       setState(() {
         isLoading = true;
       });
       final data = {
         'type': 'buzzin',
-        'sub_type': 'load_more_buzzin',
+        'sub_type': 'get_buzzin',
         'user_id': loginUserId,
         'category': buzzCategory,
+        'query': '',
         'post_id': '',
       };
       final result = await API().postData(data);
       buzzin = jsonDecode(result.body)['data'];
-      setState(() {
-        isLoading = false;
-      });
+      pref.setString(
+        'buzzin',
+        jsonEncode(jsonEncode(buzzin)),
+      );
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
+
     getBuzzinCategory();
-    SliderScroll();
   }
 
   loadMoreBuzzin() async {
@@ -160,23 +133,17 @@ class _BuzzinState extends State<Buzzin> {
         );
       }
     }
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    // TODO: implement dispose
-    super.dispose();
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
+    width = deviceWidth(context: context);
+    height = deviceHeight(context: context);
     return Scaffold(
       backgroundColor: darkGray,
-      drawer: DrawerMenu(),
       body: isLoading
           ? loadingSpinner()
           : Container(
@@ -185,6 +152,9 @@ class _BuzzinState extends State<Buzzin> {
                   scrollDirection: Axis.vertical,
                   itemCount: buzzin.length,
                   itemBuilder: (context, i) {
+                    if (buzzin[i]['reaction']['is_reacted']) {
+                      likedIds.add(buzzin[i]['post_id'].toString());
+                    }
                     if (i == (buzzin.length - 5)) {
                       loadMoreBuzzin();
                     }
@@ -192,15 +162,32 @@ class _BuzzinState extends State<Buzzin> {
                       width: width,
                       decoration: BoxDecoration(
                         color: blackPrimary,
-                        // image: DecorationImage(
-                        //   fit: BoxFit.cover,
-                        //   image: NetworkImage(
-                        //     buzzin[i]['postFileThumb'],
-                        //   ),
-                        // ),
                       ),
                       child: Stack(
                         children: [
+                          Positioned(
+                            child: Container(
+                              height: height * 0.93,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset.zero,
+                                    color: Color.fromARGB(54, 0, 0, 0),
+                                    blurRadius: 20,
+                                    spreadRadius: 5,
+                                  )
+                                ],
+                              ),
+                              child: Opacity(
+                                opacity: 0.1,
+                                child: Image.network(
+                                  buzzin[i]['postFileThumb'],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
                           Positioned(
                             child: BuzzinPlayer(
                               thumbnail: buzzin[i]['postFileThumb'],
@@ -254,6 +241,21 @@ class _BuzzinState extends State<Buzzin> {
                                                     borderRadius(width),
                                               ),
                                               child: TextFormField(
+                                                onChanged: (value) {
+                                                  if (value.isNotEmpty) {
+                                                    if (interest_search) {
+                                                      setState(() {
+                                                        interest_search = false;
+                                                      });
+                                                    }
+                                                  } else {
+                                                    if (!interest_search) {
+                                                      setState(() {
+                                                        interest_search = true;
+                                                      });
+                                                    }
+                                                  }
+                                                },
                                                 onTap: () {
                                                   setState(() {
                                                     isFocusCategory =
@@ -268,11 +270,8 @@ class _BuzzinState extends State<Buzzin> {
                                                     });
                                                   }
                                                 },
-                                                keyboardType:
-                                                    TextInputType.none,
                                                 decoration: InputDecoration(
-                                                  hintText:
-                                                      'Search for anything',
+                                                  hintText: 'Search by post',
                                                   border: InputBorder.none,
                                                   contentPadding:
                                                       EdgeInsets.only(
@@ -295,24 +294,122 @@ class _BuzzinState extends State<Buzzin> {
                                       gap(h: 10),
                                       isFocusCategory
                                           ? Center(
-                                              child: Container(
-                                                width: width * 0.9,
-                                                padding: spacing(
-                                                  horizontal: 15,
-                                                  vertical: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: HexColor('#3D3D3D'),
-                                                  borderRadius:
-                                                      borderRadius(10),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: grayMed,
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            interest_search =
+                                                                true;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding: spacing(
+                                                            horizontal: 20,
+                                                            vertical: 7,
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                interest_search
+                                                                    ? orange
+                                                                    : white,
+                                                            borderRadius:
+                                                                borderRadius(
+                                                                    width),
+                                                            boxShadow:
+                                                                boxShadow,
+                                                          ),
+                                                          child: Text(
+                                                            'Search by interests',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color:
+                                                                  interest_search
+                                                                      ? white
+                                                                      : orange,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      gap(w: 10),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            interest_search =
+                                                                false;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding: spacing(
+                                                            horizontal: 20,
+                                                            vertical: 7,
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                !interest_search
+                                                                    ? orange
+                                                                    : white,
+                                                            borderRadius:
+                                                                borderRadius(
+                                                                    width),
+                                                            boxShadow:
+                                                                boxShadow,
+                                                          ),
+                                                          child: Text(
+                                                            'Search by post',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color:
+                                                                  !interest_search
+                                                                      ? white
+                                                                      : orange,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
-                                                ),
-                                                child: Wrap(
-                                                  children: categoriesList,
-                                                ),
+                                                  gap(h: 10),
+                                                  Container(
+                                                    width: width - 14,
+                                                    height: height * 0.6,
+                                                    margin:
+                                                        spacing(horizontal: 7),
+                                                    padding: spacing(
+                                                      horizontal: 15,
+                                                      vertical: 10,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          HexColor('#3D3D3D'),
+                                                      borderRadius:
+                                                          borderRadius(10),
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: grayMed,
+                                                      ),
+                                                    ),
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Column(
+                                                        children: [
+                                                          interest_search
+                                                              ? Wrap(
+                                                                  children:
+                                                                      categoriesList,
+                                                                )
+                                                              : Column(
+                                                                  children: [],
+                                                                ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             )
                                           : gap(),
@@ -421,7 +518,7 @@ class _BuzzinState extends State<Buzzin> {
                                                           buzzin[i]['publisher']
                                                               ['avatar'],
                                                         ),
-                                                        radius: width * 0.07,
+                                                        radius: width * 0.05,
                                                       )
                                                     : gap(),
                                               ),
@@ -429,36 +526,60 @@ class _BuzzinState extends State<Buzzin> {
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            buzzin[i]['publisher']['name'],
-                                            style: TextStyle(
-                                              color: white,
-                                              fontSize: textSm,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: width * 0.7,
-                                            child: Html(
-                                              data: buzzin[i]['postText'],
-                                              style: {
-                                                "body": Style(
-                                                  fontSize: FontSize(12.0),
-                                                  textOverflow:
-                                                      TextOverflow.ellipsis,
+                                      Container(
+                                        height: width * 0.15,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: spaceOnly(left: 10),
+                                              child: Text(
+                                                buzzin[i]['publisher']['name'],
+                                                style: TextStyle(
                                                   color: white,
-                                                  maxLines: 1,
+                                                  fontSize: 12,
                                                 ),
-                                              },
+                                              ),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              width: width * 0.7,
+                                              child: Html(
+                                                shrinkWrap: true,
+                                                onAnchorTap:
+                                                    (str, rndr, map, e) {
+                                                  pushRoute(
+                                                    context: context,
+                                                    screen: HashTrend(
+                                                        hashTag: e!.text
+                                                                .toString()
+                                                                .contains('#')
+                                                            ? e.text
+                                                                .toString()
+                                                                .replaceFirst(
+                                                                    RegExp(
+                                                                        r'#'),
+                                                                    '')
+                                                            : e.text
+                                                                .toString()),
+                                                  );
+                                                },
+                                                data: buzzin[i]['postText'],
+                                                style: {
+                                                  "body": Style(
+                                                    fontSize: FontSize(8.0),
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis,
+                                                    color: white,
+                                                    maxLines: 1,
+                                                  ),
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -476,15 +597,23 @@ class _BuzzinState extends State<Buzzin> {
                                         color: whitePrimary,
                                       ),
                                     ),
-                                    child: PageView(
-                                      reverse: true,
-                                      onPageChanged: (index) {
-                                        pageIndex = index;
-                                      },
-                                      scrollDirection: Axis.horizontal,
-                                      controller: pageController,
-                                      children: commentsList,
-                                    ),
+                                    child: buzzin[i]['all_comments'].length == 0
+                                        ? Container(
+                                            padding: spacing(horizontal: 7),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'No Comment there yet!',
+                                              style: TextStyle(
+                                                color: white,
+                                                fontSize: 10,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          )
+                                        : BuzzinCommentBar(
+                                            comments: buzzin[i]['all_comments'],
+                                          ),
                                   )
                                 ],
                               ),
@@ -493,88 +622,147 @@ class _BuzzinState extends State<Buzzin> {
                           Positioned(
                             bottom: 20,
                             right: 5,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: width * 0.07,
-                                  child: SvgPicture.asset(
-                                      'assets/new/svg/buzzin/heart.svg'),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '${getInK(number: int.parse(buzzin[i]['reaction']['count'].toString()))}',
-                                  style: TextStyle(
-                                    color: whitePrimary,
+                            child: isFocusCategory
+                                ? gap()
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          if (likedIds.contains(buzzin[i]
+                                                  ['post_id']
+                                              .toString())) {
+                                            likedIds.remove(buzzin[i]['post_id']
+                                                .toString());
+                                            setState(() {});
+
+                                            await PostMethods().removeReact(
+                                              post_id: buzzin[i]['post_id']
+                                                  .toString(),
+                                            );
+                                          } else {
+                                            likedIds.add(buzzin[i]['post_id']
+                                                .toString());
+                                            setState(() {});
+
+                                            await PostMethods().reactOnPost(
+                                              post_id: buzzin[i]['post_id'],
+                                              reactionValue: '2',
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          width: width * 0.07,
+                                          child: SvgPicture.asset(
+                                            'assets/new/svg/buzzin/heart.svg',
+                                            color: likedIds.contains(buzzin[i]
+                                                        ['post_id']
+                                                    .toString())
+                                                ? red
+                                                : white,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '${getInK(number: int.parse(buzzin[i]['reaction']['count'].toString()))}',
+                                        style: TextStyle(
+                                          color: whitePrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 40,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          PostComments(
+                                            context: context,
+                                            postId:
+                                                buzzin[i]['post_id'].toString(),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: width * 0.07,
+                                          child: SvgPicture.asset(
+                                              'assets/new/svg/buzzin/Iconly/Light-Outline/Chat.svg'),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '${getInK(number: int.parse(buzzin[i]['total_comments'].toString()))}',
+                                        style: TextStyle(
+                                          color: whitePrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 40,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Revibe(context: context);
+                                        },
+                                        child: Container(
+                                          width: width * 0.06,
+                                          child: Image.asset(
+                                            'assets/new/icons/revibe.png',
+                                            color: white,
+                                            width: width * 0.06,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '${getInK(number: int.parse(buzzin[i]['post_shares'].toString()))}',
+                                        style: TextStyle(
+                                          color: whitePrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 40,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          toggleBar = !toggleBar;
+                                          createBottomModalSheet(
+                                            context: context,
+                                            screen: toggleBar
+                                                ? OwnerBar()
+                                                : BuzzinBottomBar(),
+                                          );
+                                        },
+                                        child: Container(
+                                          child: SvgPicture.asset(
+                                              'assets/new/svg/buzzin/more_h.svg'),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 40,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            isMuted = !isMuted;
+                                          });
+                                        },
+                                        child: Container(
+                                          child: Icon(
+                                            isMuted
+                                                ? Icons.volume_off_outlined
+                                                : Icons.volume_up_outlined,
+                                            color: white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Container(
-                                  width: width * 0.07,
-                                  child: SvgPicture.asset(
-                                      'assets/new/svg/buzzin/Iconly/Light-Outline/Chat.svg'),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '${getInK(number: int.parse(buzzin[i]['post_comments'].toString()))}',
-                                  style: TextStyle(
-                                    color: whitePrimary,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Container(
-                                  width: width * 0.06,
-                                  child: Image.asset(
-                                    'assets/new/icons/revibe.png',
-                                    color: white,
-                                    width: width * 0.06,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '${getInK(number: int.parse(buzzin[i]['post_shares'].toString()))}',
-                                  style: TextStyle(
-                                    color: whitePrimary,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Container(
-                                  child: SvgPicture.asset(
-                                      'assets/new/svg/buzzin/more_h.svg'),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      isMuted = !isMuted;
-                                    });
-                                  },
-                                  child: Container(
-                                    child: Icon(
-                                      isMuted
-                                          ? Icons.volume_off_outlined
-                                          : Icons.volume_up_outlined,
-                                      color: white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                         ],
                       ),

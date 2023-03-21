@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -13,7 +15,11 @@ import 'my_playlist.dart';
 import 'other_playlist.dart';
 
 class PlayList extends StatefulWidget {
-  const PlayList({super.key});
+  int currentPlay;
+  PlayList({
+    Key? key,
+    this.currentPlay = 0,
+  }) : super(key: key);
 
   @override
   State<PlayList> createState() => _PlayListState();
@@ -32,6 +38,7 @@ class _PlayListState extends State<PlayList> {
 
   @override
   Widget build(BuildContext context) {
+    currentTab = widget.currentPlay;
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Scaffold(
@@ -144,7 +151,7 @@ class _PlayListState extends State<PlayList> {
                         ),
                         Container(
                           width: width,
-                          height: height * 0.825,
+                          height: height * 0.82,
                           child: screen[currentTab],
                         ),
                       ],

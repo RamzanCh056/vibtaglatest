@@ -12,47 +12,15 @@ import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 
 import '../../utils/constant.dart';
+import '../hast_tag/tred_screen.dart';
 import '../profile/profile.dart';
 
 class ColoredPost extends StatefulWidget {
   final dynamic post;
-  final String avatar;
-  final String first;
 
-  final String name;
-  final String postId;
-  final String postTime;
-  final String postText;
-  final String postFile;
-  final int videoViews;
-  final Map<String, dynamic> reactions;
-  final Map<String, dynamic> color_post_info;
-  final String feelings;
-  final String location;
-  final String comments;
-  final String likes;
-  final String likeString;
-
-  final String shares;
-  const ColoredPost({
+   ColoredPost({
     Key? key,
     required this.post,
-    required this.avatar,
-    required this.first,
-    required this.name,
-    required this.postId,
-    required this.postTime,
-    required this.postText,
-    required this.postFile,
-    required this.videoViews,
-    required this.reactions,
-    required this.color_post_info,
-    required this.feelings,
-    required this.location,
-    required this.comments,
-    required this.likes,
-    required this.likeString,
-    required this.shares,
   }) : super(key: key);
 
   @override
@@ -97,13 +65,13 @@ class _ColoredPostState extends State<ColoredPost> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id': widget.post['post_id'].toString(),
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
     final result = await API().postData(data);
     final response = jsonDecode(result.body)['status'];
-    if (response == 200 && !(widget.reactions['is_reacted'])) {
+    if (response == 200 && !(widget.post['reaction']['is_reacted'])) {
       userLike = 1;
     }
     setState(() {
@@ -123,7 +91,7 @@ class _ColoredPostState extends State<ColoredPost> {
         ? widget.post['me_followed']
         : widget.post['me_liked'];
     for (var i = 0; i < 8; i++) {
-      if (widget.reactions['${i + 1}'] != null) {
+      if (widget.post['reaction']['${i + 1}'] != null) {
         reactionOnPost.add(i);
       }
     }
@@ -155,7 +123,7 @@ class _ColoredPostState extends State<ColoredPost> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
+    totalLikes = int.parse(widget.post['reaction']['count'].toString()) + userLike;
 
     return Container(
       width: double.maxFinite,
@@ -213,7 +181,7 @@ class _ColoredPostState extends State<ColoredPost> {
                         child: CircleAvatar(
                           radius: width * 0.06,
                           foregroundImage: NetworkImage(
-                            widget.avatar,
+                            widget.post['publisher']['avatar'],
                           ),
                         ),
                       ),
@@ -226,8 +194,7 @@ class _ColoredPostState extends State<ColoredPost> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                                                     width: width * 0.8,
-
+                          width: width * 0.8,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -245,7 +212,7 @@ class _ColoredPostState extends State<ColoredPost> {
                                     },
                                     child: FittedBox(
                                       child: Text(
-                                        widget.name,
+                                        widget.post['publisher']['name'],
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: blackPrimary,
@@ -256,7 +223,7 @@ class _ColoredPostState extends State<ColoredPost> {
                                   gap(
                                     w: 5,
                                   ),
-                                  widget.feelings != ''
+                                  widget.post['postFeeling'] != ''
                                       ? Row(
                                           children: [
                                             Container(
@@ -271,7 +238,7 @@ class _ColoredPostState extends State<ColoredPost> {
                                               w: 5,
                                             ),
                                             Text(
-                                              'is feeling ${widget.feelings}',
+                                              'is feeling ${widget.post['postFeeling']}',
                                               style: TextStyle(
                                                 color: graySecondary,
                                                 fontSize: 12,
@@ -341,13 +308,13 @@ class _ColoredPostState extends State<ColoredPost> {
                         Row(
                           children: [
                             Text(
-                              widget.postTime,
+                              widget.post['post_time'],
                               style: TextStyle(
                                 color: grayMed,
                                 fontSize: 12,
                               ),
                             ),
-                            widget.location != ''
+                            widget.post['postMap'] != ''
                                 ? Row(
                                     children: [
                                       gap(
@@ -364,7 +331,7 @@ class _ColoredPostState extends State<ColoredPost> {
                                       Container(
                                         width: width * 0.5,
                                         child: Text(
-                                          '${widget.location}',
+                                          '${widget.post['postMap']}',
                                           style: TextStyle(
                                               color: graySecondary,
                                               fontSize: 12,
@@ -386,11 +353,11 @@ class _ColoredPostState extends State<ColoredPost> {
           Container(
             height: height * 0.3,
             width: width,
-            decoration: widget.color_post_info['image'] != ''
+            decoration: widget.post['color_post_info'] != ''
                 ? BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                        '${serverUrl}${widget.color_post_info['image']}',
+                        '${serverUrl}${widget.post['color_post_info']}',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -400,8 +367,8 @@ class _ColoredPostState extends State<ColoredPost> {
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
                       colors: [
-                        HexColor('${widget.color_post_info['color_1']}'),
-                        HexColor('${widget.color_post_info['color_2']}')
+                        HexColor('${widget.post['color_post_info']['color_1']}'),
+                        HexColor('${widget.post['color_post_info']['color_2']}')
                       ],
                     ),
                   ),
@@ -412,13 +379,24 @@ class _ColoredPostState extends State<ColoredPost> {
                   height: double.maxFinite,
                   child: Center(
                     child: Html(
-                      data: widget.postText,
+                      data: widget.post['postText'],
+                      onAnchorTap: (str, rndr, map, e) {
+                        pushRoute(
+                          context: context,
+                          screen: HashTrend(
+                              hashTag: e!.text.toString().contains('#')
+                                  ? e.text
+                                      .toString()
+                                      .replaceFirst(RegExp(r'#'), '')
+                                  : e.text.toString()),
+                        );
+                      },
                       style: {
                         "body": Style(
                           fontSize: FontSize(16.0),
                           textOverflow: TextOverflow.clip,
                           color: HexColor(
-                            '${widget.color_post_info['text_color']}',
+                            '${widget.post['color_post_info']['text_color']}',
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 3,
@@ -486,14 +464,7 @@ class _ColoredPostState extends State<ColoredPost> {
                           children: reactionsOnPostList,
                         ),
                       ),
-                      gap(w: 5),
-                      Text(
-                        widget.likeString,
-                        style: TextStyle(
-                          color: grayMed,
-                          fontSize: 10,
-                        ),
-                      )
+                      
                     ],
                   ),
                 ),
@@ -503,7 +474,7 @@ class _ColoredPostState extends State<ColoredPost> {
                     vertical: 5,
                   ),
                   child: Text(
-                    "${widget.comments} Comments | ${widget.shares} Revibed",
+                    "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                     style: TextStyle(
                       color: grayMed,
                       fontSize: 10,
@@ -532,9 +503,9 @@ class _ColoredPostState extends State<ColoredPost> {
                       height: width * 0.04,
                       child: reactionValue != 0
                           ? Image.asset(reactions[reactionValue - 1])
-                          : widget.reactions['is_reacted']
+                          : widget.post['reaction']['is_reacted']
                               ? Image.asset(reactions[
-                                  int.parse(widget.reactions['type']) - 1])
+                                  int.parse(widget.post['reaction']['type']) - 1])
                               : Image.asset(
                                   'assets/new/icons/heart.png',
                                   fit: BoxFit.cover,
@@ -546,9 +517,9 @@ class _ColoredPostState extends State<ColoredPost> {
                     Text(
                       reactionValue != 0
                           ? reactionsText[reactionValue - 1]
-                          : widget.reactions['is_reacted']
+                          : widget.post['reaction']['is_reacted']
                               ? reactionsText[
-                                  int.parse(widget.reactions['type']) - 1]
+                                  int.parse(widget.post['reaction']['type']) - 1]
                               : 'React',
                       style: TextStyle(
                         color: grayMed,

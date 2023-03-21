@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 
 double deviceWidth({required BuildContext context}) {
   return MediaQuery.of(context).size.width;
@@ -32,7 +33,7 @@ Color lightGrayNew2 = HexColor('#F1F4FB');
 Color darkGrayNew = HexColor('#434950');
 //New Design Color
 
-Color orangeLight = HexColor('#ff9200;');
+Color orangeLight = HexColor('#ff9200');
 Color orangePrimary = HexColor('#FF9200');
 Color orangeSecondary = HexColor('#FDBA31');
 Color blackPrimary = HexColor('#212121');
@@ -71,6 +72,9 @@ Gradient gradient = LinearGradient(
   ],
 );
 String loginUserId = '';
+List<dynamic> following_data = [];
+List<dynamic> likes_data = [];
+List<dynamic> groups_data = [];
 List<dynamic> loadedBuzzin = [];
 double deviceHeight({required BuildContext context}) {
   return MediaQuery.of(context).size.height -
@@ -207,9 +211,7 @@ String readTimestamp(int timestamp) {
       diff.inMinutes > 0 && diff.inHours == 0 ||
       diff.inHours > 0 && diff.inDays == 0) {
     DateTime setDate = DateTime.parse(date.toString());
-    // print(setDate);
-    // print('difference');
-    // print(now.hour - setDate.hour);
+
 
     time = setDate.hour.toString() + ' hr';
   } else {
@@ -258,8 +260,6 @@ List<String> aboutIcons = [
 ];
 
 bool isVideo({required String ex}) {
-  
-
   if (ex == '.mp4' ||
       ex == '.avi' ||
       ex == '.mkv' ||
@@ -278,7 +278,15 @@ List<BoxShadow> boxShadow = [
     spreadRadius: 1,
   ),
 ];
-
+bool feeds = false;
+List<BoxShadow> lightShadow = [
+  BoxShadow(
+    offset: Offset.zero,
+    color: Color.fromARGB(40, 0, 0, 0),
+    blurRadius: 4,
+    spreadRadius: 1,
+  ),
+];
 pop(BuildContext context) {
   return Navigator.of(context).pop();
 }
@@ -288,3 +296,140 @@ List<String> homePostIds = [];
 List<String> homePostAdsIds = [];
 List<String> playlistCategories = [];
 List<String> playlistColors = [];
+
+double width = 0.0;
+double height = 0.0;
+
+EdgeInsets spaceOnly(
+    {double left = 0, double right = 0, double top = 0, double bottom = 0}) {
+  return EdgeInsets.only(left: left, right: right, top: top, bottom: bottom);
+}
+
+radiusOnly({
+  double topLeft = 0,
+  double topRight = 0,
+  double bottomLeft = 0,
+  double bottomRight = 0,
+}) {
+  return BorderRadius.only(
+    topLeft: Radius.circular(topLeft),
+    topRight: Radius.circular(topRight),
+    bottomRight: Radius.circular(bottomRight),
+    bottomLeft: Radius.circular(bottomLeft),
+  );
+}
+
+List<String> listOfString(List<dynamic> list) {
+  List<String> _list = [];
+  for (var string in list) {
+    _list.add(string.toString());
+  }
+  return _list;
+}
+
+bool isFollowing(Map<String, dynamic> publisher) {
+  List<String> followers_data = publisher['followers_data'] != null
+      ? listOfString(publisher['followers_data'])
+      : [];
+  return followers_data.contains(loginUserId) ? true : false;
+}
+
+Map<String, dynamic> followLikeORJoin({required Map<String, dynamic> post}) {
+  if (post['page_id'] != '0') {
+    if (likes_data.contains(post['page_id'])) {
+      return {
+        'button_text': 'Liked',
+        'id': post['page_id'],
+        'type': 'page',
+        'isLiked': true,
+      };
+    } else {
+      return {
+        'type': 'page',
+        'id': post['page_id'],
+        'button_text': 'Like',
+        'isLiked': false,
+      };
+    }
+  } else if (post['user_id'] != '0') {
+    if (following_data.contains(post['user_id'])) {
+      return {
+        'type': 'user',
+        'id': post['user_id'],
+        'button_text': 'Following',
+        'isLiked': true,
+      };
+    } else {
+      return {
+        'type': 'user',
+        'id': post['user_id'],
+        'button_text': 'Follow',
+        'isLiked': false,
+      };
+    }
+  } else if (post['group_id'] != '0') {
+    if (groups_data.contains(post['group_id'])) {
+      return {
+        'type': 'group',
+        'id': post['group_id'],
+        'button_text': 'Joined',
+        'isLiked': true,
+      };
+    } else {
+      return {
+        'type': 'group',
+        'id': post['group_id'],
+        'button_text': 'Join',
+        'isLiked': false,
+      };
+    }
+  } else {
+    return {
+      'type': 'Unknown',
+      'id': 0,
+      'button_text': 'Unknown',
+      'isLiked': false,
+    };
+  }
+}
+
+followUnfollowLikeUnlikeJoinLeave(Map<String, dynamic> data) {
+  if (data['type'] == 'user') {
+    if (following_data.contains(data['id'])) {
+      following_data.remove(
+        data['id'],
+      );
+    } else {
+      following_data.add(
+        data['id'],
+      );
+      PostMethods().followOrLike(post: data);
+    }
+  }
+  if (data['type'] == 'page') {
+    if (likes_data.contains(data['id'])) {
+      likes_data.remove(
+        data['id'],
+      );
+    } else {
+      likes_data.add(
+        data['id'],
+      );
+      PostMethods().followOrLike(post: data);
+
+    }
+  }
+  if (data['type'] == 'group') {
+    if (groups_data.contains(data['id'])) {
+      groups_data.remove(
+        data['id'],
+      );
+    } else {
+      groups_data.add(
+        data['id'],
+      );
+      PostMethods().followOrLike(post: data);
+
+    }
+  }
+}

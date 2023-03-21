@@ -44,8 +44,9 @@ Revibe({required BuildContext context}) {
     context: context,
     builder: (context) {
       return Container(
-        height: height * 0.8,
+        height: height * 0.9,
         child: SingleChildScrollView(
+          physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
           child: Column(
             children: [
               Container(
@@ -84,102 +85,115 @@ Revibe({required BuildContext context}) {
                 h: 10,
               ),
               Container(
-                child: Column(
-                  children: [
-                    ShareOptions(
-                      width: width,
-                      height: height,
-                      iconsPath: 'assets/new/icons/share_arrow.png',
-                      title: 'Share now',
-                    ),
-                    ShareOptions(
-                      width: width,
-                      height: height,
-                      iconsPath: 'assets/new/icons/send_b.png',
-                      title: 'Share a Feed',
-                    ),
-                    ShareOptions(
-                      width: width,
-                      height: height,
-                      iconsPath: 'assets/new/icons/round_plus.png',
-                      title: 'Share to your Story',
-                    ),
-                    ShareOptions(
-                      width: width,
-                      height: height,
-                      iconsPath: 'assets/new/icons/chat_b.png',
-                      title: 'Share in Chat',
-                    ),
-                    gap(
-                      h: 20,
-                    ),
-                    Container(
-                      width: double.maxFinite,
-                      height: height * 0.3,
-                      margin: spacing(
-                        horizontal: 10,
-                        vertical: 0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ShareOptions(
+                        width: width,
+                        height: height,
+                        iconsPath: 'assets/new/icons/share_arrow.png',
+                        title: 'Share now',
                       ),
-                      padding: spacing(
-                        horizontal: 0,
-                        vertical: 20,
+                      ShareOptions(
+                        width: width,
+                        height: height,
+                        iconsPath: 'assets/new/icons/send_b.png',
+                        title: 'Share a Feed',
                       ),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: grayLight,
-                        borderRadius: borderRadius(18),
+                      ShareOptions(
+                        width: width,
+                        height: height,
+                        iconsPath: 'assets/new/icons/round_plus.png',
+                        title: 'Share to your Story',
                       ),
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 10,
+                      ShareOptions(
+                        width: width,
+                        height: height,
+                        iconsPath: 'assets/new/icons/chat_b.png',
+                        title: 'Share in Chat',
+                      ),
+                      gap(
+                        h: 20,
+                      ),
+                      Container(
+                        width: double.maxFinite,
+                        height: height * 0.4,
+                        margin: spacing(
+                          horizontal: 10,
+                          vertical: 0,
                         ),
-                        itemCount: 8,
-                        itemBuilder: (context, i) {
-                          return Container(
-                            child: i < 1
-                                ? Column(
-                                    children: [
-                                      Container(
-                                        padding: spacing(
-                                          horizontal: 10,
-                                          vertical: 10,
+                        padding: spacing(
+                          horizontal: 0,
+                          vertical: 20,
+                        ),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: grayLight,
+                          borderRadius: borderRadius(18),
+                        ),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 0.9,
+                            crossAxisSpacing: 10,
+                          ),
+                          itemCount: 8,
+                          itemBuilder: (context, i) {
+                            return Container(
+                              child: i < 1
+                                  ? Column(
+                                      children: [
+                                        Container(
+                                          padding: spacing(
+                                            horizontal: 10,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: white,
+                                            borderRadius: borderRadius(5),
+                                          ),
+                                          width: width * 0.14,
+                                          child: Image.asset(
+                                            shareApp[i]['image'],
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: white,
-                                          borderRadius: borderRadius(5),
+                                        gap(h: 5),
+                                        Text(
+                                          shareApp[i]['App'],
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : Column(
+                                      children: [
+                                        Container(
+                                          width: width * 0.15,
+                                          alignment: Alignment.center,
+                                          child: Image.asset(
+                                            shareApp[i]['image'],
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        width: width * 0.14,
-                                        child: Image.asset(
-                                          shareApp[i]['image'],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      gap(h: 5),
-                                      Text(shareApp[i]['App'])
-                                    ],
-                                  )
-                                : Column(
-                                    children: [
-                                      Container(
-                                        width: width * 0.15,
-                                        child: Image.asset(
-                                          shareApp[i]['image'],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      gap(h: 5),
-                                      Text(shareApp[i]['App'])
-                                    ],
-                                  ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+                                        gap(h: 5),
+                                        Text(
+                                          shareApp[i]['App'],
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],

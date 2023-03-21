@@ -10,6 +10,7 @@ import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../methods/api.dart';
+import '../hast_tag/tred_screen.dart';
 
 class PostAds extends StatefulWidget {
   final dynamic post;
@@ -155,6 +156,15 @@ class _PostAdsState extends State<PostAds> {
             gap(h: 10),
             Html(
               data: widget.post['description'],
+              onAnchorTap: (str, rndr, map, e) {
+                pushRoute(
+                  context: context,
+                  screen: HashTrend(
+                      hashTag: e!.text.toString().contains('#')
+                          ? e.text.toString().replaceFirst(RegExp(r'#'), '')
+                          : e.text.toString()),
+                );
+              },
               style: {
                 "body": Style(
                   fontSize: FontSize(12.0),

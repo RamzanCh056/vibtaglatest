@@ -17,31 +17,9 @@ import '../profile/profile.dart';
 class PostEvent extends StatefulWidget {
   final dynamic post;
 
-  final String avatar;
-  final String name;
-  final String postId;
-  final String eventName;
-  final String postTime;
-  final String coverImage;
-  final String startDate;
-  final String endDate;
-  final String likes;
-  final String comments;
-  final String shares;
   const PostEvent({
     Key? key,
     required this.post,
-    required this.avatar,
-    required this.name,
-    required this.postId,
-    required this.eventName,
-    required this.postTime,
-    required this.coverImage,
-    required this.startDate,
-    required this.endDate,
-    required this.likes,
-    required this.comments,
-    required this.shares,
   }) : super(key: key);
 
   @override
@@ -88,7 +66,7 @@ class _PostEventState extends State<PostEvent> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id': widget.postId.toString(),
+      'post_id': widget.post['post_id'].toString(),
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
@@ -101,7 +79,8 @@ class _PostEventState extends State<PostEvent> {
       isAdded = true;
     });
   }
-followOrLike() async {
+
+  followOrLike() async {
     var data = {};
     if (widget.post['publisher']['page_id'] != null) {
       data = {
@@ -122,11 +101,12 @@ followOrLike() async {
     final result = await API().postData(data);
     print(jsonDecode(result.body));
   }
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.likes) + userLike;
+    totalLikes = int.parse(widget.post['reaction']['count']) + userLike;
 
     return Container(
       margin: spacing(
@@ -190,7 +170,7 @@ followOrLike() async {
                           child: CircleAvatar(
                             radius: width * 0.06,
                             foregroundImage: NetworkImage(
-                              widget.avatar,
+                              widget.post['publisher']['avatar'],
                             ),
                           ),
                         ),
@@ -215,8 +195,8 @@ followOrLike() async {
                                       ));
                                 },
                                 child: Text(
-                                  widget.name,
-                                 style: TextStyle(
+                                  widget.post['publisher']['name'],
+                                  style: TextStyle(
                                     fontSize: 12,
                                     color: blackPrimary,
                                   ),
@@ -230,7 +210,7 @@ followOrLike() async {
                           Row(
                             children: [
                               Text(
-                                widget.postTime,
+                                widget.post['post_time'],
                                 style: TextStyle(
                                   color: grayMed,
                                   fontSize: 12,
@@ -259,7 +239,7 @@ followOrLike() async {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.network(
-                      widget.coverImage,
+                      widget.post['event']['cover'],
                       fit: BoxFit.fill,
                     ),
                     gap(h: 10),
@@ -271,14 +251,15 @@ followOrLike() async {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${widget.eventName}',
-                              style: TextStyle(
+                          Text(
+                            '${widget.post['event']['name']}',
+                            style: TextStyle(
                               fontSize: 12,
                               color: blackPrimary,
                             ),
                           ),
                           Text(
-                            '${widget.startDate} to ${widget.endDate}',
+                            '${widget.post['event']['start_date']} to ${widget.post['event']['end_date']}',
                             style: const TextStyle(
                               fontSize: 12,
                             ),
@@ -311,9 +292,10 @@ followOrLike() async {
                     ),
                     child: Column(
                       children: [
-                        Text('${widget.startDate.trim().substring(0, 2)}'),
                         Text(
-                          '${months[int.parse(widget.startDate.substring(3, 5)) - 1]}',
+                            '${widget.post['event']['start_date'].toString().trim().substring(0, 2)}'),
+                        Text(
+                          '${months[int.parse(widget.post['event']['start_date'].toString().substring(3, 5)) - 1]}',
                           style: TextStyle(
                             color: red,
                           ),
@@ -366,7 +348,7 @@ followOrLike() async {
                       vertical: 5,
                     ),
                     child: Text(
-                      "${widget.comments} Comments | ${widget.shares} Revibed",
+                      "${widget.post['post_comments']} Comments | ${widget.post['post_shares']} Revibed",
                       style: TextStyle(
                         fontSize: 10,
                         color: grayMed,
@@ -413,9 +395,8 @@ followOrLike() async {
                 ),
                 InkWell(
                   onTap: () {
-                                                    PostComments(context:context,postId: widget.post['post_id']);
-
-
+                    PostComments(
+                        context: context, postId: widget.post['post_id']);
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

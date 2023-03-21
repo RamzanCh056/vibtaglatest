@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/home/post_models/post_modal.dart';
 import 'package:vibetag/provider/post_provider.dart';
@@ -22,7 +23,27 @@ class PostMethods {
       'user_id': loginUserId,
     });
     List<dynamic> posts = jsonDecode(result.body)['posts_data'];
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String homePosts = jsonEncode(posts);
+    await pref.setString('posts', homePosts);
+    for (var i = 0; i < posts.length; i++) {
+      if (posts[i]['post_id'] != null) {
+        homePostIds.add(posts[i]['post_id'].toString());
+      } else {
+        homePostAdsIds.add(posts[i]['id'].toString());
+      }
+    }
+    if (homePostIds.length == 0) {
+      isNoMorePostsHome = true;
+    }
+    Provider.of<PostProvider>(context, listen: false).setPosts(posts);
+    getCategories();
+  }
 
+  Future setSharedPreferencePosts({
+    required List<dynamic> posts,
+    required BuildContext context,
+  }) async {
     for (var i = 0; i < posts.length; i++) {
       if (posts[i]['post_id'] != null) {
         homePostIds.add(posts[i]['post_id'].toString());
@@ -60,7 +81,6 @@ class PostMethods {
     for (var colors in responseColors) {
       playlistColors.add(colors);
     }
-    print(playlistColors);
   }
 
   getBuzzin() async {
@@ -73,35 +93,91 @@ class PostMethods {
     loadedBuzzin = jsonDecode(result.body)['data'];
   }
 
-  Future loadMorePosts({required BuildContext context}) async {
+  Future<void> reactOnPost({
+    required String post_id,
+    required String reactionValue,
+  }) async {
     final data = {
-      'type': 'load_more_home_posts',
-      'after_post_id': homePostIds[(homePostIds.length - 1)],
-      'not_ids': homePostIds
-          .toString()
-          .substring(1, (homePostIds.toString().length - 1)),
-      'ad_id': homePostAdsIds
-          .toString()
-          .substring(1, (homePostAdsIds.toString().length - 1)),
-      'user_id': loginUserId,
+      'type': 'react_story',
+      'post_id': post_id,
+      'user_id': loginUserId.toString(),
+      'reaction': reactionValue,
     };
-
     final result = await API().postData(data);
+    print('+++++++++++++++++++++++++++++++++++++++++');
+    print(jsonDecode(result.body));
+  }
 
-    List<dynamic> newPosts = jsonDecode(result.body)['posts_data'];
-    if (newPosts.length == 0) {
-      isNoMorePostsHome = true;
+  Future<void> removeReact({
+    required String post_id,
+  }) async {
+    final data = {
+      'type': 'remove_story_react',
+      'post_id': post_id,
+      'user_id': loginUserId.toString(),
+    };
+    final result = await API().postData(data);
+  }
+
+  followOrLike({required Map<String, dynamic> post}) async {
+    var data = {};
+    if (post['type'] == 'page') {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'like_page',
+        'user_id': loginUserId.toString(),
+        'page_id': post['id'].toString(),
+      };
+    } else if (post['type'] == 'user') {
+      data = {
+        'type': 'follow_like_join',
+        'action': 'follow_user',
+        'user_id': post['id'].toString(),
+        'loggedin_user_id': loginUserId,
+      };
     } else {
-      print(newPosts);
-      for (var i = 0; i < newPosts.length; i++) {
-        if (newPosts[i]['post_id'] != null) {
-          homePostIds.add(newPosts[i]['post_id'].toString());
-        } else {
-          homePostAdsIds.add(newPosts[i]['id'].toString());
+      data = {
+        'type': 'follow_like_join',
+        'action': 'join_group',
+        'group_id': post['id'].toString(),
+        'loggedin_user_id': loginUserId,
+      };
+    }
+    final result = await API().postData(data);
+    print(jsonDecode(result.body));
+  }
+
+  Future loadMorePosts({required BuildContext context}) async {
+    if (homePostIds.length > 0) {
+      final data = {
+        'type': 'load_more_home_posts',
+        'after_post_id': homePostIds[(homePostIds.length - 1)],
+        'not_ids': homePostIds
+            .toString()
+            .substring(1, (homePostIds.toString().length - 1)),
+        'ad_id': homePostAdsIds
+            .toString()
+            .substring(1, (homePostAdsIds.toString().length - 1)),
+        'user_id': loginUserId,
+      };
+      final result = await API().postData(data);
+
+      List<dynamic> newPosts = jsonDecode(result.body)['posts_data'];
+      if (newPosts.length == 0) {
+        isNoMorePostsHome = true;
+      } else {
+        for (var i = 0; i < newPosts.length; i++) {
+          if (newPosts[i]['post_id'] != null) {
+            homePostIds.add(newPosts[i]['post_id'].toString());
+          } else {
+            homePostAdsIds.add(newPosts[i]['id'].toString());
+          }
         }
       }
+      Provider.of<PostProvider>(context, listen: false).loadMorePosts(newPosts);
+    } else {
+      getPosts(context: context);
     }
-    Provider.of<PostProvider>(context, listen: false).loadMorePosts(newPosts);
   }
 
   List<Widget> setPosts({required List<dynamic> posts}) {
@@ -113,22 +189,10 @@ class PostMethods {
             _posts.add(PostAds(
               post: posts[i],
             ));
-          }
-          if (posts[i]['poll_id'] != '0') {
-            // _posts.add(PoolPost(
-            //   post: posts[i],
-            //   postId: posts[i]['post_id'],
-            //   avatar: posts[i]['publisher']['avatar'],
-            //   name: posts[i]['publisher']['first_name'] != null
-            //       ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
-            //       : "${posts[i]['publisher']['page_title']}",
-            //   postTime: posts[i]['post_time'],
-            //   postText: posts[i]['postText'],
-            //   poolOptions: posts[i]['options'],
-            //   likes: posts[i]['reaction']['count'].toString(),
-            //   comments: posts[i]['post_comments'],
-            //   shares: posts[i]['post_shares'],
-            // ));
+          } else if (posts[i]['poll_id'].toString() != '0') {
+            _posts.add(PoolPost(
+              post: posts[i],
+            ));
           } else if (posts[i]['blog_id'] != '0') {
             _posts.add(BlogPost(
               post: posts[i],
@@ -137,19 +201,6 @@ class PostMethods {
             _posts.add(
               PostEvent(
                 post: posts[i],
-                postId: posts[i]['post_id'],
-                avatar: posts[i]['publisher']['avatar'],
-                name: posts[i]['publisher']['first_name'] != null
-                    ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
-                    : "${posts[i]['publisher']['page_title']}",
-                postTime: posts[i]['post_time'],
-                coverImage: posts[i]['event']['cover'],
-                eventName: posts[i]['event']['name'],
-                startDate: posts[i]['event']['start_date'],
-                endDate: posts[i]['event']['end_date'],
-                likes: posts[i]['reaction']['count'].toString(),
-                comments: posts[i]['post_comments'],
-                shares: posts[i]['post_shares'],
               ),
             );
           } else if (posts[i]['user_id'] != '0' &&
@@ -168,33 +219,10 @@ class PostMethods {
                 post: posts[i],
               ),
             );
-            // return PostAds(
-            //   post: posts[i],
-            // );
           } else if (posts[i]['color_id'] != '0') {
             _posts.add(
               ColoredPost(
                 post: posts[i],
-                postId: posts[i]['post_id'],
-                avatar: posts[i]['publisher']['avatar'],
-                name: posts[i]['publisher']['first_name'] != null
-                    ? "${posts[i]['publisher']['first_name']} ${posts[i]['publisher']['last_name']}"
-                    : "${posts[i]['publisher']['page_title']}",
-                first: posts[i]['publisher']['first_name'] != null
-                    ? "${posts[i]['publisher']['first_name']}"
-                    : "${posts[i]['publisher']['page_title']}",
-                postTime: posts[i]['post_time'],
-                color_post_info: posts[i]['color_post_info'],
-                feelings: posts[i]['postFeeling'],
-                location: posts[i]['postMap'],
-                reactions: posts[i]['reaction'],
-                postText: posts[i]['postText'],
-                postFile: posts[i]['postFile'],
-                videoViews: int.parse(posts[i]['videoViews']),
-                comments: posts[i]['post_comments'].toString(),
-                likes: posts[i]['reaction']['count'].toString(),
-                shares: posts[i]['post_shares'].toString(),
-                likeString: posts[i]['likes_string'],
               ),
             );
           } else if (posts[i]['page_id'] != '0' &&
