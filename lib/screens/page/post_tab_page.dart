@@ -7,10 +7,9 @@ import 'package:flutter_html/style.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -21,7 +20,7 @@ import '../home/home_tab_bar.dart';
 import '../home/post_ads.dart';
 import '../home/post_blog.dart';
 import '../home/post_colored.dart';
-import '../home/post_comment_bar.dart';
+import '../home/comment/widget/post_comment_bar.dart';
 import '../home/post_event.dart';
 import '../home/post_photo.dart';
 import '../home/post_poll.dart';
@@ -110,7 +109,7 @@ class _PostTabPageState extends State<PostTabPage> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
     return loadPosts
         ? loadingSpinner()
         : Container(

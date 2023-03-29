@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,15 +6,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/front.dart';
-import 'package:vibetag/model/user.dart';
-import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
-import 'package:vibetag/provider/user_detailsProvider.dart';
-import 'package:vibetag/screens/home/post_methods/post_methods.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
-import 'package:vibetag/screens/playlists/playlists_detail.dart';
-import 'package:vibetag/screens/shop/widget/new_arrivals.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import 'screens/auth/login.dart';
@@ -51,9 +43,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => UsersDetailsProvider(),
-        ),
+      
         ChangeNotifierProvider(
           create: (context) => PostProvider(),
         ),

@@ -6,8 +6,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/home/post_comment_bar.dart';
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 import 'package:vibetag/screens/home/post_type.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 
@@ -178,12 +178,19 @@ class _ColoredPostState extends State<ColoredPost> {
                               ],
                             )),
                         padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.06,
-                          foregroundImage: NetworkImage(
-                            widget.post['publisher']['avatar'],
+                        child:
+                        ClipRRect(
+                          borderRadius: borderRadius(width),
+                          child: Container(
+                            width: width * 0.12,
+                            child: netImage(
+                               widget.post['publisher']['avatar'],
+                            ),
                           ),
-                        ),
+                        ), 
+                        
+                        
+                        
                       ),
                     ),
                     const SizedBox(

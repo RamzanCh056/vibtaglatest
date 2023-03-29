@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/model/user.dart';
-import 'package:vibetag/model/user_details.dart';
 
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
@@ -81,15 +79,14 @@ class _FrontPageState extends State<FrontPage> {
   ];
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
-  late ModelUser user;
-  late UserDetails userDetails;
+  Map<String, dynamic> user = {};
 
   @override
   void initState() {
     super.initState();
   }
 
-  int currentIndex =2;
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {

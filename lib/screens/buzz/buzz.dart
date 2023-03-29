@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -14,13 +12,11 @@ import 'package:vibetag/screens/buzz/widget/buzz_bar.dart';
 import 'package:vibetag/screens/buzz/widget/comment_bar.dart';
 import 'package:vibetag/screens/buzz/widget/owner_bar.dart';
 
-import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/hast_tag/tred_screen.dart';
-import 'package:vibetag/screens/video_player/video_player.dart';
 
 import '../../utils/constant.dart';
 import '../../widgets/bottom_modal_sheet_widget.dart';
-import '../home/post_comment_bar.dart';
+import '../home/comment/widget/post_comment_bar.dart';
 import '../home/post_methods/post_methods.dart';
 import '../home/revibe.dart';
 
@@ -36,11 +32,15 @@ class _BuzzinState extends State<Buzzin> {
 
   List<String> not_ids = [];
   List<String> likedIds = [];
+
   bool showSearchbar = false;
   bool isFocusCategory = false;
   List<dynamic> categories = [];
+  List<dynamic> searchedVideos = [];
   List<Widget> categoriesList = [];
+  List<Widget> searchedVideosList = [];
   String buzzCategory = '';
+  String post_id = '';
   bool interest_search = true;
   bool toggleBar = false;
 
@@ -68,7 +68,7 @@ class _BuzzinState extends State<Buzzin> {
         'user_id': loginUserId,
         'category': buzzCategory,
         'query': '',
-        'post_id': '',
+        'post_id': post_id,
       };
       final result = await API().postData(data);
       buzzin = jsonDecode(result.body)['data'];
@@ -136,6 +136,73 @@ class _BuzzinState extends State<Buzzin> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  buzzinSearch() async {
+    final data = {
+      'type': 'buzzin',
+      'sub_type': 'get_buzzin_post_suggestion',
+      'keyword': search.text.toString(),
+    };
+    final result = await API().postData(data);
+    searchedVideos = jsonDecode(result.body)['data'];
+    setSearchedVideos();
+  }
+
+  getBuzzinSearchedVideos() async {
+    setState(() {
+      isLoading = true;
+    });
+    final data = {
+      'type': 'buzzin',
+      'sub_type': 'get_buzzin',
+      'user_id': loginUserId,
+      'category': buzzCategory,
+      'query': '',
+      'post_id': post_id,
+    };
+    final result = await API().postData(data);
+    buzzin = jsonDecode(result.body)['data'];
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  setSearchedVideos() {
+    for (var video in searchedVideos) {
+      searchedVideosList.add(
+        InkWell(
+          onTap: () {
+            post_id = '${video['post_id']}';
+            getBuzzinSearchedVideos();
+            isFocusCategory = !isFocusCategory;
+            setState(() {});
+          },
+          child: Container(
+            width: width - 45,
+            padding: spacing(vertical: 7, horizontal: 7),
+            margin: spacing(vertical: 5),
+            decoration: BoxDecoration(
+              color: HexColor('#232323'),
+              boxShadow: lightShadow,
+              borderRadius: borderRadius(5),
+            ),
+            child: Text(
+              video['postText'],
+              style: TextStyle(
+                fontSize: 12,
+                color: white,
+              ),
+              maxLines: 3,
+            ),
+          ),
+        ),
+      );
+    }
+    setState(() {});
   }
 
   @override
@@ -241,6 +308,7 @@ class _BuzzinState extends State<Buzzin> {
                                                     borderRadius(width),
                                               ),
                                               child: TextFormField(
+                                                controller: search,
                                                 onChanged: (value) {
                                                   if (value.isNotEmpty) {
                                                     if (interest_search) {
@@ -248,6 +316,7 @@ class _BuzzinState extends State<Buzzin> {
                                                         interest_search = false;
                                                       });
                                                     }
+                                                    buzzinSearch();
                                                   } else {
                                                     if (!interest_search) {
                                                       setState(() {
@@ -403,7 +472,8 @@ class _BuzzinState extends State<Buzzin> {
                                                                       categoriesList,
                                                                 )
                                                               : Column(
-                                                                  children: [],
+                                                                  children:
+                                                                      searchedVideosList,
                                                                 ),
                                                         ],
                                                       ),

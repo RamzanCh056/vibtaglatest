@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:vibetag/screens/home/audio_player.dart';
+import 'package:vibetag/screens/home/comment/audio_player.dart';
 import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:video_player/video_player.dart';
-import 'package:zoom_widget/zoom_widget.dart';
 
 import '../../utils/constant.dart';
 
 Widget postFile({
   required String file,
-  required BuildContext context,
   required String thumbnail,
   required String post_id,
   bool isAds = false,
@@ -49,19 +47,12 @@ Widget postFile({
       ex == '.PNG') {
     if ((file.contains(serverUrl))) {
       return Container(
-        height: deviceHeight(context: context) * 0.3,
-        width: deviceWidth(context: context),
-        child: Zoom(
-          child: Container(
-            height: deviceHeight(context: context) * 0.3,
-            width: deviceWidth(context: context),
-            child: FadeInImage.assetNetwork(
-              placeholder: 'assets/new/gif/image_loading1.gif',
-              image: file,
-              fit: BoxFit.cover,
-              placeholderFit: BoxFit.fitWidth,
-            ),
-          ),
+        width: width,
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/new/gif/image_loading1.gif',
+          image: file,
+          fit: BoxFit.fill,
+          placeholderFit: BoxFit.fitWidth,
         ),
       );
     } else {
@@ -69,7 +60,7 @@ Widget postFile({
       return FadeInImage.assetNetwork(
         placeholder: 'assets/new/gif/image_loading1.gif',
         image: url,
-        fit: BoxFit.cover,
+        fit: BoxFit.fill,
         placeholderFit: BoxFit.fitWidth,
       );
       // return Image.network(

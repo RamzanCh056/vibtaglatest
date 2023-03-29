@@ -109,7 +109,15 @@ class _AudioPlayState extends State<AudioPlay> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Column(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFFEBEFFB)
+        ),
+
+        child: Column(
+
         children: [
           ValueListenableBuilder<ProgressBarState>(
             valueListenable: progressNotifier,
@@ -153,8 +161,8 @@ class _AudioPlayState extends State<AudioPlay> {
             children: [
               Text(
                 DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(int.parse(
-                      widget.time!,
-                    ) *
+                  widget.time!,
+                ) *
                     1000)),
                 style: TextStyle(
                   color: Colors.grey.shade400,
@@ -165,7 +173,7 @@ class _AudioPlayState extends State<AudioPlay> {
             ],
           ),
         ],
-      ),
+      ),)
     );
   }
 }

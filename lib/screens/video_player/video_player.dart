@@ -123,6 +123,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
                     if (_controller.value.isInitialized &&
                         !_controller.value.isPlaying) {
                       _controller.play();
+                      setMic();
                       setState(() {
                         isFocused = true;
                       });

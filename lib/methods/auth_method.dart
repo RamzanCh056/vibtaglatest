@@ -3,44 +3,28 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/model/user_details.dart';
-import 'package:vibetag/provider/user_detailsProvider.dart';
+import 'package:vibetag/utils/constant.dart';
 
-import '../model/user.dart';
 import '../provider/userProvider.dart';
 
 class AuthMethod {
-  getUser({required String userId}) async {
-    final data = {
-      'type': 'get_user_data',
-      'user_profile_id': userId,
-      'user_id': userId,
-    };
-    final result = await API().postData(data);
-    final jsonData = jsonDecode(result.body)['user_data'];
-    return jsonData;
-  }
-
   Future<void> setUser({
     required BuildContext context,
-    required String userId,
   }) async {
     final data = {
       'type': 'get_user_data',
       'sub_type': 'profile_info',
-      'user_profile_id': userId,
-      'user_id': userId,
+      'user_profile_id': loginUserId.toString(),
+      'user_id': loginUserId.toString(),
     };
     final result = await API().postData(data);
-    final jsonData = jsonDecode(result.body)['user_data'];
+
+    Map<String, dynamic> jsonData = jsonDecode(result.body)['user_data'];
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String userData = jsonEncode(jsonData);
-    pref.setString('userData', userData);
+    pref.setString('userData', jsonEncode(jsonData));
     Provider.of<UserProvider>(context, listen: false).setUser(
-      ModelUser.fromMap(jsonData),
+      jsonData,
     );
-    Provider.of<UsersDetailsProvider>(context, listen: false).setUserDetails(
-      UserDetails.fromMap(jsonData['details']),
-    );
+    print(Provider.of<UserProvider>(context, listen: false).user);
   }
 }

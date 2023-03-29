@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/home/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
 import 'package:vibetag/screens/home/feelingWidet.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/screens/home/post_type.dart';
@@ -162,10 +162,13 @@ class _PostState extends State<Post> {
                               ],
                             )),
                         padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.04,
-                          foregroundImage: NetworkImage(
-                            widget.post['publisher']['avatar'],
+                        child: ClipRRect(
+                          borderRadius: borderRadius(width),
+                          child: Container(
+                            width: width * 0.12,
+                            child: netImage(
+                              widget.post['publisher']['avatar'],
+                            ),
                           ),
                         ),
                       ),
@@ -422,10 +425,13 @@ class _PostState extends State<Post> {
                                     ],
                                   )),
                               padding: const EdgeInsets.all(2),
-                              child: CircleAvatar(
-                                radius: width * 0.06,
-                                foregroundImage: NetworkImage(
-                                  widget.post['post_owner_data']['avatar'],
+                              child: ClipRRect(
+                                borderRadius: borderRadius(width),
+                                child: Container(
+                                  width: width * 0.12,
+                                  child: netImage(
+                                    widget.post['post_owner_data']['avatar'],
+                                  ),
                                 ),
                               ),
                             ),
@@ -593,10 +599,8 @@ class _PostState extends State<Post> {
                             borderRadius: borderRadius(7),
                             child: Stack(
                               children: [
-                                Image.network(
-                                  widget.post['photo_album'][i]['image'],
-                                  fit: BoxFit.cover,
-                                ),
+                                netImage(
+                                    widget.post['photo_album'][i]['image']),
                                 Positioned(
                                   right: 10,
                                   top: 10,
@@ -626,7 +630,6 @@ class _PostState extends State<Post> {
               : gap(),
           postFile(
             file: widget.post['postFile'],
-            context: context,
             thumbnail: widget.post['postFileThumb'].toString(),
             post_id: widget.post['post_id'],
           ),

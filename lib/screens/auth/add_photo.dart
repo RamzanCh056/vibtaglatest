@@ -169,7 +169,6 @@ class _AddPhotoState extends State<AddPhoto> {
     if (response['status'] == 200) {
       await AuthMethod().setUser(
         context: context,
-        userId: loginUserId,
       );
       ToastMessage(message: 'Success');
 

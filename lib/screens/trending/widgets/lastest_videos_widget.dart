@@ -44,7 +44,6 @@ class TrendLatestVideos extends StatelessWidget {
                           borderRadius: borderRadius(7),
                           child: postFile(
                             file: video['postFile_full'],
-                            context: context,
                             thumbnail: '${serverUrl}${video['postFileThumb']}',
                             post_id: video['post_id'],
                             autoPlay: false,

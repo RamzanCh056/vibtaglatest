@@ -237,7 +237,8 @@ class _PageMessageState extends State<PageMessage> {
             ),
           ),
         ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar:
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           height: screenHeightSize(70, context),
           decoration: const BoxDecoration(

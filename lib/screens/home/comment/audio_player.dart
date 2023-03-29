@@ -3,7 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../utils/constant.dart';
+import '../../../utils/constant.dart';
 
 class AudioMediaPlayer extends StatefulWidget {
   final String url;

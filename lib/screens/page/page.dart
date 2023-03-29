@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
 
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/page/page_video_tab.dart';
 import 'package:vibetag/screens/page/page_photo_tab.dart';
@@ -121,7 +120,7 @@ class _PageScreenState extends State<PageScreen> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String,dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
     List<Widget> screen = isLoading
         ? []
         : [

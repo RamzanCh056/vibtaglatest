@@ -7,8 +7,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:readmore/readmore.dart';
 import 'package:svg_icon/svg_icon.dart';
 
-import 'package:vibetag/screens/home/post_comment_bar.dart';
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
@@ -19,11 +19,9 @@ import '../profile/profile.dart';
 class PoolPost extends StatefulWidget {
   final dynamic post;
 
-
   const PoolPost({
     Key? key,
     required this.post,
-   
   }) : super(key: key);
 
   @override
@@ -56,7 +54,7 @@ class _PoolPostState extends State<PoolPost> {
     userLike = 0;
     final data = {
       'type': 'react_story',
-      'post_id':widget.post['post_id'].toString(),
+      'post_id': widget.post['post_id'].toString(),
       'user_id': loginUserId.toString(),
       'reaction': reactionValue.toString(),
     };
@@ -87,7 +85,6 @@ class _PoolPostState extends State<PoolPost> {
         'loggedin_user_id': loginUserId,
       };
     }
-    print(data);
     final result = await API().postData(data);
     print(jsonDecode(result.body));
   }
@@ -96,7 +93,8 @@ class _PoolPostState extends State<PoolPost> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    totalLikes = int.parse(widget.post['reaction']['count']) + userLike;
+    totalLikes =
+        int.parse(widget.post['reaction']['count'].toString()) + userLike;
 
     return Container(
       margin: spacing(
@@ -157,10 +155,13 @@ class _PoolPostState extends State<PoolPost> {
                                 ],
                               )),
                           padding: const EdgeInsets.all(2),
-                          child: CircleAvatar(
-                            radius: width * 0.06,
-                            foregroundImage: NetworkImage(
-                             widget.post['publisher']['avatar'],
+                          child: ClipRRect(
+                            borderRadius: borderRadius(width),
+                            child: Container(
+                              width: width * 0.12,
+                              child: netImage(
+                                widget.post['post_owner_data']['avatar'],
+                              ),
                             ),
                           ),
                         ),
@@ -286,7 +287,8 @@ class _PoolPostState extends State<PoolPost> {
                             h: 20,
                           ),
                           Container(
-                            height: height * 0.05 * widget.post['options'].length,
+                            height:
+                                height * 0.05 * widget.post['options'].length,
                             width: double.maxFinite,
                             child: GridView.builder(
                               gridDelegate:
@@ -328,7 +330,7 @@ class _PoolPostState extends State<PoolPost> {
                                           ),
                                           gap(w: 10),
                                           Text(
-                                           widget.post['options'][i]['text'],
+                                            widget.post['options'][i]['text'],
                                           ),
                                         ],
                                       ),

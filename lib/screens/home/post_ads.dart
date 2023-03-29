@@ -187,7 +187,6 @@ class _PostAdsState extends State<PostAds> {
                       child: Center(
                         child: postFile(
                           file: widget.post['ad_media'],
-                          context: context,
                           thumbnail: widget.post['dp'].contains(serverUrl)
                               ? widget.post['dp']
                               : '${serverUrl}${widget.post['dp']}',

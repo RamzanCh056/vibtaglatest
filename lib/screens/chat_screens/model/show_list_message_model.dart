@@ -14,9 +14,10 @@ class MessageList {
   String? is_map;
   String? lat;
   String? lng;
+  String? is_reply;
+  String? starred;
+  String? is_story_reply;
   String? id;
-
-
 
   MessageList({
     this.attachment_url,
@@ -26,7 +27,7 @@ class MessageList {
     this.sent_time,
     this.rec_id,
     this.sen_name,
-   this.sen_id,
+    this.sen_id,
     this.sen_pic,
     this.last_online,
     this.online_status,
@@ -34,8 +35,10 @@ class MessageList {
     this.lng,
     this.lat,
     this.is_map,
+    this.is_reply,
+    this.starred,
+    this.is_story_reply,
     this.id,
-
   });
 
   Map<String, dynamic> toJson() {
@@ -45,7 +48,7 @@ class MessageList {
       "rec_pic": this.rec_pic,
       "sent_time": this.sent_time,
       "rec_id": this.rec_id,
-    "sen_name": this.sen_name,
+      "sen_name": this.sen_name,
       "sen_id": this.sen_id,
       "sen_pic": this.sen_pic,
       "attachment_url": this.attachment_url,
@@ -56,11 +59,9 @@ class MessageList {
       "lat": this.lat,
       "is_map": this.is_map,
       "id": this.id,
-
-
-
-
-
+      "is_reply": this.is_reply,
+      "starred": this.starred,
+      "is_story_reply": this.is_story_reply,
     };
   }
 
@@ -81,10 +82,10 @@ class MessageList {
       lng: json["lng"] ?? "",
       lat: json["lat"] ?? "",
       is_map: json["is_map"] ?? "",
+      is_reply: json["is_reply"] ?? "",
+      starred: json["starred"] ?? "",
+      is_story_reply: json["is_story_reply"] ?? "",
       id: json["id"] ?? "",
-
-
-
     );
   }
 }

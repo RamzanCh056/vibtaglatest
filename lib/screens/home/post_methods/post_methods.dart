@@ -103,9 +103,7 @@ class PostMethods {
       'user_id': loginUserId.toString(),
       'reaction': reactionValue,
     };
-    final result = await API().postData(data);
-    print('+++++++++++++++++++++++++++++++++++++++++');
-    print(jsonDecode(result.body));
+    await API().postData(data);
   }
 
   Future<void> removeReact({
@@ -143,8 +141,7 @@ class PostMethods {
         'loggedin_user_id': loginUserId,
       };
     }
-    final result = await API().postData(data);
-    print(jsonDecode(result.body));
+    await API().postData(data);
   }
 
   Future loadMorePosts({required BuildContext context}) async {

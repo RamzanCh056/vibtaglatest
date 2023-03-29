@@ -4,7 +4,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import '../utils/constant.dart';

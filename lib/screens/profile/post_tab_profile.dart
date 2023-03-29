@@ -8,9 +8,8 @@ import 'package:flutter_html/style.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../model/user.dart';
 import '../../utils/constant.dart';
-import '../home/post_comment_bar.dart';
+import '../home/comment/widget/post_comment_bar.dart';
 import '../home/create_post/home_search.dart';
 import '../home/home_tab_bar.dart';
 import '../home/post_blog.dart';
@@ -24,7 +23,7 @@ import '../home/revibe.dart';
 
 class PostTabProfile extends StatefulWidget {
   final String user_id;
-  final ModelUser user;
+  final Map<String,dynamic> user;
   const PostTabProfile({
     Key? key,
     required this.user_id,

@@ -20,16 +20,16 @@ class ShopSliderItem extends StatefulWidget {
 class _ShopSliderItemState extends State<ShopSliderItem> {
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
+    width = deviceWidth(context: context);
+    height = deviceHeight(context: context);
     return Stack(
       children: [
         Container(
             width: width,
-            height: height * 0.2,
+            height: width * 1.3,
             child: Image.network(
               widget.item['image'].toString().trim(),
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             )),
         widget.item['button_title'] == ''
             ? gap()

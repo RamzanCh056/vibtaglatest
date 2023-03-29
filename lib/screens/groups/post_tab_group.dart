@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
 
@@ -83,7 +82,7 @@ class _PostTabGroupState extends State<PostTabGroup> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
     return isLoading
         ? loadingSpinner()
         : Container(

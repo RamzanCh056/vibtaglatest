@@ -10,7 +10,6 @@ import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 
-import '../../model/user.dart';
 import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
 import '../auth/login.dart';

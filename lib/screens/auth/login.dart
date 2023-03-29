@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/front.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/methods/auth_method.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/auth/forgot.dart';
 import 'package:vibetag/screens/auth/input_field_new.dart';
@@ -28,7 +27,6 @@ class _LoginState extends State<Login> {
   int pageIndex = 0;
 
   bool isRemembered = true;
-  bool isMounted = false;
   bool isLoading = false;
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
@@ -38,7 +36,7 @@ class _LoginState extends State<Login> {
     Timer.periodic(
       Duration(seconds: 5),
       (Timer timer) {
-        if (!isMounted) {
+        if (mounted) {
           if (pageIndex == 2) {
             setState(() {
               pageIndex = 0;
@@ -70,14 +68,12 @@ class _LoginState extends State<Login> {
     if (response['api_status'] == '200') {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setString('userId', response['user_id']);
-      loginUserId = response['user_id'];
-      await AuthMethod().setUser(
-        context: context,
-        userId: loginUserId,
-      );
-      setState(() {
-        isMounted = true;
-      });
+      await preferences.setString('userData', jsonEncode(response['user']));
+      loginUserId = response['user_id'].toString();
+      Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).setUser(response['user']);
       setState(() {
         isLoading = false;
       });
@@ -315,9 +311,6 @@ class _LoginState extends State<Login> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  setState(() {
-                                    isMounted = true;
-                                  });
                                   pushReplacement(
                                     context: context,
                                     screen: const ForgotPassword(),
@@ -406,9 +399,6 @@ class _LoginState extends State<Login> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  setState(() {
-                                    isMounted = true;
-                                  });
                                   pushReplacement(
                                     context: context,
                                     screen: const Register(),

@@ -40,11 +40,11 @@ class _LeftBannersState extends State<LeftBanners> {
           child: Container(
             width: double.infinity,
             margin: spacing(vertical: 7),
-            height: width * 0.6,
+            height: width * 1.3,
             decoration: BoxDecoration(
               image: DecorationImage(
-                alignment: Alignment.topCenter,
-                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                fit: BoxFit.fill,
                 image: NetworkImage(
                   banner['image'],
                 ),
@@ -91,7 +91,7 @@ class _LeftBannersState extends State<LeftBanners> {
     double height = deviceHeight(context: context);
     return Container(
       width: width,
-      height: width * 0.6,
+      height: width * 1.3,
       child: PageView(
         onPageChanged: (i) {
           currentBanner = i;

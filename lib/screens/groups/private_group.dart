@@ -5,7 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:vibetag/model/user.dart';
+
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:vibetag/screens/home/home_tab_bar.dart';
@@ -27,7 +27,7 @@ class _PrivateGroupState extends State<PrivateGroup> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
       backgroundColor: backgroundColor,

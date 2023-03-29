@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:vibetag/model/user.dart';
+
 
 import '../../utils/constant.dart';
 import '../story/add_story.dart';
 
-Widget HomeStory({required ModelUser user}) {
+Widget HomeStory({required Map<String, dynamic> modelUser}) {
   return StatefulBuilder(builder: ((context, setState) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
@@ -60,7 +60,7 @@ Widget HomeStory({required ModelUser user}) {
                             width * 0.015,
                           ),
                           child: Image.network(
-                            user.avatar!,
+                          modelUser['avatar'],
                             fit: BoxFit.cover,
                           ),
                         ),

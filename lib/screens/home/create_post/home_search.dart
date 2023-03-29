@@ -11,7 +11,6 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/screens/home/create_post/create_post.dart';
 import 'package:video_player/video_player.dart';
 
@@ -24,7 +23,7 @@ import '../catagories/explore_catagorie.dart';
 
 class createPost extends StatefulWidget {
   createPost(this.user, {Key? key}) : super(key: key);
-  late ModelUser user;
+  late Map<String,dynamic> user;
 
   @override
   State<createPost> createState() => _createPostState();
@@ -289,11 +288,11 @@ class _createPostState extends State<createPost> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSearchBar(user: widget.user);
+    return HomeSearchBar(modelUser: widget.user);
   }
 
   Widget HomeSearchBar({
-    required ModelUser user,
+    required Map<String, dynamic> modelUser,
   }) {
     return StatefulBuilder(builder: (context, setState) {
       double width = deviceWidth(context: context);
@@ -328,7 +327,7 @@ class _createPostState extends State<createPost> {
               child: CircleAvatar(
                 radius: width * 0.055,
                 foregroundImage: NetworkImage(
-                  user.avatar.toString(),
+                  modelUser['avatar'],
                 ),
               ),
             ),

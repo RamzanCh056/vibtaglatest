@@ -8,7 +8,7 @@ import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
-import '../home/post_comment_bar.dart';
+import '../home/comment/widget/post_comment_bar.dart';
 import '../home/revibe.dart';
 
 class EventDetail extends StatefulWidget {

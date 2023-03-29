@@ -7,8 +7,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:vibetag/model/user_details.dart';
-import 'package:vibetag/provider/user_detailsProvider.dart';
+
 import 'package:vibetag/screens/profile/edit_profile.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/about_items.dart';
@@ -22,7 +21,6 @@ import 'package:vibetag/widgets/navbar.dart';
 
 import '../../methods/api.dart';
 import '../../methods/auth_method.dart';
-import '../../model/user.dart';
 import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
 import 'followers_screen.dart';
@@ -192,7 +190,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String,dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
     List<Widget> screen = isLoading
         ? []
         : [

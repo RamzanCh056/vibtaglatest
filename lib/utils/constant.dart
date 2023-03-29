@@ -62,7 +62,8 @@ double iconMin = 26.0;
 bool isMuted = true;
 
 String API_Url = 'https://vibetag.com/app_api.php';
-final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
+final String serverUrl = 'https://media.vibetag.com/';
+// final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
 Gradient gradient = LinearGradient(
   begin: Alignment.centerRight,
   end: Alignment.centerLeft,
@@ -211,7 +212,6 @@ String readTimestamp(int timestamp) {
       diff.inMinutes > 0 && diff.inHours == 0 ||
       diff.inHours > 0 && diff.inDays == 0) {
     DateTime setDate = DateTime.parse(date.toString());
-
 
     time = setDate.hour.toString() + ' hr';
   } else {
@@ -416,7 +416,6 @@ followUnfollowLikeUnlikeJoinLeave(Map<String, dynamic> data) {
         data['id'],
       );
       PostMethods().followOrLike(post: data);
-
     }
   }
   if (data['type'] == 'group') {
@@ -429,7 +428,55 @@ followUnfollowLikeUnlikeJoinLeave(Map<String, dynamic> data) {
         data['id'],
       );
       PostMethods().followOrLike(post: data);
-
     }
+  }
+}
+
+isReacted(List<dynamic> reactions) {
+  for (var reaction in reactions) {
+    if (reaction['user_id'].toString() == loginUserId) {
+      return {
+        'is_reacted': true,
+        'reaction': int.parse(reaction['reaction'].toString())
+      };
+    }
+  }
+  return {
+    'is_reacted': false,
+    'reaction': 0,
+  };
+}
+
+String getFullLink(String link) {
+  return link.contains(serverUrl) ? link : '${serverUrl}${link}';
+}
+
+netImage(String url) {
+  if (url == '') {
+    return Image.asset(
+      'assets/placeholder.jpg',
+      fit: BoxFit.fill,
+    );
+  }
+
+  return FadeInImage.assetNetwork(
+    placeholder: 'assets/placeholder.jpg',
+    image: url.contains(serverUrl) ? url : '${serverUrl}${url}',
+    fit: BoxFit.fill,
+  );
+}
+
+List<dynamic> comments = [];
+String comment_id = '';
+String replyTo = '';
+List<dynamic> stickers = [];
+
+Map<String, dynamic> loginUser = {};
+
+isEmpty(list) {
+  if (list.toString() == '') {
+    return [];
+  } else {
+    return list;
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vibetag/screens/chat_screens/screen/pages/change_theme.dart';
 
+import '../../../utils/constant.dart';
 import '../constants.dart';
 import '../model/show_list_message_model.dart';
 import '../widgets/reusable_listtile.dart';
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Stack(
             children: <Widget>[
@@ -67,7 +69,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 20,
                     ),
                      Text(
-                     widget.list[widget.currentIndex].rec_name.toString(),
+                       loginUserId != widget.list[widget.currentIndex].rec_id
+                           ? widget.list[widget.currentIndex].rec_name.toString()
+                           : widget.list[widget.currentIndex].sen_name.toString(),
+                     //widget.list[widget.currentIndex].rec_name.toString(),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -76,8 +81,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text(
-                      "@mark_h01",
+                     Text(
+                       loginUserId != widget.list[widget.currentIndex].rec_id?
+                      "@${ widget.list[widget.currentIndex].rec_name.toString()}":
+                       "@${widget.list[widget.currentIndex].sen_name.toString()}",
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -261,7 +268,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(color: Colors.transparent, width: 3),
                     shape: BoxShape.circle,
                     image:  DecorationImage(
-                      image:NetworkImage( widget.list[widget.currentIndex].rec_pic.toString()),
+                      image:NetworkImage(
+                        loginUserId != widget.list[widget.currentIndex].rec_id
+                            ? widget.list[widget.currentIndex].rec_pic.toString()
+                            : widget.list[widget.currentIndex].sen_pic.toString(),
+
+                         // widget.list[widget.currentIndex].rec_pic.toString()
+                      ),
 
                     ),
                   ),

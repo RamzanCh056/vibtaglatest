@@ -177,6 +177,8 @@ class _TrendingState extends State<Trending> {
   Widget build(BuildContext context) {
     width = deviceWidth(context: context);
     height = deviceHeight(context: context);
+    print('++++++++++++Login User Id+++++++++++++++++++');
+    print(loginUserId);
     return isLoading
         ? loadingSpinner()
         : Container(

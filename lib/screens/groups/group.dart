@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
 
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/groups/Methods/group_methods.dart';
 import 'package:vibetag/screens/groups/post_tab_group.dart';

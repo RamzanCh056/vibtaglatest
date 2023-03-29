@@ -6,7 +6,7 @@ import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 
-import '../../utils/constant.dart';
+import '../../../../utils/constant.dart';
 
 Comments({required BuildContext context}) {
   return showBarModalBottomSheet(

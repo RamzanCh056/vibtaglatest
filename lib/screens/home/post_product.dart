@@ -6,8 +6,8 @@ import 'package:flutter_html/flutter_html.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 
-import 'package:vibetag/screens/home/post_comment_bar.dart';
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 import 'package:vibetag/screens/home/feelingWidet.dart';
 import 'package:vibetag/screens/home/product_features.dart';
 import 'package:vibetag/screens/home/revibe.dart';
@@ -175,10 +175,14 @@ class _PostProductState extends State<PostProduct> {
                                 ],
                               )),
                           padding: const EdgeInsets.all(2),
-                          child: CircleAvatar(
-                            radius: width * 0.06,
-                            foregroundImage: NetworkImage(
-                                widget.post['publisher']['avatar']),
+                          child: ClipRRect(
+                            borderRadius: borderRadius(width),
+                            child: Container(
+                              width: width * 0.12,
+                              child: netImage(
+                                widget.post['post_owner_data'],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -369,12 +373,20 @@ class _PostProductState extends State<PostProduct> {
                                     ],
                                   )),
                               padding: const EdgeInsets.all(2),
-                              child: CircleAvatar(
-                                radius: width * 0.06,
-                                foregroundImage: NetworkImage(
-                                  widget.post['post_owner_data']['avatar'],
+                              child: 
+                              ClipRRect(
+                                borderRadius: borderRadius(width),
+                                child: Container(
+                                  width: width * 0.12,
+                                  child: netImage(
+                                    widget.post['post_owner_data']['avatar'],
+                                  ),
                                 ),
                               ),
+                              
+                              
+                              
+                              
                             ),
                             const SizedBox(
                               width: 10,
@@ -470,10 +482,8 @@ class _PostProductState extends State<PostProduct> {
                               color: grayLight,
                             ),
                             child: Center(
-                              child: Image.network(
-                                widget.post['product']['images'][i]['image'],
-                                fit: BoxFit.cover,
-                              ),
+                              child: netImage(
+                                  widget.post['product']['images'][i]['image']),
                             ),
                           ),
                         ),

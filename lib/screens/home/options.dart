@@ -13,7 +13,6 @@ import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 
-import '../../model/user.dart';
 import '../../provider/userProvider.dart';
 import '../../utils/constant.dart';
 import '../auth/login.dart';
@@ -24,9 +23,11 @@ void changeFeeds(BuildContext context) async {
     'feed_type': feeds ? '1' : '0',
     'user_id': loginUserId.toString(),
   };
-  final result = await API().postData(data);
+  await API().postData(data);
   await PostMethods().getPosts(context: context);
-  await AuthMethod().setUser(context: context, userId: loginUserId);
+  await AuthMethod().setUser(
+    context: context,
+  );
 }
 
 Options({required BuildContext context}) {
@@ -291,9 +292,13 @@ Options({required BuildContext context}) {
                   InkWell(
                     onTap: () async {
                       Provider.of<PostProvider>(context, listen: false).clear();
+
                       SharedPreferences preferences =
                           await SharedPreferences.getInstance();
                       await preferences.clear().then((value) {
+                        Provider.of<UserProvider>(context, listen: false)
+                            .clearUser({});
+
                         pushRoute(
                           context: context,
                           screen: const Login(),

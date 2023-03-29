@@ -11,7 +11,7 @@ import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 import 'package:vibetag/screens/video_player/Single_video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -818,7 +818,6 @@ class _VideoScreenState extends State<VideoScreen> {
                                                         child: postFile(
                                                           file: posts[i - 1]
                                                               ['postFile_full'],
-                                                          context: context,
                                                           thumbnail:
                                                               '${serverUrl}${posts[i - 1]['postFileThumb']}',
                                                           post_id: posts[i - 1]

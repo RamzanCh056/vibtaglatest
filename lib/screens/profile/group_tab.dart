@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/screens/groups/group.dart';
 import 'package:vibetag/screens/profile/group_tab_vertical.dart';
 

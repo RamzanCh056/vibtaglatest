@@ -6,7 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:vibetag/screens/blog/blog.dart';
 import 'package:vibetag/screens/home/feelingWidet.dart';
 
-import 'package:vibetag/screens/home/post_comment_bar.dart';
+import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
 import 'package:vibetag/screens/home/revibe.dart';
 import 'package:vibetag/utils/constant.dart';
 
@@ -172,10 +172,13 @@ class _BlogPostState extends State<BlogPost> {
                                 ],
                               )),
                           padding: const EdgeInsets.all(2),
-                          child: CircleAvatar(
-                            radius: width * 0.06,
-                            foregroundImage: NetworkImage(
-                              widget.post['publisher']['avatar'],
+                          child: ClipRRect(
+                            borderRadius: borderRadius(width),
+                            child: Container(
+                              width: width * 0.12,
+                              child: netImage(
+                                widget.post['publisher']['avatar'],
+                              ),
                             ),
                           ),
                         ),
@@ -190,8 +193,7 @@ class _BlogPostState extends State<BlogPost> {
                           Container(
                             width: width * 0.8,
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
@@ -200,8 +202,7 @@ class _BlogPostState extends State<BlogPost> {
                                         pushRoute(
                                             context: context,
                                             screen: Profile(
-                                              user_id: widget
-                                                  .post['publisher']
+                                              user_id: widget.post['publisher']
                                                       ['user_id']
                                                   .toString(),
                                             ));
@@ -274,8 +275,7 @@ class _BlogPostState extends State<BlogPost> {
                                                   color: isLiked
                                                       ? grayLight
                                                       : white,
-                                                  borderRadius:
-                                                      borderRadius(5),
+                                                  borderRadius: borderRadius(5),
                                                   border: Border.all(
                                                       width: isLiked ? 0 : 1,
                                                       color: grayMed)),
@@ -284,8 +284,7 @@ class _BlogPostState extends State<BlogPost> {
                                                     ? isLiked
                                                         ? 'Following'
                                                         : 'Follow'
-                                                    : widget.post[
-                                                                'page_id'] !=
+                                                    : widget.post['page_id'] !=
                                                             '0'
                                                         ? isLiked
                                                             ? 'Liked'
@@ -365,10 +364,13 @@ class _BlogPostState extends State<BlogPost> {
                                       ],
                                     )),
                                 padding: const EdgeInsets.all(2),
-                                child: CircleAvatar(
-                                  radius: width * 0.06,
-                                  foregroundImage: NetworkImage(
-                                    widget.post['blog']['author']['avatar'],
+                                child: ClipRRect(
+                                  borderRadius: borderRadius(width),
+                                  child: Container(
+                                    width: width * 0.12,
+                                    child: netImage(
+                                      widget.post['blog']['author']['avatar'],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -476,10 +478,7 @@ class _BlogPostState extends State<BlogPost> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.network(
-                  widget.post['blog']['thumbnail'],
-                  fit: BoxFit.fill,
-                ),
+                netImage(widget.post['blog']['thumbnail']),
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: spacing(
@@ -544,8 +543,7 @@ class _BlogPostState extends State<BlogPost> {
                       children: [
                         Container(
                           width: 37 * reactionOnPost.length.toDouble(),
-                          height:
-                              reactionOnPost.length > 0 ? height * 0.05 : 0,
+                          height: reactionOnPost.length > 0 ? height * 0.05 : 0,
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: reactionOnPost.length,
@@ -620,9 +618,9 @@ class _BlogPostState extends State<BlogPost> {
                         child: reactionValue != 0
                             ? Image.asset(reactions[reactionValue - 1])
                             : widget.post['reaction']['is_reacted']
-                                ? Image.asset(reactions[int.parse(
-                                        widget.post['reaction']['type']) -
-                                    1])
+                                ? Image.asset(reactions[
+                                    int.parse(widget.post['reaction']['type']) -
+                                        1])
                                 : Image.asset(
                                     'assets/new/icons/heart.png',
                                     fit: BoxFit.cover,
@@ -635,9 +633,9 @@ class _BlogPostState extends State<BlogPost> {
                         reactionValue != 0
                             ? reactionsText[reactionValue - 1]
                             : widget.post['reaction']['is_reacted']
-                                ? reactionsText[int.parse(
-                                        widget.post['reaction']['type']) -
-                                    1]
+                                ? reactionsText[
+                                    int.parse(widget.post['reaction']['type']) -
+                                        1]
                                 : 'React',
                         style: TextStyle(
                           fontSize: 12,

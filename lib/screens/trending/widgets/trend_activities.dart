@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-import 'package:vibetag/model/user.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import '../../../utils/constant.dart';
@@ -18,7 +17,6 @@ class TrendActivitiesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
     return Container(
       padding: spacing(vertical: 10),
       decoration: BoxDecoration(

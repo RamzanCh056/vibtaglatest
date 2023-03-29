@@ -9,10 +9,11 @@ import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
+import 'package:vibetag/screens/home/comment/widget/reply_comment_bar.dart';
 import 'package:vibetag/screens/home/comment_option.dart';
-import 'package:vibetag/screens/home/comments.dart';
+import 'package:vibetag/screens/home/comment/comments.dart';
 
-import '../../utils/constant.dart';
+import '../../../../utils/constant.dart';
 
 PostComments({required BuildContext context, required String postId}) {
   return showBarModalBottomSheet(
@@ -24,6 +25,7 @@ PostComments({required BuildContext context, required String postId}) {
       ),
       context: context,
       builder: (context) {
+        // return ReplyCommentBar();
         return Comments(
           postId: postId,
         );

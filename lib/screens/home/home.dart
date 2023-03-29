@@ -6,11 +6,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/auth_method.dart';
-import 'package:vibetag/model/user.dart';
-import 'package:vibetag/model/user_details.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
-import 'package:vibetag/provider/user_detailsProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
@@ -48,8 +45,7 @@ class _HomeState extends State<Home> {
   bool isScrollDown = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
-  late ModelUser user;
-  late UserDetails userDetails;
+  late Map<String, dynamic> modelUser;
   List<dynamic> posts = [];
   ScrollController scrollController = ScrollController();
   List<Widget> postWidgets = [];
@@ -89,47 +85,38 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = true;
     });
-
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (preferences.getString('userData') != null) {
       Map<String, dynamic> userData =
           jsonDecode(preferences.getString('userData')!);
-
-      Map<String, dynamic> userDetails =
-          jsonDecode(preferences.getString('userData')!)['details'];
-
       Provider.of<UserProvider>(context, listen: false).setUser(
-        ModelUser.fromMap(userData),
-      );
-      Provider.of<UsersDetailsProvider>(context, listen: false).setUserDetails(
-        UserDetails.fromMap(userDetails),
+        userData,
       );
     }
-    if (preferences.getString('posts') != null) {
-      List<dynamic> preferencesPosts =
-          jsonDecode(preferences.getString('posts')!);
-      PostMethods().setSharedPreferencePosts(
-        posts: preferencesPosts,
-        context: context,
-      );
-    }
+    // if (preferences.getString('posts') != null) {
+    //   List<dynamic> preferencesPosts =
+    //       jsonDecode(preferences.getString('posts')!);
+    //   PostMethods().setSharedPreferencePosts(
+    //     posts: preferencesPosts,
+    //     context: context,
+    //   );
+    // }
 
-    user = Provider.of<UserProvider>(
+    modelUser = Provider.of<UserProvider>(
       context,
       listen: false,
     ).user;
 
-    if (user.user_id == '') {
+    if (modelUser == '{}') {
       await AuthMethod().setUser(
         context: context,
-        userId: loginUserId,
       );
-      user = Provider.of<UserProvider>(
+      modelUser = Provider.of<UserProvider>(
         context,
         listen: false,
       ).user;
     }
-    feeds = user.order_posts_by == '1' ? true : false;
+    feeds = modelUser['order_posts_by'] == '1' ? true : false;
 
     posts = Provider.of<PostProvider>(context, listen: false).posts;
 
@@ -137,22 +124,19 @@ class _HomeState extends State<Home> {
       await PostMethods().getPosts(context: context);
     }
 
-    userDetails = Provider.of<UsersDetailsProvider>(
-      context,
-      listen: false,
-    ).userDetails;
     setState(() {
       isLoading = false;
     });
-    if (user.following_number == '0') {
+    if (modelUser['following_number'] == '0') {
       pushReplacement(
         context: context,
         screen: const AddPhoto(),
       );
     }
-    if (preferences.getString('posts') != null) {
-      await PostMethods().getPosts(context: context);
-    }
+    // if (preferences.getString('posts') != null) {
+    //   await PostMethods().getPosts(context: context);
+    //   await AuthMethod().setUser(context: context);
+    // }
   }
 
   @override
@@ -224,8 +208,8 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             HomeTabBar(),
-                            AddStroy(user),
-                            createPost(user),
+                            AddStroy(modelUser),
+                            createPost(modelUser),
                             Column(
                               children: postWidgets,
                             ),

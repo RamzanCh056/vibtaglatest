@@ -12,7 +12,7 @@ import '../../../front.dart';
 
 class CreateStroyWithEdit extends StatefulWidget {
    CreateStroyWithEdit(this.imageFile,{Key? key}) : super(key: key);
-  File? imageFile;
+  String? imageFile;
 
   @override
   State<CreateStroyWithEdit> createState() => _CreateStroyWithEditState();
@@ -41,9 +41,9 @@ class _CreateStroyWithEditState extends State<CreateStroyWithEdit> {
       'file_type': 'image',
       'description': description.text ?? "",
     });
-    if (widget.imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', widget.imageFile!.path));
-    }
+    //if (widget.imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', widget.imageFile.toString()));
+   // }
 
 
     request.headers.addAll(headers);
@@ -54,6 +54,7 @@ class _CreateStroyWithEditState extends State<CreateStroyWithEdit> {
       //print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
+      print("image file ==${widget.imageFile}");
       var message = body["api_status"];
       setState(() {
         isLoading = false;
@@ -130,7 +131,7 @@ class _CreateStroyWithEditState extends State<CreateStroyWithEdit> {
 
               height: double.infinity,
               width: double.infinity,
-              widget.imageFile!,
+              File(widget.imageFile.toString()),
               key: _imageKey,
               scalable: true,
               initialStrokeWidth: 2,

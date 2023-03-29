@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:vibetag/model/user.dart';
+
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
 import 'package:vibetag/screens/album/album.dart';
@@ -37,7 +37,7 @@ BottomDrawer({required BuildContext context}) {
     ),
     context: context,
     builder: (context) {
-      ModelUser user = Provider.of<UserProvider>(context, listen: false).user;
+      Map<String, dynamic> modelUser = Provider.of<UserProvider>(context, listen: false).user;
       return Container(
         height: height * 0.88,
         child: Column(
@@ -52,7 +52,7 @@ BottomDrawer({required BuildContext context}) {
                       width: double.maxFinite,
                       height: height * 0.15,
                       child: Image.network(
-                        user.cover!,
+                        modelUser['cover'],
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -68,7 +68,7 @@ BottomDrawer({required BuildContext context}) {
                         child: Center(
                           child: CircleAvatar(
                             foregroundImage: NetworkImage(
-                              user.avatar!,
+                             modelUser['avatar'],
                             ),
                             radius: width * 0.125,
                           ),
@@ -91,7 +91,7 @@ BottomDrawer({required BuildContext context}) {
                             children: [
                               gap(w: 20),
                               Text(
-                                '${user.first_name!} ${user.last_name!}',
+                                modelUser['name'],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -99,7 +99,7 @@ BottomDrawer({required BuildContext context}) {
                               gap(
                                 w: 10,
                               ),
-                              user.verified != '0'
+                              modelUser['verified'] != '0'
                                   ? const Icon(
                                       Icons.verified,
                                       color: Colors.cyan,

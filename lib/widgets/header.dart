@@ -1,15 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:vibetag/screens/chat/chat_bar.dart';
 import 'package:vibetag/screens/home/options.dart';
 import 'package:vibetag/screens/home/search.dart';
 
+import '../screens/chat_screens/constants.dart';
+import '../screens/chat_screens/model/show_list_message_model.dart';
+import '../screens/chat_screens/screen/Groups/group_list.dart';
 import '../screens/chat_screens/screen/bottom_sheet_button_screen.dart';
+import '../screens/chat_screens/screen/page_show.dart';
+import '../screens/chat_screens/screen/pages/single_user_show.dart';
+import '../screens/chat_screens/screen/private_message_screen.dart';
 import '../screens/explore/explore.dart';
 import '../screens/home/new_search_filter_us.dart';
 import '../screens/home/search_popup.dart';
 import '../utils/constant.dart';
+import 'package:http/http.dart'as http;
 
 class Header extends StatefulWidget {
   Header({
@@ -20,12 +31,20 @@ class Header extends StatefulWidget {
   State<Header> createState() => _HeaderState();
 }
 
-class _HeaderState extends State<Header> {
+class _HeaderState extends State<Header>    with SingleTickerProviderStateMixin{
   bool showOptions = true;
   bool showFilter = false;
   bool recentSearch = false;
   bool searchOptions = false;
   TextEditingController keyword = TextEditingController();
+  late TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 3);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +204,7 @@ class _HeaderState extends State<Header> {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const BottomSheetButtonScreen()));
+                              messageBottomSheet(context);
                             },
                             child: Container(
                               width: height * 0.05,
@@ -205,9 +220,7 @@ class _HeaderState extends State<Header> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
+                          gap(w:10),
                           InkWell(
                             onTap: () {
                               Options(context: context);
@@ -257,5 +270,85 @@ class _HeaderState extends State<Header> {
             : gap(),
       ],
     );
+  }
+  messageBottomSheet(context) {
+    showModalBottomSheet(
+        constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height / 2),
+        context: context,
+        backgroundColor: Colors.white,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(17),
+              topLeft: Radius.circular(17)),
+        ),
+        builder: (BuildContext bc) {
+
+          return StatefulBuilder(
+            builder: (context, setState) => Container(
+              height: MediaQuery.of(context).size.height - 150,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.symmetric(
+                            horizontal: BorderSide(
+                                color: greyColor, width: 0.6))),
+                    child: Wrap(
+                      children: [
+                        Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TabBar(
+                                padding: EdgeInsets.zero,
+                                indicatorColor: orangeColor,
+                                unselectedLabelColor: txtColor,
+                                unselectedLabelStyle: TextStyle(
+                                    fontSize:
+                                    screenWidthSize(16, context),
+                                    fontWeight: FontWeight.w700),
+                                labelColor: orangeColor,
+                                labelStyle: TextStyle(
+                                    fontSize:
+                                    screenWidthSize(16, context),
+                                    fontWeight: FontWeight.w700),
+                                controller: _tabController,
+                                tabs: const [
+                                  Tab(
+                                    text: 'Chats',
+                                  ),
+                                  Tab(
+                                    text: 'Groups',
+                                  ),
+                                  Tab(
+                                    text: 'Pages',
+                                  ),
+                                ]),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          SingleUserShow(),
+                          const GroupShow(),
+                          const PageChatShow(),
+                        ]),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
