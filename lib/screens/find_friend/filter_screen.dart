@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
-import '../../widgets/header.dart';
 import '../../widgets/navbar.dart';
+import '../header/header.dart';
 import 'model/Model.dart';
 import 'package:http/http.dart' as http;
 

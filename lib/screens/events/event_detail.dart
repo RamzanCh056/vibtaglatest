@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/utils/constant.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
 import '../home/comment/widget/post_comment_bar.dart';
-import '../home/revibe.dart';
+import '../home/widgets/revibe.dart';
 
 class EventDetail extends StatefulWidget {
   const EventDetail({super.key});

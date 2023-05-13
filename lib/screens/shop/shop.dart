@@ -13,7 +13,7 @@ import 'package:vibetag/screens/shop/widget/slider_widget.dart';
 import 'package:vibetag/screens/shop/widget/left_banners.dart';
 import 'package:vibetag/widgets/categories_items.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';

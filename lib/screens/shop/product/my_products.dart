@@ -7,8 +7,8 @@ import 'package:vibetag/widgets/secondary_footer.dart';
 
 import '../../../utils/constant.dart';
 import '../../../widgets/footer.dart';
-import '../../../widgets/header.dart';
 import '../../../widgets/navbar.dart';
+import '../../header/header.dart';
 
 class MyProducts extends StatefulWidget {
   const MyProducts({super.key});

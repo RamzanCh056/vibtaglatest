@@ -12,9 +12,11 @@ import '../../../../utils/constant.dart';
 
 class EditComment extends StatefulWidget {
   final Map<String, dynamic> comment;
-  const EditComment({
+  bool isCommentReply;
+  EditComment({
     Key? key,
     required this.comment,
+    this.isCommentReply = false,
   }) : super(key: key);
 
   @override
@@ -35,25 +37,41 @@ class _EditCommentState extends State<EditComment> {
     setState(() {
       isLoading = true;
     });
-    final data = {
-      'type': 'comment_edit',
-      'comment_id': widget.comment['id'].toString(),
-      'text': text.text.toString(),
-      'user_id': loginUserId.toString(),
-    };
-    await API().postData(data);
+    if (widget.isCommentReply) {
+      final data = {
+        'type': 'comment_reply_edit',
+        'reply_id': widget.comment['id'].toString(),
+        'text': text.text.toString(),
+        'user_id': loginUserId.toString(),
+      };
+      await API().postData(data);
+
+      await CommentMethods().loadCommets(
+        postId: comments[0]['post_id'].toString(),
+      );
+    } else {
+      final data = {
+        'type': 'comment_edit',
+        'comment_id': widget.comment['id'].toString(),
+        'text': text.text.toString(),
+        'user_id': loginUserId.toString(),
+      };
+      await API().postData(data);
+
+      await CommentMethods().loadCommets(
+        postId: comments[0]['post_id'].toString(),
+      );
+    }
     setState(() {
       isLoading = false;
     });
-    await CommentMethods().loadCommets(
-      postId: comments[0]['post_id'].toString(),
-    );
     pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<String,dynamic> modelUser = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> modelUser =
+        Provider.of<UserProvider>(context, listen: false).user;
     return ClipRRect(
       borderRadius: radiusOnly(
         topLeft: 10,

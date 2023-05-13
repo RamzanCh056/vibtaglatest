@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:svg_icon/svg_icon.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/chat/chat_profile.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';

@@ -17,7 +17,7 @@ import 'package:vibetag/screens/trending/widgets/trend_sponsor_widget.dart';
 import 'package:vibetag/screens/trending/widgets/word_news_trend_widget.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import 'widgets/blog_trend_widget.dart';

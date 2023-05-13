@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/input_field.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';

@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/home/post_type.dart';
+import 'package:vibetag/screens/home/post_types/post_file.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:video_player/video_player.dart';
@@ -16,7 +16,7 @@ import 'package:vibetag/screens/video_player/Single_video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../utils/constant.dart';
-import '../home/revibe.dart';
+import '../home/widgets/revibe.dart';
 
 class VideoScreen extends StatefulWidget {
   final VideoPlayerController controller;

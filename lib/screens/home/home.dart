@@ -1,32 +1,28 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/auth_method.dart';
+import 'package:vibetag/methods/firebase_helper.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/auth/add_photo.dart';
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
-import 'package:vibetag/screens/home/home_story.dart';
-import 'package:vibetag/screens/home/home_tab_bar.dart';
-import 'package:vibetag/screens/home/post_ads.dart';
-import 'package:vibetag/screens/home/post_blog.dart';
-import 'package:vibetag/screens/home/post_colored.dart';
-import 'package:vibetag/screens/home/post_poll.dart';
-import 'package:vibetag/screens/home/post_photo.dart';
-import 'package:vibetag/screens/home/post_event.dart';
-import 'package:vibetag/screens/home/post_product.dart';
-import 'package:vibetag/screens/home/stories/home_story.dart';
+import 'package:vibetag/screens/home/widgets/home_tab_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:vibetag/screens/shop/shop.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import '../../methods/api.dart';
-import '../story/add_story.dart';
+import '../../firebase_options.dart';
+import '../chat_screens/constants.dart';
 import 'post_methods/post_methods.dart';
 import '../../utils/constant.dart';
 import '../compaign/boost.dart';
@@ -49,17 +45,11 @@ class _HomeState extends State<Home> {
   List<dynamic> posts = [];
   ScrollController scrollController = ScrollController();
   List<Widget> postWidgets = [];
-  late NavigatorState _navigator;
-
-  @override
-  void didChangeDependencies() {
-    _navigator = Navigator.of(context);
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
     super.initState();
+
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -85,6 +75,7 @@ class _HomeState extends State<Home> {
     setState(() {
       isLoading = true;
     });
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (preferences.getString('userData') != null) {
       Map<String, dynamic> userData =
@@ -93,14 +84,14 @@ class _HomeState extends State<Home> {
         userData,
       );
     }
-    // if (preferences.getString('posts') != null) {
-    //   List<dynamic> preferencesPosts =
-    //       jsonDecode(preferences.getString('posts')!);
-    //   PostMethods().setSharedPreferencePosts(
-    //     posts: preferencesPosts,
-    //     context: context,
-    //   );
-    // }
+    if (preferences.getString('posts') != null) {
+      List<dynamic> preferencesPosts =
+          jsonDecode(preferences.getString('posts')!);
+      PostMethods().setSharedPreferencePosts(
+        posts: preferencesPosts,
+        context: context,
+      );
+    }
 
     modelUser = Provider.of<UserProvider>(
       context,
@@ -117,13 +108,10 @@ class _HomeState extends State<Home> {
       ).user;
     }
     feeds = modelUser['order_posts_by'] == '1' ? true : false;
-
     posts = Provider.of<PostProvider>(context, listen: false).posts;
-
     if (posts.length == 0) {
       await PostMethods().getPosts(context: context);
     }
-
     setState(() {
       isLoading = false;
     });
@@ -133,10 +121,24 @@ class _HomeState extends State<Home> {
         screen: const AddPhoto(),
       );
     }
-    // if (preferences.getString('posts') != null) {
-    //   await PostMethods().getPosts(context: context);
-    //   await AuthMethod().setUser(context: context);
-    // }
+    if (preferences.getString('posts') != null) {
+      await PostMethods().getPosts(context: context);
+      await AuthMethod().setUser(context: context);
+    }
+    if (modelUser.isNotEmpty) {
+      await AuthMethod().setUser(
+        context: context,
+      );
+      modelUser = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).user;
+    }
+    await subScribeToNotificationTopic('Private_Call_${loginUserId}');
+    await subScribeToNotificationTopic('Private_Voice_Call_${loginUserId}');
+    await subScribeToNotificationTopic('VibeTag_Notification');
+    await subScribeToNotificationTopic('${loginUserId}');
+    await FirebaseHelper.init();
   }
 
   @override
@@ -167,11 +169,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+    if (!isEnabledCallEvents) {
+      callEvents(context);
+      isEnabledCallEvents = true;
+    }
+
     if (mounted) {
       posts = Provider.of<PostProvider>(context).posts;
     }
     postWidgets = PostMethods().setPosts(posts: posts);
-
     return Scaffold(
       key: _key,
       backgroundColor: blackPrimary,
@@ -208,7 +214,7 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             HomeTabBar(),
-                            AddStroy(modelUser),
+                            // AddStroy(modelUser),
                             createPost(modelUser),
                             Column(
                               children: postWidgets,

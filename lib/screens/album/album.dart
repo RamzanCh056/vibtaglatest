@@ -6,9 +6,9 @@ import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/album/all_albums.dart';
 import 'package:vibetag/screens/album/create_album.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
+import 'package:vibetag/screens/header/header.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
 
@@ -43,9 +43,7 @@ class _AlbumState extends State<Album> {
                 Column(
                   children: [
                     const NavBar(),
-                    Header(
-                     
-                    ),
+                    Header(),
                   ],
                 ),
                 Container(

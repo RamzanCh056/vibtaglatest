@@ -149,7 +149,6 @@ class _StroyViewState extends State<StroyView> {
 
   var tempList;
   var viewvews = [];
-  String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,7 +209,7 @@ class _StroyViewState extends State<StroyView> {
               //  ratio: StoryRatio.r16_9,
               stories: [
                 StoryItemModel(
-                    imageProvider: NetworkImage(Url +
+                    imageProvider: NetworkImage(serverUrl +
                         widget.storydata[widget.currentIndex]['thumbnail'])),
               ],
               mediaFit: BoxFit.cover,

@@ -12,7 +12,7 @@ import 'package:vibetag/screens/home/home.dart';
 import 'package:vibetag/widgets/country.dart';
 import 'package:vibetag/widgets/date_time.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/input_fields2.dart';
 import 'package:vibetag/widgets/navbar.dart';
 

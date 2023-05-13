@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vibetag/screens/help_support/support_widgets.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/input_field.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';

@@ -4,9 +4,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:vibetag/provider/userProvider.dart';
-
 import 'package:vibetag/screens/home/comment/widget/comment_item.dart';
 import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
 import 'package:vibetag/screens/home/comment/widget/reply_comment_widget.dart';
@@ -43,6 +40,7 @@ class _ReplyCommentBarState extends State<ReplyCommentBar> {
   }
 
   setReplies() {
+    commentReplies = [];
     for (var reply in widget.comment['all_replies']) {
       commentReplies.add(ReplyComment(
         commentReply: reply,

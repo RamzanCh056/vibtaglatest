@@ -10,7 +10,7 @@ import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 import 'package:vibetag/screens/home/comment/widget/reply_comment_bar.dart';
-import 'package:vibetag/screens/home/comment_option.dart';
+import 'package:vibetag/screens/home/widgets/comment_option.dart';
 import 'package:vibetag/screens/home/comment/comments.dart';
 
 import '../../../../utils/constant.dart';

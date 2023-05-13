@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "805337517924",
+    "project_id": "vibetag-27076",
+    "storage_bucket": "vibetag-27076.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805337517924:android:a9978431cadfcfebfef471",
+        "android_client_info": {
+          "package_name": "com.example.vibetag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805337517924-72ptjua2mpfbf1kpcoflavassmdb3kh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBQh8LqhvXIrAwk2Zc5jgsSLc-AL8kXCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805337517924-72ptjua2mpfbf1kpcoflavassmdb3kh4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "805337517924-3b8ker39vjuavlg1o1p74qrmscm1f7f0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.vibetag"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

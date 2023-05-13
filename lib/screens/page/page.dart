@@ -14,12 +14,12 @@ import 'package:vibetag/screens/page/review_tab.dart';
 import 'package:vibetag/screens/page/shop_tab.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/photo_tab.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';
 import '../home/create_post/home_search.dart';
-import '../home/home_tab_bar.dart';
+import '../home/widgets/home_tab_bar.dart';
 import '../profile/about_items.dart';
 
 class PageScreen extends StatefulWidget {
@@ -120,7 +120,8 @@ class _PageScreenState extends State<PageScreen> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    Map<String,dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user =
+        Provider.of<UserProvider>(context, listen: false).user;
     List<Widget> screen = isLoading
         ? []
         : [
@@ -322,7 +323,7 @@ class _PageScreenState extends State<PageScreen> {
                                                       width: 20,
                                                     ),
                                                     Text(
-                                                      pageData['name'],
+                                                      setName(pageData['name']),
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,

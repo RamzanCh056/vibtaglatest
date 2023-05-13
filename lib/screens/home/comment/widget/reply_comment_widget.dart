@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vibetag/methods/api.dart';
 
 import 'package:vibetag/screens/home/comment/methods/comment_methods.dart';
 import 'package:vibetag/screens/home/comment/widget/comment_option.dart';
@@ -12,6 +15,8 @@ import 'package:vibetag/screens/home/comment/widget/edit_comment.dart';
 import '../../../../utils/constant.dart';
 import '../../../../widgets/bottom_modal_sheet_widget.dart';
 import '../../../hast_tag/tred_screen.dart';
+import '../../../profile/profile.dart';
+import '../constant.dart';
 
 class ReplyComment extends StatefulWidget {
   final Map<String, dynamic> commentReply;
@@ -172,25 +177,9 @@ class _ReplyCommentState extends State<ReplyComment> {
                                           margin: spacing(vertical: 3),
                                           child: Html(
                                             data: widget.commentReply['text'],
-                                            onAnchorTap: (str, rndr, map, e) {
-                                              print(str);
-                                              print(
-                                                  widget.commentReply['text']);
-                                              print(map);
-                                              // pushRoute(
-
-                                              //   context: context,
-                                              //   screen: HashTrend(
-                                              //       hashTag: e!.text
-                                              //               .toString()
-                                              //               .contains('#')
-                                              //           ? e.text
-                                              //               .toString()
-                                              //               .replaceFirst(
-                                              //                   RegExp(r'#'),
-                                              //                   '')
-                                              //           : e.text.toString()),
-                                              // );
+                                            onAnchorTap:
+                                                (str, rndr, map, element) {
+                                              tagType(element!, context);
                                             },
                                             style: {
                                               "body": Style(
@@ -539,6 +528,14 @@ class _ReplyCommentState extends State<ReplyComment> {
                               onTap: () {
                                 showCommentOptions = !showCommentOptions;
                                 setState(() {});
+                                pop(context);
+                                createBottomModalSheet(
+                                  context: context,
+                                  screen: EditComment(
+                                    comment: widget.commentReply,
+                                    isCommentReply: true,
+                                  ),
+                                );
                               },
                               child: Container(
                                 margin: spacing(vertical: 2),
@@ -552,15 +549,19 @@ class _ReplyCommentState extends State<ReplyComment> {
                             InkWell(
                               onTap: () async {
                                 showCommentOptions = !showCommentOptions;
+
+                                // deleteComments(
+                                //     int.parse(widget.commentReply['comment_id']
+                                //         .toString()),
+                                //     int.parse(widget.commentReply['id']));
+
                                 setState(() {});
-                                await CommentMethods()
-                                    .DeleteCommet(comment_id: comment_id);
-                                pop(context);
-                                createBottomModalSheet(
-                                  context: context,
-                                  screen:
-                                      EditComment(comment: widget.commentReply),
+
+                                await CommentMethods().deleteReply(
+                                  widget.commentReply['id'].toString(),
                                 );
+                                await CommentMethods().loadCommets(
+                                    postId: comments[0]['post_id']);
                               },
                               child: Container(
                                 margin: spacing(vertical: 2),

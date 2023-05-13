@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/advertising/compaigns.dart';
 import 'package:vibetag/screens/advertising/new_compaign.dart';
-import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
 import '../../utils/constant.dart';
+import '../header/header.dart';
 
 class Advertising extends StatefulWidget {
   const Advertising({super.key});

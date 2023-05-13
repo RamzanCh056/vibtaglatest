@@ -9,9 +9,11 @@ import 'package:vibetag/screens/album/create_album.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
+
+import '../../header/header.dart';
 
 class Sale extends StatefulWidget {
   const Sale({super.key});

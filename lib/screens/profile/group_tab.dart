@@ -9,7 +9,7 @@ import 'package:vibetag/screens/profile/group_tab_vertical.dart';
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
 import '../home/create_post/home_search.dart';
-import '../home/home_tab_bar.dart';
+import '../home/widgets/home_tab_bar.dart';
 
 class GroupTab extends StatefulWidget {
   final String user_id;

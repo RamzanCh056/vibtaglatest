@@ -8,7 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 

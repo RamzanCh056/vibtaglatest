@@ -12,6 +12,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:vibetag/screens/chat_screens/screen/picture_send.dart';
 import 'package:vibetag/screens/chat_screens/screen/picture_with_message.dart';
@@ -21,6 +22,9 @@ import 'package:vibetag/screens/chat_screens/screen/send_message_widget.dart';
 import 'package:vibetag/screens/chat_screens/screen/view_media.dart';
 import 'package:vibetag/utils/constant.dart';
 
+import '../../../methods/api.dart';
+import '../../../methods/auth_method.dart';
+import '../../../provider/userProvider.dart';
 import '../constants.dart';
 import '../model/show_list_message_model.dart';
 import '../video_call/dialing_call.dart';
@@ -49,9 +53,12 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   var newComaSpreated;
   var coomas;
   var checker;
+  bool isTapAudioCallButton = false;
+  bool isTapVideoCallButton = false;
 
   String messageId = '';
   String? forwardMessage;
+  String? forwardMessageOwner;
   bool notification = false;
   String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
   TextEditingController message = TextEditingController();
@@ -112,7 +119,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           'PHPSESSID=1a6ca9532b9dbe54ed613305d5448a6d; _us=1678959434; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-15%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'delete_user_messages',
@@ -127,29 +135,29 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      print("200");
       setState(() {
         isLoadDelete = false;
       });
       Navigator.pop(context);
     } else {
-      print(response.reasonPhrase);
       setState(() {
         isLoadDelete = false;
       });
     }
   }
-  starMessage()async{
+
+  starMessage() async {
     var headers = {
-      'Cookie': 'PHPSESSID=558814a9b559f9f3430937461ca16eaf; _us=1679656414; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-23%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+      'Cookie':
+          'PHPSESSID=558814a9b559f9f3430937461ca16eaf; _us=1679656414; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-23%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'starred_message',
       'user_id': loginUserId.toString(),
-      'id':messageId.toString(),
+      'id': messageId.toString(),
     });
 
     request.headers.addAll(headers);
@@ -157,18 +165,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
       messageId = '';
       Fluttertoast.showToast(
         msg: "Successfully Star message",
       );
       Navigator.pop(context);
+    } else {
+      messageId = '';
     }
-    else {
-    print(response.reasonPhrase);
-    messageId = '';
-    }
-
   }
 
   deleteSingleMessage() async {
@@ -176,7 +180,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           'PHPSESSID=4b08ad7934d732a61e99022f394ece54; _us=1677931513; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-03%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'delete_message',
@@ -189,24 +194,25 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
       messageId = '';
       Navigator.pop(context);
     } else {
-      print(response.reasonPhrase);
       messageId = '';
     }
   }
+
   var msgForReport;
-  reportUser()async{
+  reportUser() async {
     var headers = {
-      'Cookie': '_us=1679741950; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-24%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+      'Cookie':
+          '_us=1679741950; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-24%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'reports',
       'sub_type': 'report_user',
-      'logged_in_user':  loginUserId.toString(),
+      'logged_in_user': loginUserId.toString(),
       'user': loginUserId.toString() != widget.list[widget.currentIndex].rec_id
           ? widget.list[widget.currentIndex].rec_id.toString()
           : widget.list[widget.currentIndex].sen_id.toString(),
@@ -218,91 +224,84 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
       succedRepotBottomsheet(context);
-    }
-    else {
-    print(response.reasonPhrase);
-    }
+    } else {}
   }
- blockUser()async{
-   var headers = {
-     'Cookie': 'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679900333; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
-   };
-   var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
-   request.fields.addAll({
-     'type': 'block_user',
-     'sub_type': 'block_user',
-     'user_id':  loginUserId.toString(),
-     'recipient_id':  loginUserId.toString() != widget.list[widget.currentIndex].rec_id
-         ? widget.list[widget.currentIndex].rec_id.toString()
-         : widget.list[widget.currentIndex].sen_id.toString(),
-   });
 
-   request.headers.addAll(headers);
+  blockUser() async {
+    var headers = {
+      'Cookie':
+          'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679900333; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'block_user',
+      'sub_type': 'block_user',
+      'user_id': loginUserId.toString(),
+      'recipient_id':
+          loginUserId.toString() != widget.list[widget.currentIndex].rec_id
+              ? widget.list[widget.currentIndex].rec_id.toString()
+              : widget.list[widget.currentIndex].sen_id.toString(),
+    });
 
-   http.StreamedResponse response = await request.send();
+    request.headers.addAll(headers);
 
-   if (response.statusCode == 200) {
-     print(await response.stream.bytesToString());
-     Fluttertoast.showToast(
-         msg: "successfully block ${widget.list[widget.currentIndex].rec_name.toString()}",
+    http.StreamedResponse response = await request.send();
 
-     );
-     Navigator.pop(context);
-   }
-   else {
-   print(response.reasonPhrase);
-   }
- }
- var followUnfollowUser;
- followUnfollow()async{
-   var headers = {
-     'Cookie': 'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679902906; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
-   };
-   var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
-   request.fields.addAll({
-     'type': 'follow_like_join',
-     'action': 'follow_user',
-     'user_id':loginUserId.toString() != widget.list[widget.currentIndex].rec_id
-         ? widget.list[widget.currentIndex].rec_id.toString()
-         : widget.list[widget.currentIndex].sen_id.toString(),
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+        msg:
+            "successfully block ${widget.list[widget.currentIndex].rec_name.toString()}",
+      );
+      Navigator.pop(context);
+    } else {}
+  }
 
-     'loggedin_user_id':    loginUserId.toString(),
-   });
+  var followUnfollowUser;
+  followUnfollow() async {
+    var headers = {
+      'Cookie':
+          'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679902906; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'follow_like_join',
+      'action': 'follow_user',
+      'user_id':
+          loginUserId.toString() != widget.list[widget.currentIndex].rec_id
+              ? widget.list[widget.currentIndex].rec_id.toString()
+              : widget.list[widget.currentIndex].sen_id.toString(),
+      'loggedin_user_id': loginUserId.toString(),
+    });
 
-   request.headers.addAll(headers);
+    request.headers.addAll(headers);
 
-   http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await request.send();
 
-   if (response.statusCode == 200) {
-     //print(await response.stream.bytesToString());
-     var res = await response.stream.bytesToString();
-     var body = jsonDecode(res);
-     followUnfollowUser = body['follow_status'];
-     setState(() {
-       followUnfollowUser;
-     });
-     print("status of foolow unfollow is ==${followUnfollowUser}");
-     print("${widget.list[widget.currentIndex].rec_id.toString()}");
-     print("${loginUserId}");
-     Fluttertoast.showToast(
-       msg: "successfully ${followUnfollowUser} ${widget.list[widget.currentIndex].rec_name.toString()}",
+    if (response.statusCode == 200) {
+      var res = await response.stream.bytesToString();
+      var body = jsonDecode(res);
+      followUnfollowUser = body['follow_status'];
+      setState(() {
+        followUnfollowUser;
+      });
+      Fluttertoast.showToast(
+        msg:
+            "successfully ${followUnfollowUser} ${widget.list[widget.currentIndex].rec_name.toString()}",
+      );
+      Navigator.pop(context);
+    } else {}
+  }
 
-     );
-     Navigator.pop(context);
-   }
-   else {
-   print(response.reasonPhrase);
-   }
-
- }
   showFriends() async {
     var headers = {
       'Cookie':
           'PHPSESSID=7ee5959d740757be46a90f376da9ad94; _us=1679557919; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-22%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'get_friends_pages_groups',
@@ -314,17 +313,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      // print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       friendsShow = body['data']['friends'];
-      print("show friends == ${friendsShow}");
       setState(() {
         friendsShow;
       });
-    } else {
-      print(response.reasonPhrase);
-    }
+    } else {}
   }
 
   late GoogleMapController _googleMapController;
@@ -341,6 +336,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   PlatformFile? file;
   String? docName;
   String? docPath;
+  Map<String, dynamic> user = {};
+  Map<String, dynamic> remote_User = {};
 
   selectFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -350,13 +347,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     if (result == null) return;
     file = result.files.first;
     //   final path = result.files.single.path!;
-    print(file!.name);
-    print(file!.path);
 
     setState(() {
       docName = file!.name;
       docPath = file!.path;
-      print("file path == ${docPath}");
       if (docPath != null || docPath != "") {
         setState(() {
           uploadMessageFile();
@@ -384,7 +378,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
             selectInitialPosition: true,
             onPlacePicked: (result) {
               pickedAddres = result.formattedAddress!;
-              addressLatLng = LatLng(result.geometry!.location.lat, result.geometry!.location.lng);
+              addressLatLng = LatLng(
+                  result.geometry!.location.lat, result.geometry!.location.lng);
               latitude = result.geometry!.location.lat;
               longitude = result.geometry!.location.lng;
               sendMessage();
@@ -406,10 +401,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     showFriends();
 
     // _pageManager = PageManager();
-    print(loginUserId);
-    print("${widget.list[widget.currentIndex].rec_id}");
-    print(longitude);
-    print('message text == ${message.text}');
     super.initState();
   }
 
@@ -422,7 +413,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   bool isLoad = true;
 
   getMessageList() {
-    getMessage();
+    if (mounted) {
+      getMessage();
+    }
   }
 
   bool pause = false;
@@ -434,7 +427,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           '_us=1679557919; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-22%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'forward_message',
@@ -451,7 +445,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
       setState(() {
         isForward = false;
       });
@@ -463,7 +456,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       });
       Navigator.pop(context);
     } else {
-      print(response.reasonPhrase);
       setState(() {
         messageId = "";
       });
@@ -481,7 +473,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           'PHPSESSID=90e40ddd3b2b744419153f3f747c2560; _us=1673018056; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-01-05%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'send_message',
@@ -494,7 +487,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'page_id': '',
       'group_id': '',
       'user_or_group': 'user',
-      'chatSticker':  stickerUrl.toString() == '' ? '' :stickerUrl.toString(),
+      'chatSticker': stickerUrl.toString() == '' ? '' : stickerUrl.toString(),
       'is_reply': messageId.toString() == '' ? '' : messageId.toString(),
       'is_multi_reply': '',
       'msg': message.text == '' ? '' : message.text,
@@ -509,8 +502,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-
       message.text = "";
 
       setState(() {
@@ -531,7 +522,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       setState(() {
         isLoadMessage = false;
       });
-      print(response.reasonPhrase);
     }
   }
 
@@ -540,14 +530,16 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           '_us=1672569576; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2022-12-31%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
     request.fields.addAll({
       'type': 'messages',
       'sub_type': 'get_messages',
       'user_id': loginUserId.toString(),
-      'msg_userid': loginUserId.toString() != widget.list[widget.currentIndex].rec_id
-          ? widget.list[widget.currentIndex].rec_id.toString()
-          : widget.list[widget.currentIndex].sen_id.toString(),
+      'msg_userid':
+          loginUserId.toString() != widget.list[widget.currentIndex].rec_id
+              ? widget.list[widget.currentIndex].rec_id.toString()
+              : widget.list[widget.currentIndex].sen_id.toString(),
       'user_or_group': 'user',
       'msg_pageid': '',
       'page_random': ''
@@ -564,17 +556,22 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       List tempList = body['messages'];
-      final todo = tempList?.map((dynamic item) => MessageList.fromJson(item)).toList() ?? [];
+      final todo = tempList
+              ?.map((dynamic item) => MessageList.fromJson(item))
+              .toList() ??
+          [];
       todo;
       User = todo;
-
-      print("user messages == $User");
     } else {
       setState(() {
         isLoading = false;
       });
-      print(response.reasonPhrase);
     }
+
+    remote_User = await AuthMethod().getUserData(
+        loginUserId != widget.list[widget.currentIndex].rec_id
+            ? widget.list[widget.currentIndex].rec_id.toString()
+            : widget.list[widget.currentIndex].sen_id.toString());
   }
 
   bool _isForwardMessage = false;
@@ -583,8 +580,16 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String remote_user_name =
+        loginUserId != widget.list[widget.currentIndex].rec_id
+            ? widget.list[widget.currentIndex].rec_name.toString()
+            : widget.list[widget.currentIndex].sen_name.toString();
+    remote_user_id = loginUserId != widget.list[widget.currentIndex].rec_id
+        ? widget.list[widget.currentIndex].rec_id.toString()
+        : widget.list[widget.currentIndex].sen_id.toString();
+    user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         appBar: PreferredSize(
           preferredSize: Size(double.maxFinite, screenHeightSize(70, context)),
           child: AppBar(
@@ -593,7 +598,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
             //backgroundColor: highShadeOrangeColor,
             flexibleSpace: Container(
               decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [Color(0xFFC107), Colors.yellow]),
+                gradient:
+                    LinearGradient(colors: [Color(0xFFC107), Colors.yellow]),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -608,59 +614,71 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back,
-                            color: Colors.white,
+                            color: white,
                           ),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.network(
-                                loginUserId != widget.list[widget.currentIndex].rec_id
-                                    ? widget.list[widget.currentIndex].rec_pic.toString()
-                                    : widget.list[widget.currentIndex].sen_pic.toString(),
-                                height: 45,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            widget.list[widget.currentIndex].online_status == "online"
-                                ? Positioned(
-                                    top: -1,
-                                    right: 3,
-                                    child: Container(
-                                      width: screenWidthSize(11, context),
-                                      height: screenHeightSize(11, context),
-                                      decoration: BoxDecoration(
-                                          color: widget.list[widget.currentIndex].online_status == "online"
-                                              ? lightGreenColor
-                                              : Colors.grey,
-                                          border: Border.all(width: 1, color: Colors.white),
-                                          shape: BoxShape.circle),
-                                    ),
-                                  )
-                                : Positioned(
-                                    bottom: -1,
-                                    right: 3,
-                                    child: Container(
-                                      width: screenWidthSize(11, context),
-                                      height: screenHeightSize(11, context),
-                                      decoration: BoxDecoration(
-                                          color: widget.list[widget.currentIndex].online_status == "offline"
-                                              ? Colors.grey
-                                              : Colors.transparent,
-                                          border: Border.all(width: 1, color: Colors.white),
-                                          shape: BoxShape.circle),
-                                    ),
-                                  ),
-                          ],
-                        ),
+                        // Stack(
+                        //   clipBehavior: Clip.none,
+                        //   alignment: Alignment.bottomRight,
+                        //   children: [
+                        //     ClipRRect(
+                        //       borderRadius: BorderRadius.circular(30),
+                        //       child: Image.network(
+                        //         loginUserId !=
+                        //                 widget.list[widget.currentIndex].rec_id
+                        //             ? widget.list[widget.currentIndex].rec_pic
+                        //                 .toString()
+                        //             : widget.list[widget.currentIndex].sen_pic
+                        //                 .toString(),
+                        //         height: 45,
+                        //         fit: BoxFit.fill,
+                        //       ),
+                        //     ),
+                        //     widget.list[widget.currentIndex].online_status ==
+                        //             "online"
+                        //         ? Positioned(
+                        //             top: -1,
+                        //             right: 3,
+                        //             child: Container(
+                        //               width: screenWidthSize(11, context),
+                        //               height: screenHeightSize(11, context),
+                        //               decoration: BoxDecoration(
+                        //                   color: widget
+                        //                               .list[widget.currentIndex]
+                        //                               .online_status ==
+                        //                           "online"
+                        //                       ? lightGreenColor
+                        //                       : Colors.grey,
+                        //                   border: Border.all(
+                        //                       width: 1, color: white),
+                        //                   shape: BoxShape.circle),
+                        //             ),
+                        //           )
+                        //         : Positioned(
+                        //             bottom: -1,
+                        //             right: 3,
+                        //             child: Container(
+                        //               width: screenWidthSize(11, context),
+                        //               height: screenHeightSize(11, context),
+                        //               decoration: BoxDecoration(
+                        //                   color: widget
+                        //                               .list[widget.currentIndex]
+                        //                               .online_status ==
+                        //                           "offline"
+                        //                       ? Colors.grey
+                        //                       : Colors.transparent,
+                        //                   border: Border.all(
+                        //                       width: 1, color: white),
+                        //                   shape: BoxShape.circle),
+                        //             ),
+                        //           ),
+                        //   ],
+                        // ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -668,12 +686,15 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              loginUserId != widget.list[widget.currentIndex].rec_id
-                                  ? widget.list[widget.currentIndex].rec_name.toString()
-                                  : widget.list[widget.currentIndex].sen_name.toString(),
+                              loginUserId !=
+                                      widget.list[widget.currentIndex].rec_id
+                                  ? widget.list[widget.currentIndex].rec_name
+                                      .toString()
+                                  : widget.list[widget.currentIndex].sen_name
+                                      .toString(),
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  color: white,
                                   fontSize: screenWidthSize(15, context)),
                             ),
                             const SizedBox(
@@ -683,7 +704,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               'Last Seen: ${widget.list[widget.currentIndex].last_online.toString()}',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: white,
                                   fontSize: screenWidthSize(12, context)),
                             ),
                           ],
@@ -693,34 +714,140 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const VideoCall()));
+                              onTap: () async {
+                                if (!isTapVideoCallButton) {
+                                  isTapVideoCallButton = true;
+                                  setState(() {});
+                                  final result = await API().postData({
+                                    'type': 'calling',
+                                    'action': 'create_new_audio_call',
+                                    'caller_id': loginUserId.toString(),
+                                    'receiver_id': remote_user_id,
+                                  });
+                                  final response =
+                                      jsonDecode(result.body)['data'];
+                                  activeCallId = response['id'].toString();
+                                  channel = getRandString(12);
+                                  await API().createAlertPush(
+                                    body:
+                                        'New Video Call From ${remote_user_name}',
+                                    title: 'New Video Call',
+                                    fcm: 'Private_Call_${remote_user_id}',
+                                    mapData: {
+                                      'name': user['name'].toString(),
+                                      'avatar': user['avatar'].toString(),
+                                      'username': user['username'].toString(),
+                                      'user_id': user['user_id'].toString(),
+                                      'rec_id': remote_user_id.toString(),
+                                      'channel': channel,
+                                      'call_type': '1',
+                                      'call_action': 'user',
+                                      'call_id': '${activeCallId}',
+                                      "click_action":
+                                          "FLUTTER_NOTIFICATION_CLICK",
+                                    },
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => VideoCall(
+                                        user_id: widget
+                                            .list[widget.currentIndex].rec_id
+                                            .toString(),
+                                        name: remote_User['name'],
+                                        avatar: remote_User['avatar'],
+                                        username: remote_User['username'],
+                                        id: remote_User['user_id'],
+                                      ),
+                                    ),
+                                  );
+                                  isTapVideoCallButton = false;
+                                }
                               },
                               child: Container(
                                   padding: const EdgeInsets.all(9),
                                   decoration: BoxDecoration(
-                                      color: orangeColor.withOpacity(0.03),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(width: 1, color: Colors.white)),
+                                    color: orangeColor.withOpacity(0.03),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: isTapVideoCallButton ? blue : white,
+                                    ),
+                                  ),
                                   child: SvgPicture.asset(
                                     'assets/images/Video-2.svg',
+                                    color: isTapVideoCallButton ? blue : white,
                                   )),
                             ),
                             const SizedBox(
                               width: 7,
                             ),
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DailingCall()));
+                              onTap: () async {
+                                if (!isTapAudioCallButton) {
+                                  isTapAudioCallButton = true;
+                                  setState(() {});
+                                  final result = await API().postData({
+                                    'type': 'calling',
+                                    'action': 'create_new_audio_call',
+                                    'caller_id': loginUserId.toString(),
+                                    'receiver_id': remote_user_id,
+                                  });
+                                  final response =
+                                      jsonDecode(result.body)['data'];
+                                  activeCallId = response['id'].toString();
+                                  channel = getRandString(12);
+
+                                  await API().createAlertPush(
+                                    body:
+                                        'New Voice Call From ${remote_user_name}',
+                                    title: 'New Voice Call',
+                                    fcm: 'Private_Voice_Call_${remote_user_id}',
+                                    mapData: {
+                                      'name': user['name'].toString(),
+                                      'avatar': user['avatar'].toString(),
+                                      'username': user['username'].toString(),
+                                      'user_id': user['user_id'].toString(),
+                                      'rec_id': remote_user_id.toString(),
+                                      'call_type': '0',
+                                      'channel': channel,
+                                      'call_action': 'user',
+                                      "click_action":
+                                          "FLUTTER_NOTIFICATION_CLICK",
+                                      'verified': user['verified'].toString(),
+                                    },
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DailingCall(
+                                        is_remote: false,
+                                        name: remote_User['name'].toString(),
+                                        avatar:
+                                            remote_User['avatar'].toString(),
+                                        username:
+                                            remote_User['username'].toString(),
+                                        id: remote_User['user_id'].toString(),
+                                        verified: int.parse(
+                                            remote_User['verified'].toString()),
+                                      ),
+                                    ),
+                                  );
+                                  isTapAudioCallButton = false;
+                                }
                               },
                               child: Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                       color: orangeColor.withOpacity(0.03),
                                       borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(width: 1, color: Colors.white)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: isTapAudioCallButton ? blue : white,
+                                      )),
                                   child: SvgPicture.asset(
                                     'assets/images/Fill 6-8.svg',
+                                    color: isTapAudioCallButton ? blue : white,
                                   )),
                             ),
                             const SizedBox(
@@ -728,9 +855,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                             ),
                             // SvgPicture.asset('assets/images/Group 76594.svg'),
                             PopupMenuButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.more_vert,
-                                  color: Colors.white,
+                                  color: white,
                                   size: 28,
                                 ),
                                 onSelected: (value) {
@@ -761,11 +888,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                     blockUserBottomsheet(context);
                                   } else if (value == "Unfollow") {
                                     unfollowUserBottomsheet(context);
-                                  }
-                                  else if (value == "Follow") {
+                                  } else if (value == "Follow") {
                                     unfollowUserBottomsheet(context);
-                                  }
-                                  else if (value == "Report") {
+                                  } else if (value == "Report") {
                                     reportUserBottomsheet(context);
                                   }
                                 },
@@ -780,7 +905,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                   final List items = [
                                     "View Profile",
                                     "View Media",
-                                    followUnfollowUser.toString() == 'unfollowed'? "Follow":"Unfollow",
+                                    followUnfollowUser.toString() ==
+                                            'unfollowed'
+                                        ? "Follow"
+                                        : "Unfollow",
                                     "Delete Chat",
                                     "Block",
                                     "Report",
@@ -790,7 +918,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                             value: e.toString(),
                                             child: Text(
                                               e.toString(),
-                                              style: const TextStyle(fontWeight: FontWeight.w500),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500),
                                             ),
                                           ))
                                       .toList();
@@ -806,6 +935,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
           ),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             StreamBuilder(
               stream: getMessageList(),
@@ -871,26 +1001,31 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               return GestureDetector(
                                 onLongPress: () {
                                   messageId = User[index].id.toString();
-                                  forwardMessage = User[index].message.toString();
+                                  forwardMessageOwner = User[index].sen_name;
+                                  forwardMessage =
+                                      User[index].message.toString();
 
                                   showModalBottomSheet(
                                     context: context,
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: white,
                                     isScrollControlled: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+                                          topRight: Radius.circular(17),
+                                          topLeft: Radius.circular(17)),
                                     ),
                                     builder: (BuildContext context) {
                                       return Container(
                                         height: 440,
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         padding: const EdgeInsets.all(10),
                                         decoration: const BoxDecoration(),
                                         child: Column(
                                           children: [
                                             ReusableListTile(
-                                              image: "assets/images/Vector (3).png",
+                                              image:
+                                                  "assets/images/Vector (3).png",
                                               title: "Reply",
                                               handler: () {
                                                 setState(() {
@@ -904,7 +1039,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                               height: 10,
                                             ),
                                             ReusableListTile(
-                                              image: "assets/images/Vector (4).png",
+                                              image:
+                                                  "assets/images/Vector (4).png",
                                               title: "Forward",
                                               handler: () {
                                                 forwardBottomsheet(context);
@@ -928,20 +1064,26 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                               image: "assets/images/Union.png",
                                               title: "Copy",
                                               handler: () {
-                                                Clipboard.setData(  ClipboardData(text:User[index].message.toString())).then((_){
+                                                Clipboard.setData(ClipboardData(
+                                                        text: User[index]
+                                                            .message
+                                                            .toString()))
+                                                    .then((_) {
                                                   ScaffoldMessenger.of(context)
-                                                      .showSnackBar(const SnackBar(content: Text('Copied to your clipboard !')));
+                                                      .showSnackBar(const SnackBar(
+                                                          content: Text(
+                                                              'Copied to your clipboard !')));
                                                 });
                                                 Navigator.pop(context);
                                                 messageId = "";
-
                                               },
                                             ),
                                             const SizedBox(
                                               height: 10,
                                             ),
                                             ReusableListTile(
-                                              image: "assets/images/Group 77268.png",
+                                              image:
+                                                  "assets/images/Group 77268.png",
                                               title: "Delete message",
                                               handler: () {
                                                 deleteSingleMessage();
@@ -957,66 +1099,128 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 10.0, left: 10),
+                                  padding: const EdgeInsets.only(
+                                      right: 10.0, left: 10),
                                   child: Column(
                                     children: [
                                       loginUserId != User[index].rec_id
                                           ? Column(
                                               children: [
-                                                User[index].attachment_url == "" && User[index].is_map != "1"
-                                                    ? User[index].is_reply != "0"
+                                                User[index].attachment_url ==
+                                                            "" &&
+                                                        User[index].is_map !=
+                                                            "1"
+                                                    ? User[index].is_reply !=
+                                                            "0"
                                                         ? ForwardMessage(
-                                                            User[index].message.toString(),
-                                                            User[index].sent_time.toString(),
-                                                            User[index].is_reply.toString(),
+                                                            User[index]
+                                                                .message
+                                                                .toString(),
+                                                            User[index]
+                                                                .sent_time
+                                                                .toString(),
+                                                            User[index]
+                                                                .is_reply
+                                                                .toString(),
                                                             User,
                                                             index,
                                                           )
                                                         : UserSendMessage(
-                                                            User[index].message.toString(),
-                                                            User[index].sent_time.toString(),
-                                                              User[index].starred.toString(),
-                                                               User[index].is_story_reply.toString(),
-
+                                                            User[index]
+                                                                .message
+                                                                .toString(),
+                                                            User[index]
+                                                                .sent_time
+                                                                .toString(),
+                                                            User[index]
+                                                                .starred
+                                                                .toString(),
+                                                            User[index]
+                                                                .is_story_reply
+                                                                .toString(),
                                                           )
                                                     : Column(
                                                         children: [
-                                                          User[index].attachment_url != "" &&
-                                                                  User[index].message != "" &&
-                                                                  User[index].is_map != "1"
+                                                          User[index]
+                                                                          .attachment_url !=
+                                                                      "" &&
+                                                                  User[index]
+                                                                          .message !=
+                                                                      "" &&
+                                                                  User[index]
+                                                                          .is_map !=
+                                                                      "1"
                                                               ? PictureSendUserMessage(
-                                                                  User[index].sent_time.toString(),
-                                                                  User[index].message.toString(),
-                                                                  Url + User[index].attachment_url.toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
+                                                                  User[index]
+                                                                      .message
+                                                                      .toString(),
+                                                                  Url +
+                                                                      User[index]
+                                                                          .attachment_url
+                                                                          .toString(),
                                                                 )
                                                               : Container(),
                                                         ],
                                                       ),
-                                                User[index].attachment_type == "image/png" || User[index].attachment_type == "image/jpeg" ||
-                                                        User[index].attachment_type == "application/octet-stream"
+                                                User[index].attachment_type ==
+                                                            "image/png" ||
+                                                        User[index]
+                                                                .attachment_type ==
+                                                            "image/jpeg" ||
+                                                        User[index]
+                                                                .attachment_type ==
+                                                            "application/octet-stream"
                                                     ? Column(
                                                         children: [
-                                                          User[index].attachment_url.toString().contains(".pdf")
+                                                          User[index]
+                                                                  .attachment_url
+                                                                  .toString()
+                                                                  .contains(
+                                                                      ".pdf")
                                                               ? UserSendDocument(
-                                                                  User[index].attachment_url.toString(),
-                                                                  User[index].sent_time.toString(),
+                                                                  User[index]
+                                                                      .attachment_url
+                                                                      .toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
                                                                 )
                                                               : PictureSendUser(
-                                                                  User[index].sent_time.toString(),
-                                                                  Url+User[index].attachment_url.toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
+                                                                  Url +
+                                                                      User[index]
+                                                                          .attachment_url
+                                                                          .toString(),
                                                                 ),
                                                         ],
                                                       )
                                                     : Container(),
-                                                User[index].attachment_type == "audio/mp4"
+                                                User[index].attachment_type ==
+                                                        "audio/mp4"
                                                     ? AudioPlay(
-                                                        time: User[index].sent_time.toString(),
-                                                        pathh: Url + User[index].attachment_url.toString(),
+                                                        time: User[index]
+                                                            .sent_time
+                                                            .toString(),
+                                                        pathh: Url +
+                                                            User[index]
+                                                                .attachment_url
+                                                                .toString(),
                                                       )
                                                     : Container(),
                                                 User[index].is_map == "1"
-                                                    ? LocationSendUser(User[index].sent_time.toString(),
-                                                        User[index].lat!, User[index].lng!, addres, showLocation)
+                                                    ? LocationSendUser(
+                                                        User[index]
+                                                            .sent_time
+                                                            .toString(),
+                                                        User[index].lat!,
+                                                        User[index].lng!,
+                                                        addres,
+                                                        showLocation)
                                                     : Container(),
                                               ],
                                             )
@@ -1028,49 +1232,97 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
 
                                           : Column(
                                               children: [
-                                                User[index].attachment_url == "" && User[index].is_map != "1"
+                                                User[index].attachment_url ==
+                                                            "" &&
+                                                        User[index].is_map !=
+                                                            "1"
                                                     ? UserGetMessage(
-                                                        User[index].message.toString(),
-                                                        User[index].sent_time.toString(),
+                                                        User[index]
+                                                            .message
+                                                            .toString(),
+                                                        User[index]
+                                                            .sent_time
+                                                            .toString(),
                                                       )
                                                     : Column(
                                                         children: [
-                                                          User[index].attachment_url != "" &&
-                                                                  User[index].message != "" &&
-                                                                  User[index].is_map != "1"
+                                                          User[index]
+                                                                          .attachment_url !=
+                                                                      "" &&
+                                                                  User[index]
+                                                                          .message !=
+                                                                      "" &&
+                                                                  User[index]
+                                                                          .is_map !=
+                                                                      "1"
                                                               ? PictureSendUserMessage(
-                                                                  User[index].sent_time.toString(),
-                                                                  User[index].message.toString(),
-                                                                  Url + User[index].attachment_url.toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
+                                                                  User[index]
+                                                                      .message
+                                                                      .toString(),
+                                                                  Url +
+                                                                      User[index]
+                                                                          .attachment_url
+                                                                          .toString(),
                                                                 )
                                                               : Container(),
                                                         ],
                                                       ),
-                                                User[index].attachment_type == "image/png" ||
-                                                        User[index].attachment_type == "application/octet-stream"
+                                                User[index].attachment_type ==
+                                                            "image/png" ||
+                                                        User[index]
+                                                                .attachment_type ==
+                                                            "application/octet-stream"
                                                     ? Column(
                                                         children: [
-                                                          User[index].attachment_url.toString().contains(".pdf")
+                                                          User[index]
+                                                                  .attachment_url
+                                                                  .toString()
+                                                                  .contains(
+                                                                      ".pdf")
                                                               ? UserSendDocument(
-                                                                  User[index].attachment_url.toString(),
-                                                                  User[index].sent_time.toString(),
+                                                                  User[index]
+                                                                      .attachment_url
+                                                                      .toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
                                                                 )
                                                               : PictureSendUser(
-                                                                  User[index].sent_time.toString(),
-                                                                  Url + User[index].attachment_url.toString(),
+                                                                  User[index]
+                                                                      .sent_time
+                                                                      .toString(),
+                                                                  Url +
+                                                                      User[index]
+                                                                          .attachment_url
+                                                                          .toString(),
                                                                 ),
                                                         ],
                                                       )
                                                     : Container(),
-                                                User[index].attachment_type == "audio/mp4"
+                                                User[index].attachment_type ==
+                                                        "audio/mp4"
                                                     ? AudioPlay(
-                                                        time: User[index].sent_time.toString(),
-                                                        pathh: Url + User[index].attachment_url.toString(),
+                                                        time: User[index]
+                                                            .sent_time
+                                                            .toString(),
+                                                        pathh: Url +
+                                                            User[index]
+                                                                .attachment_url
+                                                                .toString(),
                                                       )
                                                     : Container(),
                                                 User[index].is_map == "1"
-                                                    ? LocationGetUser(User[index].sent_time.toString(),
-                                                        User[index].lat!, User[index].lng!, addres, showLocation)
+                                                    ? LocationGetUser(
+                                                        User[index]
+                                                            .sent_time
+                                                            .toString(),
+                                                        User[index].lat!,
+                                                        User[index].lng!,
+                                                        addres,
+                                                        showLocation)
                                                     : Container(),
                                               ],
                                             )
@@ -1149,7 +1401,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       //                         Text(
                                       //                           User[index].message.toString(),
                                       //                           style: const TextStyle(
-                                      //                             color: Colors.white,
+                                      //                             color: white,
                                       //                           ),
                                       //                         ),
                                       //                         Row(
@@ -1162,7 +1414,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       //                               ) *
                                       //                                   1000)),
                                       //                               style: const TextStyle(
-                                      //                                 color: Colors.white,
+                                      //                                 color: white,
                                       //                                 fontSize: 12.0,
                                       //                                 fontWeight: FontWeight.bold,
                                       //                               ),
@@ -1193,108 +1445,124 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                       );
               },
             ),
-          //  Expanded(child: SizedBox(height: 5,)),
+            //  Expanded(child: SizedBox(height: 5,)),
             Visibility(
               visible: _isForwardMessage,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  //   height: 200,
-                  width: double.infinity,
-                  //screenHeightSize(70, context),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          offset: Offset(-4, 0),
-                          spreadRadius: 2,
-                          blurRadius: 2,
-                          color: Color.fromRGBO(125, 140, 172, 0.47)),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isForwardMessage = false;
-                            _byDefaultMessage = true;
-                          });
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(Icons.close),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text(forwardMessage.toString()),
-                      Divider(
-                        thickness: 1,
-                        color: Colors.black,
-                      ),
-                      Row(
+              child: Container(
+                padding: spacing(horizontal: 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius(7),
+                  color: white,
+                  boxShadow: lightShadow,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isForwardMessage = false;
+                          _byDefaultMessage = true;
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              _AddModalBottomSheet(context);
-                            },
-                            child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: greyColor,
-                                ),
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: screenWidthSize(28, context),
-                                )),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            width: screenWidthSize(200, context),
-                            child: TextField(
-                              controller: message,
-                              decoration: InputDecoration(
-                                hintText: 'Type a message here',
-                                hintStyle: TextStyle(color: fontColor, fontSize: 14, fontWeight: FontWeight.w400),
-                                border: InputBorder.none,
-                              ),
+                          Icon(Icons.close),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Container(
+                      width: double.maxFinite,
+                      padding: spacing(vertical: 7, horizontal: 7),
+                      decoration: BoxDecoration(
+                          color: grayLight, borderRadius: borderRadius(7)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            forwardMessageOwner.toString(),
+                            style: TextStyle(
+                              color: orange,
+                              fontSize: 12,
                             ),
                           ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              sendMessage();
-                            },
-                            child: Container(
-                                padding: const EdgeInsets.all(13),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: orangeColor,
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/images/chatfill.svg',
-                                  color: Colors.white,
-                                )),
+                          gap(h: 5),
+                          Text(
+                            forwardMessage.toString(),
+                            style: TextStyle(
+                              color: grayMed,
+                              fontSize: 10,
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  ),
+                    ),
+                    gap(h: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _AddModalBottomSheet(context);
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: greyColor,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                color: white,
+                                size: screenWidthSize(28, context),
+                              )),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          width: screenWidthSize(230, context),
+                          child: TextField(
+                            controller: message,
+                            decoration: InputDecoration(
+                              hintText: 'Type a message here',
+                              hintStyle: TextStyle(
+                                  color: fontColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            sendMessage();
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(13),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: orangeColor,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/chatfill.svg',
+                                color: white,
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1303,8 +1571,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: screenHeightSize(70, context),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: white,
                   boxShadow: [
                     BoxShadow(
                         offset: Offset(-4, 0),
@@ -1317,7 +1585,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 0),
                         decoration: BoxDecoration(
                           color: HexColor('#F8F9FB'),
                           borderRadius: BorderRadius.circular(40),
@@ -1336,7 +1605,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                   ),
                                   child: Icon(
                                     Icons.add,
-                                    color: Colors.white,
+                                    color: white,
                                     size: screenWidthSize(28, context),
                                   )),
                             ),
@@ -1349,7 +1618,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                 controller: message,
                                 decoration: InputDecoration(
                                   hintText: 'Type a message here',
-                                  hintStyle: TextStyle(color: fontColor, fontSize: 14, fontWeight: FontWeight.w400),
+                                  hintStyle: TextStyle(
+                                      color: fontColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -1372,15 +1644,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                             color: orangeColor,
                           ),
                           child: SvgPicture.asset(
-                            'assets/images/chatfill.svg',
-                            color: Colors.white,
+                            'assets/chatfill.svg',
+                            color: white,
                           )),
                     ),
                   ],
                 ),
               ),
             ),
-       
           ],
         ));
   }
@@ -1394,7 +1665,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     if (selectedImages!.isNotEmpty) {
       imageFileList!.addAll(selectedImages);
     }
-    print("Image List Length:" + imageFileList!.length.toString());
 
     setState(() {
       // _customProgress(context);
@@ -1406,12 +1676,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
 
   void _AddModalBottomSheet(context) {
     showModalBottomSheet(
-        constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height / 2),
+        constraints:
+            BoxConstraints(minHeight: MediaQuery.of(context).size.height / 2),
         context: context,
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(17), topLeft: Radius.circular(17)),
         ),
         builder: (BuildContext bc) {
           return StatefulBuilder(
@@ -1425,7 +1697,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   ),
                   GridView.builder(
                       shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
@@ -1448,13 +1721,12 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                             }
                             if (index == 7) {
                               showSticker(context, 7);
-                            //  Navigator.pop(context);
+                              //  Navigator.pop(context);
                             }
                             if (index == 6) {
                               showSticker(context, 6);
                               //  Navigator.pop(context);
                             }
-
                           },
                           child: Column(
                             children: [
@@ -1499,9 +1771,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         progressType: ProgressType.valuable,
         backgroundColor: const Color(0xff212121),
         progressValueColor: const Color(0xff3550B4),
-        progressBgColor: Colors.white70,
-        msgColor: Colors.white,
-        valueColor: Colors.white);
+        progressBgColor: white,
+        msgColor: white,
+        valueColor: white);
 
     /// Added to test late loading starts
     await Future.delayed(const Duration(milliseconds: 3000));
@@ -1523,8 +1795,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       'Cookie':
           'PHPSESSID=889a1b67168f738c3c7e93ce07601f99; _us=1674205168; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-01-19%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; src=1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
-    request.fields.addAll({'type': 'messages', 'sub_type': 'only_upload_files'});
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields
+        .addAll({'type': 'messages', 'sub_type': 'only_upload_files'});
     // for (int i = 0; i < imageFileList!.length; i++) {
     //   request.files.add(
     //       await http.MultipartFile.fromPath('attachment[]', imageFileList![i].path));
@@ -1534,7 +1808,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     // );
     //docPath
     if (docPath != null) {
-      request.files.add(await http.MultipartFile.fromPath('attachment[]', docPath!));
+      request.files
+          .add(await http.MultipartFile.fromPath('attachment[]', docPath!));
     }
     // for (int i = 0; i < imageFileList!.length; i++) {
     //   request.files.add(
@@ -1542,7 +1817,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     // }
     if (docPath == null) {
       for (int i = 0; i < imageFileList!.length; i++) {
-        request.files.add(await http.MultipartFile.fromPath('attachment[]', imageFileList![i].path));
+        request.files.add(await http.MultipartFile.fromPath(
+            'attachment[]', imageFileList![i].path));
       }
     }
 
@@ -1551,7 +1827,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      //print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       comaSepread = body['comma_seperated_string'];
@@ -1567,10 +1842,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       // coomas.toString().split(',');
       // newComaSpreated = coomas;
       // newComaSpreated.toString().replaceFirst('application/octet-stream', 'image/png');
-
-      print("comaSepread== ${comaSepread.toString()}");
     } else {
-      print(response.reasonPhrase);
       setState(() {
         isUploadFile = false;
       });
@@ -1600,10 +1872,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   reportUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(17), topLeft: Radius.circular(17)),
       ),
       builder: (BuildContext context) {
         return Container(
@@ -1638,13 +1911,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                     return GestureDetector(
                       onTap: () {
                         msgForReport = report[curentIndx];
-                        print("report msg ==${msgForReport}");
                         reportUser();
-                        setState(() {
-
-                        });
+                        setState(() {});
                         Navigator.pop(context);
-
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1679,10 +1948,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   succedRepotBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(17), topLeft: Radius.circular(17)),
       ),
       builder: (BuildContext context) {
         return Container(
@@ -1707,13 +1977,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
               const SizedBox(
                 height: 15,
               ),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
                 backgroundColor: Color(0xffFF9200),
                 child: Center(
                   child: Icon(
                     Icons.done,
-                    color: Colors.white,
+                    color: white,
                     size: 28,
                   ),
                 ),
@@ -1728,11 +1998,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                 child: Container(
                   height: 60,
                   width: double.infinity,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color(0xffFF9200)),
-                  child: const Center(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: const Color(0xffFF9200)),
+                  child: Center(
                     child: Text(
                       'Okay',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: white),
                     ),
                   ),
                 ),
@@ -1747,10 +2019,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   unfollowUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(17), topLeft: Radius.circular(17)),
       ),
       builder: (BuildContext context) {
         return Container(
@@ -1763,7 +2036,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
               const SizedBox(
                 height: 10,
               ),
-              followUnfollowUser.toString() =="unfollowed"?  Text("Follow"): Text("Unfollow"),
+              followUnfollowUser.toString() == "unfollowed"
+                  ? Text("Follow")
+                  : Text("Unfollow"),
               const SizedBox(
                 height: 10,
               ),
@@ -1798,7 +2073,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         height: 60,
                         width: 150,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100), border: Border.all(color: Colors.grey)),
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(color: Colors.grey)),
                         child: const Center(child: Text('Cancle')),
                       ),
                     ),
@@ -1808,18 +2084,19 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         followUnfollow();
                       },
                       child: Container(
                         height: 60,
                         width: 150,
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(100), color: const Color(0xffFD4585)),
-                        child: const Center(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: const Color(0xffFD4585)),
+                        child: Center(
                           child: Text(
                             'Yes',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: white),
                           ),
                         ),
                       ),
@@ -1840,10 +2117,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   blockUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(17), topLeft: Radius.circular(17)),
       ),
       builder: (BuildContext context) {
         return Container(
@@ -1891,7 +2169,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         height: 60,
                         width: 150,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100), border: Border.all(color: Colors.grey)),
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(color: Colors.grey)),
                         child: const Center(child: Text('Cancle')),
                       ),
                     ),
@@ -1901,18 +2180,19 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         blockUser();
                       },
                       child: Container(
                         height: 60,
                         width: 150,
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(100), color: const Color(0xffFD4585)),
-                        child: const Center(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: const Color(0xffFD4585)),
+                        child: Center(
                           child: Text(
                             'Yes',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: white),
                           ),
                         ),
                       ),
@@ -1935,10 +2215,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         // constraints: BoxConstraints(
         //      minHeight: MediaQuery.of(context).size.height / 2),
         context: context,
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(17), topLeft: Radius.circular(17)),
         ),
         builder: (BuildContext context) {
           return StatefulBuilder(
@@ -1974,7 +2255,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               children: [
                                 ListTile(
                                     leading: CircleAvatar(
-                                      backgroundImage: NetworkImage(friendsShow[index]['avatar']),
+                                      backgroundImage: NetworkImage(
+                                          friendsShow[index]['avatar']),
                                     ),
                                     title: Text(friendsShow[index]['username']),
                                     trailing: GestureDetector(
@@ -1982,38 +2264,52 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                           setState(() {
                                             isForward = true;
                                           });
-                                          reviveriD = friendsShow[index]['user_id'];
+                                          reviveriD =
+                                              friendsShow[index]['user_id'];
                                           forwardMessages(reviveriD.toString());
                                         },
-                                        child: friendsShow[index]['user_id'] == reviveriD.toString()
+                                        child: friendsShow[index]['user_id'] ==
+                                                reviveriD.toString()
                                             ? Container(
                                                 height: 40,
                                                 width: 55,
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(color: const Color(0xffFF9200)),
-                                                  borderRadius: BorderRadius.circular(40),
+                                                  border: Border.all(
+                                                      color: const Color(
+                                                          0xffFF9200)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(40),
                                                   // color: const Color(0xFFEBEFFB)
                                                 ),
                                                 child: isForward
-                                                    ? Center(child: CircularProgressIndicator())
+                                                    ? Center(
+                                                        child:
+                                                            CircularProgressIndicator())
                                                     : Center(
                                                         child: Text(
                                                           "Send",
-                                                          style: TextStyle(color: Color(0xffFF9200)),
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffFF9200)),
                                                         ),
                                                       ))
                                             : Container(
                                                 height: 40,
                                                 width: 55,
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(color: const Color(0xffFF9200)),
-                                                  borderRadius: BorderRadius.circular(40),
+                                                  border: Border.all(
+                                                      color: const Color(
+                                                          0xffFF9200)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(40),
                                                   // color: const Color(0xFFEBEFFB)
                                                 ),
                                                 child: Center(
                                                   child: Text(
                                                     "Send",
-                                                    style: TextStyle(color: Color(0xffFF9200)),
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xffFF9200)),
                                                   ),
                                                 )))),
                                 Divider(
@@ -2034,10 +2330,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   deleteChatBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(17), topLeft: Radius.circular(17)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(17), topLeft: Radius.circular(17)),
       ),
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -2081,14 +2378,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            print("id ${widget.list[widget.currentIndex].rec_id}");
                             //  Navigator.pop(context);
                           },
                           child: Container(
                             height: 60,
                             width: 150,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100), border: Border.all(color: Colors.grey)),
+                                borderRadius: BorderRadius.circular(100),
+                                border: Border.all(color: Colors.grey)),
                             child: const Center(child: Text('Cancle')),
                           ),
                         ),
@@ -2113,11 +2410,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                     height: 60,
                                     width: 150,
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(100), color: const Color(0xffFD4585)),
-                                    child: const Center(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: const Color(0xffFD4585)),
+                                    child: Center(
                                       child: Text(
                                         'Yes',
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: white),
                                       ),
                                     ),
                                   ),
@@ -2138,9 +2437,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     );
   }
 
-  showSticker(context,int  index){
+  showSticker(context, int index) {
     showModalBottomSheet(
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         context: context,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
@@ -2150,7 +2449,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         ),
         builder: (ctx) {
           return Container(
-            //color: Colors.grey[600],
+              //color: Colors.grey[600],
               padding: EdgeInsets.all(15),
               child: FractionallySizedBox(
                 heightFactor: 0.88,
@@ -2160,8 +2459,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                     Row(
                       children: [
                         InkWell(
-                          onTap: (){
-
+                          onTap: () {
                             // Navigator.pop(context);
                             // initState();
                           },
@@ -2177,44 +2475,47 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         SizedBox(
                           width: 100,
                         ),
-                        index ==7?
-                        Text(
-                          "Sticker",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        ): Text(
-                          "Gif",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        )
+                        index == 7
+                            ? Text(
+                                "Sticker",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w500),
+                              )
+                            : Text(
+                                "Gif",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w500),
+                              )
                       ],
                     ),
                     SizedBox(
                       height: 20,
                     ),
                     TextFormField(
-                      controller:  stikerKeyWork,
+                      controller: stikerKeyWork,
                       onChanged: (value) {
                         //Do something with the user input.
                       },
                       decoration: InputDecoration(
-                        errorStyle:
-                        const TextStyle(color: Colors.redAccent, fontSize: 15),
+                        errorStyle: const TextStyle(
+                            color: Colors.redAccent, fontSize: 15),
                         filled: true,
                         fillColor: Colors.grey[300],
                         hintText: 'Search',
                         suffixIcon: Icon(Icons.search),
-                        contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.0),
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 2.0),
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                         ),
                       ),
@@ -2226,67 +2527,55 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                       },
                     ),
 
-
                     SizedBox(
                       height: 10,
                     ),
                     FutureBuilder(
                         future: getSticker(),
                         builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return   CircularProgressIndicator();
-                          }
-                          else{
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else {
                             return GridView.builder(
-                                itemCount:stickerData.length,
+                                itemCount: stickerData.length,
                                 shrinkWrap: true,
                                 physics: ScrollPhysics(),
                                 //gifData.length,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4,
                                   // crossAxisSpacing: 4.0,
                                   // mainAxisSpacing: 4.0
                                 ),
-                                itemBuilder: (context, index){
-
+                                itemBuilder: (context, index) {
                                   return InkWell(
                                     child: Column(
                                       children: [
                                         Container(
                                           height: 80.0,
-                                          child:
-
-                                          Image.network(
+                                          child: Image.network(
                                             stickerData[index],
                                             width: 75,
-
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                       ],
                                     ),
                                     onTap: () {
-                                      stickerUrl =stickerData[index];
-                                      print("gif Link is $stickerUrl");
-                                     sendMessage();
+                                      stickerUrl = stickerData[index];
+                                      sendMessage();
                                       // Future.delayed(const Duration(seconds: 3), () {
                                       //  Navigator.pop(context);
                                       // });
                                       //Navigator.pop(context);
-                                  //    initState();
+                                      //    initState();
                                       setState(() {});
                                     },
                                   );
-                                }
-
-                            );
-
+                                });
                           }
-                        }
-
-                    ),
-
-
+                        }),
 
                     SizedBox(
                       height: 70,
@@ -2295,42 +2584,34 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                 ),
               ));
         });
-
   }
 
-var stickerData = [];
+  var stickerData = [];
   var stickerUrl = '';
   TextEditingController stikerKeyWork = TextEditingController();
-getSticker()async{
-  var headers = {
-    'Cookie': 'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679908978; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
-  };
-  var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
-  request.fields.addAll({
-    'type': 'search_gifs_stickers',
-    'sub_type': 'get_stickers',
-    'keyword': stikerKeyWork.text,
-    '': ''
-  });
-
-  request.headers.addAll(headers);
-
-  http.StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-  //  print(await response.stream.bytesToString());
-    var res = await response.stream.bytesToString();
-    var body = jsonDecode(res);
-    stickerData= body['data'];
-    setState(() {
-
+  getSticker() async {
+    var headers = {
+      'Cookie':
+          'PHPSESSID=a97d64197f4baa9af5db29b603e75926; _us=1679908978; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-03-26%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'search_gifs_stickers',
+      'sub_type': 'get_stickers',
+      'keyword': stikerKeyWork.text,
+      '': ''
     });
 
-  }
-  else {
-  print(response.reasonPhrase);
-  }
+    request.headers.addAll(headers);
 
-}
+    http.StreamedResponse response = await request.send();
 
+    if (response.statusCode == 200) {
+      var res = await response.stream.bytesToString();
+      var body = jsonDecode(res);
+      stickerData = body['data'];
+      setState(() {});
+    } else {}
+  }
 }

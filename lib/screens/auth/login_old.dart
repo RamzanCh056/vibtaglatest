@@ -4,7 +4,7 @@ import 'package:vibetag/screens/auth/forgot_old.dart';
 import 'package:vibetag/screens/home/home.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/input_field.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/select_field.dart';

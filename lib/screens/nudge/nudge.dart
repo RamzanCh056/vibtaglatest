@@ -5,7 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/nudge/you_nudge.dart';
 import 'package:vibetag/utils/constant.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'new_nudge.dart';
 

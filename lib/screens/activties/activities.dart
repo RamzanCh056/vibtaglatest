@@ -6,9 +6,10 @@ import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
+
+import '../header/header.dart';
 
 class Activities extends StatefulWidget {
   const Activities({super.key});

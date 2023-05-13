@@ -83,6 +83,16 @@ class CommentMethods {
     }
   }
 
+  Future<void> deleteReply(String reply_id) async {
+    final data = {
+      'type': 'comment_reply_delete',
+      'reply_id': reply_id,
+      'user_id': loginUserId.toString()
+    };
+    final result = await API().postData(data);
+    print(jsonDecode(result.body));
+  }
+
   Future CommentReply({
     required String image,
     required String comment_id,

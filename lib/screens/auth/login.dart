@@ -70,6 +70,8 @@ class _LoginState extends State<Login> {
       await preferences.setString('userId', response['user_id']);
       await preferences.setString('userData', jsonEncode(response['user']));
       loginUserId = response['user_id'].toString();
+
+
       Provider.of<UserProvider>(
         context,
         listen: false,
@@ -102,6 +104,7 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     SliderScroll();
+
     super.initState();
   }
 

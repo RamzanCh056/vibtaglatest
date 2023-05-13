@@ -1,11 +1,20 @@
 import 'dart:math';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming/entities/android_params.dart';
+import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
+import 'package:flutter_callkit_incoming/entities/entities.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+
+import '../methods/api.dart';
+import '../screens/chat_screens/video_call/video_call.dart';
 
 double deviceWidth({required BuildContext context}) {
   return MediaQuery.of(context).size.width;
@@ -63,7 +72,7 @@ bool isMuted = true;
 
 String API_Url = 'https://vibetag.com/app_api.php';
 final String serverUrl = 'https://media.vibetag.com/';
-// final String serverUrl = 'https://vibetagspace.nyc3.digitaloceanspaces.com/';
+// final String serverUrl = 'https://vibetagspace.nyc3.cdn.digitaloceanspaces.com/';
 Gradient gradient = LinearGradient(
   begin: Alignment.centerRight,
   end: Alignment.centerLeft,
@@ -463,6 +472,9 @@ netImage(String url) {
     placeholder: 'assets/placeholder.jpg',
     image: url.contains(serverUrl) ? url : '${serverUrl}${url}',
     fit: BoxFit.fill,
+    imageErrorBuilder: (context, error, stackTrace) {
+      return Text('Image');
+    },
   );
 }
 
@@ -480,3 +492,31 @@ isEmpty(list) {
     return list;
   }
 }
+
+String setName(String name) {
+  if (name.length > 17) {
+    return name.substring(0, 13).toString() + '...';
+  }
+  return name;
+}
+
+Future<void> subScribeToNotificationTopic(topic) async {
+  await FirebaseMessaging.instance.subscribeToTopic(topic);
+}
+
+unSubScribeFromTopic(String topic) async {
+  await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+}
+
+String? token = '';
+String remote_user_id = '';
+updateToken() async {
+  token = await FirebaseMessaging.instance.getToken();
+  final data = {
+    'type': 'update_fcm_token',
+    'user_id': loginUserId,
+    'token': token,
+  };
+  await API().postData(data);
+}
+bool isEnabledCallEvents=false;

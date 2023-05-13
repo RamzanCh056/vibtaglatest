@@ -8,7 +8,7 @@ import 'package:vibetag/screens/profile/like_page_bar.dart';
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
 import '../home/create_post/home_search.dart';
-import '../home/home_tab_bar.dart';
+import '../home/widgets/home_tab_bar.dart';
 
 class LikeTab extends StatefulWidget {
   final String user_id;

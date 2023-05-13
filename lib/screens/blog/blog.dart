@@ -8,7 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/blog/recent.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/widgets/search_bar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';

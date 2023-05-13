@@ -18,7 +18,7 @@ import '../../utils/constant.dart';
 import '../../widgets/bottom_modal_sheet_widget.dart';
 import '../home/comment/widget/post_comment_bar.dart';
 import '../home/post_methods/post_methods.dart';
-import '../home/revibe.dart';
+import '../home/widgets/revibe.dart';
 
 class Buzzin extends StatefulWidget {
   const Buzzin({super.key});

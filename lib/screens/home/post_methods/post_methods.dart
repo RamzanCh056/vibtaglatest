@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/home/post_models/post_modal.dart';
 import 'package:vibetag/provider/post_provider.dart';
 
-import '../post_ads.dart';
-import '../post_blog.dart';
-import '../post_colored.dart';
-import '../post_event.dart';
-import '../post_photo.dart';
-import '../post_poll.dart';
-import '../post_product.dart';
+import '../post_types/post_ads.dart';
+import '../post_types/post_blog.dart';
+import '../post_types/post_colored.dart';
+import '../post_types/post_event.dart';
+import '../post_types/post_photo.dart';
 import '../../../utils/constant.dart';
+import '../post_types/post_poll.dart';
+import '../post_types/post_product.dart';
 
 class PostMethods {
   Future getPosts({required BuildContext context}) async {

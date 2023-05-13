@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 import '../../../utils/constant.dart';
-import '../../home/post_type.dart';
+import '../../home/post_types/post_file.dart';
 
 class TrendLatestVideos extends StatelessWidget {
   final Map<String, dynamic> video;

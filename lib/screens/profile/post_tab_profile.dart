@@ -11,15 +11,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../../utils/constant.dart';
 import '../home/comment/widget/post_comment_bar.dart';
 import '../home/create_post/home_search.dart';
-import '../home/home_tab_bar.dart';
-import '../home/post_blog.dart';
-import '../home/post_colored.dart';
-import '../home/post_event.dart';
+import '../home/widgets/home_tab_bar.dart';
+import '../home/post_types/post_colored.dart';
 import '../home/post_methods/post_methods.dart';
-import '../home/post_photo.dart';
-import '../home/post_poll.dart';
-import '../home/post_product.dart';
-import '../home/revibe.dart';
+import '../home/post_types/post_photo.dart';
+import '../home/widgets/revibe.dart';
 
 class PostTabProfile extends StatefulWidget {
   final String user_id;

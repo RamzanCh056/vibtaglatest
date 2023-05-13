@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 
 import 'package:provider/provider.dart';
 
-
 import 'package:vibetag/screens/profile/edit_profile.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/about_items.dart';
@@ -16,7 +15,7 @@ import 'package:vibetag/screens/profile/like_tab.dart';
 import 'package:vibetag/screens/profile/photo_tab.dart';
 import 'package:vibetag/screens/profile/post_tab_profile.dart';
 import 'package:vibetag/widgets/bottom_navigation_bar.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../methods/api.dart';
@@ -190,7 +189,8 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
-    Map<String,dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user =
+        Provider.of<UserProvider>(context, listen: false).user;
     List<Widget> screen = isLoading
         ? []
         : [
@@ -427,7 +427,8 @@ class _ProfileState extends State<Profile> {
                                                     width: 10,
                                                   ),
                                                   Text(
-                                                    '${profileUser['first_name']} ${profileUser['last_name']}',
+                                                    setName(
+                                                        '${profileUser['first_name']} ${profileUser['last_name']}'),
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,

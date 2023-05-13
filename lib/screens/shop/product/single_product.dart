@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/shop/product/product_drop.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/drawer/shop_drawer.dart';
@@ -12,6 +11,7 @@ import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/screens/shop/shop_header.dart';
 
 import '../../../utils/constant.dart';
+import '../../header/header.dart';
 
 class SingleProduct extends StatefulWidget {
   const SingleProduct({super.key});

@@ -10,7 +10,7 @@ import 'package:vibetag/screens/blog/blogs.dart';
 import 'package:vibetag/screens/groups/add_new_group.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/my_sugested.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/page/add_page.dart';

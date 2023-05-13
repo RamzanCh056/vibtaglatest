@@ -6,7 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/shop/cart.dart';
 import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/media_library.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/shop_drawer.dart';

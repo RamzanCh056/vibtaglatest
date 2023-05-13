@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:vibetag/utils/constant.dart';
-import '../../widgets/header.dart';
 import '../../widgets/navbar.dart';
 import '../my_page_screen/browse_event_screen.dart';
 

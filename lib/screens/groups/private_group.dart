@@ -8,12 +8,12 @@ import 'package:provider/provider.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
-import 'package:vibetag/screens/home/home_tab_bar.dart';
 
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';
+import '../home/widgets/home_tab_bar.dart';
 
 class PrivateGroup extends StatefulWidget {
   const PrivateGroup({super.key});

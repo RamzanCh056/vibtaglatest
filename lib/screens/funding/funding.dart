@@ -6,7 +6,7 @@ import 'package:vibetag/screens/funding/create_new_funding.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';

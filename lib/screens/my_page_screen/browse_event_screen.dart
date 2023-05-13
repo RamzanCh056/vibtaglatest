@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vibetag/screens/my_page_screen/suggested_page.dart';
 import '../../utils/constant.dart';
-import '../../widgets/header.dart';
 import '../../widgets/navbar.dart';
+import '../header/header.dart';
 import 'create_pages.dart';
 import 'my_page.dart';
 

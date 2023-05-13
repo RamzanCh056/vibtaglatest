@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
 import 'package:vibetag/widgets/input_field.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
 
 import '../../utils/constant.dart';
+import '../header/header.dart';
 
 class CreateNewArticle extends StatefulWidget {
   const CreateNewArticle({super.key});

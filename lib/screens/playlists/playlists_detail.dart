@@ -11,8 +11,8 @@ import 'package:video_player/video_player.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
-import '../../widgets/header.dart';
 import '../../widgets/navbar.dart';
+import '../header/header.dart';
 import '../page/page.dart';
 import '../profile/profile.dart';
 import '../video_player/Single_video_player.dart';

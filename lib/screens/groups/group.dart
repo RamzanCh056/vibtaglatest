@@ -10,9 +10,9 @@ import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/groups/Methods/group_methods.dart';
 import 'package:vibetag/screens/groups/post_tab_group.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
-import 'package:vibetag/screens/home/home_tab_bar.dart';
+import 'package:vibetag/screens/home/widgets/home_tab_bar.dart';
 
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';

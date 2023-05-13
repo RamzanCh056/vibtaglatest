@@ -7,7 +7,7 @@ import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/page/page_old.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import 'package:vibetag/widgets/header.dart';
+import '../header/header.dart';
 import 'package:vibetag/widgets/my_sugested.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/chat/chat_profile.dart';
