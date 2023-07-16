@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/album/all_albums.dart';
 import 'package:vibetag/screens/album/create_album.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
@@ -87,7 +86,7 @@ class _SaleState extends State<Sale> {
                                                 color: orange,
                                                 borderRadius: borderRadius(20),
                                               ),
-                                              child: SvgIcon(
+                                              child: SvgPicture.asset(
                                                 'assets/svg/post/image1.svg',
                                                 width: width * 0.04,
                                                 color: white,

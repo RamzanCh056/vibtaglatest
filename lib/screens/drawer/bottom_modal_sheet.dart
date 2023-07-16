@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:svg_icon/svg_icon.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
@@ -24,6 +23,8 @@ import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/page/page.dart';
 import 'package:vibetag/screens/page/page_old.dart';
 import 'package:vibetag/screens/playlists/playlists_detail.dart';
+import 'package:vibetag/screens/product_newUI/screens/MainProduct.dart';
+import 'package:vibetag/screens/product_newUI/screens/product_trending.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
@@ -261,7 +262,9 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Activities(),
+                          screen: Activities(
+                            user_id: loginUserId,
+                          ),
                         );
                       },
                     ),
@@ -321,13 +324,37 @@ BottomDrawer({required BuildContext context}) {
                       },
                     ),
                     BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/products.svg',
+                      title: 'My Products New',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: MainProduct(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/products.svg',
+                      title: 'Trending product',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: ProductTrending(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/explore.svg',
                       title: 'Explore',
                       notifications: 0,
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Explore(),
+                          screen: Explore(
+                            search: {},
+                          ),
                         );
                       },
                     ),

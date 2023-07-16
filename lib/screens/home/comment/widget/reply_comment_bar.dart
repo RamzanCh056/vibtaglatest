@@ -96,7 +96,6 @@ class _ReplyCommentBarState extends State<ReplyCommentBar> {
 
   @override
   Widget build(BuildContext context) {
-    print('+++++++++++++++++++++++++++++++++++++++++++++++');
     CommentMethods().getReactionsDetails(widget.comment['all_reactions']);
     if (replyTo.isNotEmpty) {
       textController.text = replyTo;

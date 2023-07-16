@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/album/all_albums.dart';
 import 'package:vibetag/screens/album/create_album.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';

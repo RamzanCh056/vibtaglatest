@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vibetag/utils/constant.dart';
 
 import '../constants.dart';
 import '../model/show_list_message_model.dart';
@@ -100,7 +101,7 @@ class _ForwardMessageState extends State<ForwardMessage> {
                       ),
                       Text(
                         widget.message.toString(),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: Colors.black),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: grayPrimary),
                       ),
                       SizedBox(
                         height: 10,

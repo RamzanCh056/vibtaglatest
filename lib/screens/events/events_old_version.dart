@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/events/create_event.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
-import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
+
+import '../header/header.dart';
+import 'newdesign/create_event.dart';
 
 class Events_Old extends StatefulWidget {
   const Events_Old({super.key});
@@ -120,7 +121,7 @@ class _Events_OldState extends State<Events_Old> {
                                       onTap: () {
                                         pushRoute(
                                           context: context,
-                                          screen: const CreateEvent(),
+                                          screen:  CreateEvetns(),
                                         );
                                       },
                                       child: Container(
@@ -146,7 +147,7 @@ class _Events_OldState extends State<Events_Old> {
                                             ),
                                             Container(
                                               width: 15,
-                                              child: const SvgIcon(
+                                              child:  SvgPicture.asset(
                                                 'assets/svg/chat/plus.svg',
                                                 color: Colors.white,
                                               ),

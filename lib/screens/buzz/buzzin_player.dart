@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -9,14 +10,18 @@ import 'package:vibetag/screens/video_player/video_player_landscap.dart';
 import 'package:vibetag/screens/video_player/video_screen.dart';
 import 'package:vibetag/utils/constant.dart';
 
+import '../../methods/api.dart';
+
 /// Stateful widget to fetch and then display video content.
 class BuzzinPlayer extends StatefulWidget {
   final String videoUrl;
   final String thumbnail;
+  final String post_id;
   BuzzinPlayer({
     Key? key,
     required this.videoUrl,
     required this.thumbnail,
+    required this.post_id,
   }) : super(key: key);
 
   @override
@@ -26,10 +31,12 @@ class BuzzinPlayer extends StatefulWidget {
 class _BuzzinPlayerState extends State<BuzzinPlayer> {
   late VideoPlayerController controller;
   bool hidebutton = false;
+  bool isViewAdd = false;
 
   @override
   void initState() {
     super.initState();
+
     controller = VideoPlayerController.network(
       widget.videoUrl.toString(),
     )..initialize().then(
@@ -45,6 +52,18 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
           });
         },
       );
+  }
+
+  videoListener() {
+    if (controller.value.position.inSeconds > 10 && !isViewAdd) {
+      isViewAdd = true;
+      addVideoView();
+    }
+  }
+
+  addVideoView() async {
+    await PostMethods().addVideoView(widget.post_id.toString());
+    controller.removeListener(videoListener);
   }
 
   @override
@@ -142,6 +161,7 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
   @override
   void dispose() {
     super.dispose();
+    controller.removeListener(videoListener);
     controller.dispose();
   }
 }

@@ -14,7 +14,6 @@ import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
 import 'package:vibetag/screens/shop/cart.dart';
-import 'package:vibetag/screens/find_friends_old/find_friends.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/page/pages.dart';
@@ -323,20 +322,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              pushRoute(
-                                context: context,
-                                screen: const Album(),
-                              );
-                            },
-                            child: DrawerItems(
-                              title: 'Album',
-                              imgUrl: 'assets/images/drawer/Album.png',
-                              notifications: 1,
-                              isNewNotification: false,
-                            ),
-                          ),
+                         
                           InkWell(
                             onTap: () {
                               pushRoute(
@@ -398,7 +384,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Activities(),
+                                screen:  Activities(user_id: loginUserId,),
                               );
                             },
                             child: DrawerItems(
@@ -412,7 +398,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Explore(),
+                                screen: const Explore(
+                                  search: {},
+                                ),
                               );
                             },
                             child: DrawerItems(
@@ -427,7 +415,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Explore(),
+                                screen: const Explore(
+                                  search: {},
+                                ),
                               );
                             },
                             child: DrawerItems(
@@ -437,21 +427,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              pushRoute(
-                                context: context,
-                                screen: FindFriends(),
-                              );
-                            },
-                            child: DrawerItems(
-                              title: 'Find Friends',
-                              imgUrl:
-                                  'assets/images/drawer/Friends near by.png',
-                              notifications: 1,
-                              isNewNotification: false,
-                            ),
-                          ),
+                          
                           InkWell(
                             onTap: () {
                               pushRoute(

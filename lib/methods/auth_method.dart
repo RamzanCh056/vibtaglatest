@@ -37,4 +37,34 @@ class AuthMethod {
       jsonData,
     );
   }
+
+  Future<void> LikePage(String page_id) async {
+    if (likes_data.contains(page_id)) {
+      likes_data.remove(page_id);
+    } else {
+      likes_data.add(page_id);
+    }
+    final data = {
+      'type': 'follow_like_join',
+      'action': 'like_page',
+      'user_id': loginUserId.toString(),
+      'page_id': page_id,
+    };
+    await API().postData(data);
+  }
+
+  Future<void> followUser(String user_id) async {
+     if (following_data.contains(user_id)) {
+      following_data.remove(user_id);
+    } else {
+      following_data.add(user_id);
+    }
+    final data = {
+      'type': 'follow_user_startup',
+      'user_id': loginUserId,
+      'user': user_id,
+    };
+
+    await API().postData(data);
+  }
 }

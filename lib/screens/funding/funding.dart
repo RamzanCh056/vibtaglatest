@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/funding/create_new_funding.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';

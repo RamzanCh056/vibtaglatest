@@ -2,11 +2,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
+
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/screens/page/page_video_tab.dart';
 import 'package:vibetag/screens/page/page_photo_tab.dart';
 import 'package:vibetag/screens/page/post_tab_page.dart';
@@ -14,6 +17,8 @@ import 'package:vibetag/screens/page/review_tab.dart';
 import 'package:vibetag/screens/page/shop_tab.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/photo_tab.dart';
+import '../chat_screens/model/page_model.dart';
+import '../chat_screens/screen/pages/page_message.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -36,9 +41,10 @@ class PageScreen extends StatefulWidget {
 class _PageScreenState extends State<PageScreen> {
   List<Widget> aboutItems = [];
   Map<String, dynamic> pageData = {};
+  List<PageList> messageButton = [];
   bool isLoading = false;
   bool isLiked = false;
-  int currenttab = 1;
+  int currenttab = 0;
 
   @override
   void initState() {
@@ -59,16 +65,46 @@ class _PageScreenState extends State<PageScreen> {
     final result = await API().postData(data);
     pageData = jsonDecode(result.body)['page_data'];
     isLiked = pageData['is_liked'];
+
+    await PostMethods().getPageCategories();
+
     addAboutItems();
   }
 
   addAboutItems() {
+    Map<String, dynamic> messageUser = {
+      'rec_name': pageData['page_name'],
+      'sen_name': loginUser['name'],
+      'rec_pic': pageData['avatar'],
+      'sent_time': DateFormat('hh:mm a').format(
+          DateTime.fromMillisecondsSinceEpoch(
+              int.parse(pageData['time'].toString()) * 1000)),
+      'message': '',
+      'rec_id': pageData['page_id'],
+      'sen_pic': loginUser['avatar'],
+      'sen_id': loginUserId,
+      'attachment_url': '',
+      'last_online': DateFormat('hh:mm a').format(
+          DateTime.fromMillisecondsSinceEpoch(
+              int.parse(pageData['time'].toString()) * 1000)),
+      'online_status': '',
+      'attachment_type': '',
+      'is_map': '',
+      'lat': '',
+      'lng': '',
+      'page_avatar': pageData['avatar'],
+      'page_name': pageData['page_name'],
+    };
+    PageList pageMessage = PageList.fromJson(messageUser);
+    messageButton.add(pageMessage);
+
     aboutItems.add(
       AboutItems(
         context: context,
         iconsUrl: 'assets/new/icons/Group.png',
         leading: 'Page',
-        itemName: pageData['page_description'],
+        itemName:
+            getPageCategory(int.parse(pageData['page_category'].toString())),
         haveIcon: true,
       ),
     );
@@ -76,7 +112,7 @@ class _PageScreenState extends State<PageScreen> {
       AboutItems(
         context: context,
         iconsUrl: 'assets/new/icons/like_page.png',
-        leading: '1234657675',
+        leading: getInK(number: int.parse(pageData['total_likes'].toString())),
         itemName: 'People like this',
         haveIcon: true,
       ),
@@ -85,7 +121,7 @@ class _PageScreenState extends State<PageScreen> {
       AboutItems(
         context: context,
         iconsUrl: 'assets/new/icons/category_items.png',
-        leading: pageData['post_count'].toString(),
+        leading: getInK(number: int.parse(pageData['post_count'].toString())),
         itemName: 'Posts',
         haveIcon: true,
       ),
@@ -120,6 +156,7 @@ class _PageScreenState extends State<PageScreen> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+
     Map<String, dynamic> user =
         Provider.of<UserProvider>(context, listen: false).user;
     List<Widget> screen = isLoading
@@ -252,8 +289,8 @@ class _PageScreenState extends State<PageScreen> {
             PagePhotoTab(
               page_id: widget.page_id,
             ),
-            ShopTab(context: context),
-            ReviewTab(context: context),
+            PageShop(page_id: widget.page_id),
+            PageReviews(page_id: widget.page_id),
           ];
     return Scaffold(
       body: isLoading
@@ -291,19 +328,7 @@ class _PageScreenState extends State<PageScreen> {
                                         ),
                                       ),
                                       Positioned(
-                                        top: width * 0.25,
-                                        left: 0,
-                                        right: 0,
-                                        child: Center(
-                                          child: CircleAvatar(
-                                            radius: width * 0.15,
-                                            foregroundImage: NetworkImage(
-                                                pageData['avatar']),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: width * 0.05,
+                                        bottom: width * 0.07,
                                         child: Container(
                                           width: width,
                                           child: Center(
@@ -313,15 +338,18 @@ class _PageScreenState extends State<PageScreen> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
+                                                CircleAvatar(
+                                                  radius: width * 0.15,
+                                                  foregroundImage: NetworkImage(
+                                                      pageData['avatar']),
+                                                ),
+                                                gap(h: 7),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    SizedBox(
-                                                      width: 20,
-                                                    ),
                                                     Text(
                                                       setName(pageData['name']),
                                                       style: TextStyle(
@@ -490,27 +518,39 @@ class _PageScreenState extends State<PageScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              Container(
-                                                padding: spacing(
-                                                  horizontal: width * 0.10,
-                                                  vertical: 10,
-                                                ),
-                                                margin: spacing(
-                                                  horizontal: 2,
-                                                  vertical: 2,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: borderRadius(5),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: orangePrimary,
+                                              InkWell(
+                                                onTap: () {
+                                                  pushRoute(
+                                                    context: context,
+                                                    screen: PageMessage(
+                                                      messageButton,
+                                                      0,
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: spacing(
+                                                    horizontal: width * 0.10,
+                                                    vertical: 10,
                                                   ),
-                                                ),
-                                                child: Text(
-                                                  'Message',
-                                                  style: TextStyle(
-                                                    color: orangePrimary,
-                                                    fontSize: 12,
+                                                  margin: spacing(
+                                                    horizontal: 2,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        borderRadius(5),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: orangePrimary,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'Message',
+                                                    style: TextStyle(
+                                                      color: orangePrimary,
+                                                      fontSize: 12,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -530,7 +570,7 @@ class _PageScreenState extends State<PageScreen> {
                                         gap(h: 10),
                                         Container(
                                           child: DefaultTabController(
-                                              initialIndex: 1,
+                                              initialIndex: currenttab,
                                               length: 6,
                                               child: SingleChildScrollView(
                                                 child: Column(

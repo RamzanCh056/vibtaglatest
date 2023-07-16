@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:805337517924:android:a9978431cadfcfebfef471",
+        "mobilesdk_app_id": "1:805337517924:android:ba54035442c6ec4ffef471",
         "android_client_info": {
-          "package_name": "com.example.vibetag"
+          "package_name": "com.vibetag.vibe.app"
         }
       },
       "oauth_client": [

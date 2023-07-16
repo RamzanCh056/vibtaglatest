@@ -3,13 +3,13 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
-import '../header/header.dart';
+
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/chat/chat_profile.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
 import '../../utils/constant.dart';
+import '../header/header.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -236,7 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           right: 10,
                                           top: 20,
                                         ),
-                                        child: SvgIcon(
+                                        child: SvgPicture.asset(
                                           'assets/svg/chat/smile.svg',
                                           width: width * 0.01,
                                         ),

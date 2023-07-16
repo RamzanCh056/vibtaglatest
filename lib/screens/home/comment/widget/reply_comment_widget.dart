@@ -178,7 +178,7 @@ class _ReplyCommentState extends State<ReplyComment> {
                                           child: Html(
                                             data: widget.commentReply['text'],
                                             onAnchorTap:
-                                                (str, rndr, map, element) {
+                                                (str, map, element) {
                                               tagType(element!, context);
                                             },
                                             style: {

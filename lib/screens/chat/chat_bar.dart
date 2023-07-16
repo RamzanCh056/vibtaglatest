@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/screens/chat/chat_details.dart';
 
@@ -105,11 +104,11 @@ ChatBar({required BuildContext context}) {
                                       ),
                                     ),
                                   ),
-                                  SvgIcon(
+                                  SvgPicture.asset(
                                     'assets/svg/chat/message.svg',
                                     width: width * 0.05,
                                   )
-                                  // SvgIcon(
+                                  // SvgPicture.asset(
                                   //   'assets/svg/list-text.svg',
                                   //   width: width * 0.1,
                                   // ),
@@ -131,11 +130,11 @@ ChatBar({required BuildContext context}) {
                                       ),
                                     ),
                                   ),
-                                  SvgIcon(
+                                  SvgPicture.asset(
                                     'assets/svg/chat/users.svg',
                                     width: width * 0.05,
                                   )
-                                  // SvgIcon(
+                                  // SvgPicture.asset(
                                   //   'assets/svg/writing.svg',
                                   //   width: width * 0.1,
                                   // ),
@@ -157,11 +156,11 @@ ChatBar({required BuildContext context}) {
                                       ),
                                     ),
                                   ),
-                                  // SvgIcon(
+                                  // SvgPicture.asset(
                                   //   'assets/svg/photo.svg',
                                   //   width: width * 0.1,
                                   // ),
-                                  SvgIcon(
+                                  SvgPicture.asset(
                                     'assets/svg/chat/landing-page.svg',
                                     width: width * 0.05,
                                   )

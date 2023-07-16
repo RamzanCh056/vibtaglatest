@@ -1,7 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/find%20vibes/widget/find_vibes_widget.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+import 'package:vibetag/screens/home/post_types/post_file.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
+import 'package:path/path.dart' as p;
+import 'package:visibility_detector/visibility_detector.dart';
+
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -14,6 +23,16 @@ class FindVibes extends StatefulWidget {
 
 class _FindVibesState extends State<FindVibes> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+  bool isLoading = false;
+  bool isLoadMoreCall = false;
+  List<dynamic> vibes = [];
+  List<Map<String, dynamic>> vibesCategories = [];
+  List<Widget> vibeWidgets = [];
+  List<String> vibesIds = [];
+  List<dynamic> rawData = [];
+  String selectedCategory = '';
+  bool isNoMorePost = false;
+
   List<String> images = [
     'assets/images/findvibe/findvibOne.png',
     'assets/images/findvibe/findvibTwo.png',
@@ -37,6 +56,116 @@ class _FindVibesState extends State<FindVibes> {
     'Gwen CH',
     'Vib Gwen',
   ];
+  void initState() {
+    super.initState();
+    getVibes();
+  }
+
+  Future<void> vibeCategories() async {
+    final response = await API()
+        .postData({'type': 'get_post_categories', 'user_id': '${loginUserId}'});
+    Map<String, dynamic> allCategories = jsonDecode(response.body)['data'];
+    for (var category in allCategories['Explore']) {
+      vibesCategories.add(category);
+    }
+    for (var category in allCategories['Leisure']) {
+      vibesCategories.add(category);
+    }
+    for (var category in allCategories['Lifestyle']) {
+      vibesCategories.add(category);
+    }
+    for (var category in allCategories['MusicAudio']) {
+      vibesCategories.add(category);
+    }
+    for (var category in allCategories['TVProgrammes']) {
+      vibesCategories.add(category);
+    }
+    for (var category in allCategories['SocietyEnvironment']) {
+      vibesCategories.add(category);
+    }
+    vibesCategories.shuffle();
+  }
+
+  Future<void> getVibes({bool loadCategories = true}) async {
+    setState(() {
+      isLoading = true;
+    });
+    vibesIds = [];
+    vibeWidgets = [];
+    if (loadCategories) {
+      await vibeCategories();
+    } else {
+      vibesCategories.shuffle();
+    }
+    final data = {
+      'type': 'find_vibes',
+      'action': 'find_vibes',
+      'limit': '30',
+      'cat': selectedCategory,
+      'after_id': '0',
+    };
+
+    final response = await API().postData(data);
+    rawData = jsonDecode(response.body)['data'];
+    for (var post in rawData) {
+      String fileExtension = p.extension(post['postFile']);
+      bool is_video = isVideo(ex: fileExtension);
+      bool is_Image = IsImage(post['postFile']);
+      if (is_video || is_Image) {
+        vibes.add(post);
+      }
+    }
+    for (var vibe in vibes) {
+      if (!(vibesIds.contains(vibe['post_id'].toString()))) {
+        vibesIds.add(vibe['post_id']);
+        vibeWidgets.add(
+          FindVibesWidget(post: vibe),
+        );
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> getMoreVibes() async {
+    isLoadMoreCall = true;
+    final data = {
+      'type': 'find_vibes',
+      'action': 'find_more_vibes',
+      'limit': '30',
+      'cat': selectedCategory,
+      'after_id': rawData.length == 0
+          ? '0'
+          : rawData[(rawData.length - 1)]['post_id'].toString(),
+    };
+
+    final response = await API().postData(data);
+    rawData = jsonDecode(response.body)['data'];
+    for (var post in rawData) {
+      String fileExtension = p.extension(post['postFile']);
+      bool is_video = isVideo(ex: fileExtension);
+      bool is_Image = IsImage(post['postFile']);
+      if (is_video || is_Image) {
+        vibes.add(post);
+      }
+    }
+    for (var vibe in vibes) {
+      if (!(vibesIds.contains(vibe['post_id'].toString()))) {
+        vibesIds.add(vibe['post_id']);
+        vibeWidgets.add(
+          FindVibesWidget(post: vibe),
+        );
+      }
+    }
+    if (rawData.length == 0) {
+      isNoMorePost = true;
+    }
+    setState(() {
+      isLoadMoreCall = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,242 +184,126 @@ class _FindVibesState extends State<FindVibes> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const NavBar(),
-                  Header()
+                  Header(),
                 ],
               ),
               SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5),
-                          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
-                      child: Column(
+                child: isLoading
+                    ? loadingSpinner()
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
                           Container(
-                            width: width,
-                            height: height * 0.25,
-                            margin: spacing(
-                              horizontal: 5,
-                              vertical: 0,
-                            ),
-                            child: ListView.builder(
-                              itemCount: images.length,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: width * 0.29,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.black12, blurRadius: 6)
+                                ]),
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  width: width,
                                   height: height * 0.25,
-                                  margin: spacing(horizontal: 5, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: borderRadius(
-                                      10,
-                                    ),
+                                  margin: spacing(
+                                    horizontal: 5,
+                                    vertical: 0,
                                   ),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: height * 0.2,
-                                        child: ClipRRect(
-                                          borderRadius: borderRadius(
-                                            10,
-                                          ),
-                                          child: Image.asset(
-                                            images[index],
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: height * 0.01,
-                                      ),
-                                      Expanded(
+                                  child: ListView.builder(
+                                    itemCount: vibesCategories.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, i) {
+                                      return InkWell(
+                                        onTap: () {
+                                          selectedCategory =
+                                              vibesCategories[i]['id'];
+                                          getVibes(loadCategories: false);
+                                        },
                                         child: Container(
-                                          alignment: Alignment.center,
-                                          width: double.maxFinite,
-                                          child: Text(
-                                            name[index],
-                                            style: TextStyle(
-                                              color: HexColor('#000000'),
+                                          width: width * 0.29,
+                                          height: height * 0.25,
+                                          margin: spacing(
+                                              horizontal: 5, vertical: 5),
+                                          decoration: BoxDecoration(
+                                            borderRadius: borderRadius(
+                                              10,
                                             ),
                                           ),
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: height * 0.2,
+                                                child: ClipRRect(
+                                                  borderRadius: borderRadius(
+                                                    10,
+                                                  ),
+                                                  child: Image.network(
+                                                    '${vibesCategories[i]['img']}',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.01,
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  width: double.maxFinite,
+                                                  child: Text(
+                                                    vibesCategories[i]['name'],
+                                                    style: TextStyle(
+                                                      color:
+                                                          HexColor('#000000'),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(
                             height: 15,
                           ),
+                          Column(
+                            children: [
+                              Column(
+                                children: vibeWidgets,
+                              ),
+                              isNoMorePost
+                                  ? Center(
+                                      child: Text('No more vibes'),
+                                    )
+                                  : VisibilityDetector(
+                                      key: Key('findVibes'),
+                                      child: loadingSpinner(),
+                                      onVisibilityChanged: (info) {
+                                        if (info.visibleFraction > 0.25 &&
+                                            !isLoadMoreCall &&
+                                            rawData.length > 0) {
+                                          getMoreVibes();
+                                        }
+                                      },
+                                    ),
+                              gap(h: 25),
+                            ],
+                          ),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    ListView.builder(
-                        itemCount: postImages.length,
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.12,
-                                            height: width * 0.12,
-                                            padding: EdgeInsets.all(
-                                              width * 0.01,
-                                            ),
-                                            decoration: const BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                  'assets/new/images/border.png',
-                                                ),
-                                              ),
-                                            ),
-                                            child: CircleAvatar(
-                                              radius: width * 0.055,
-                                              foregroundImage: const AssetImage("assets/images/findvibe/postUser.png"),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                userName[index],
-                                                style: const TextStyle(fontSize: 14, color: Colors.black),
-                                              ),
-                                              const Text(
-                                                '1hr ago',
-                                                style: TextStyle(fontSize: 10, color: Color(0xff7D8CAC)),
-                                              )
-                                            ],
-                                          ),
-                                          const Expanded(child: Text("")),
-                                          const Icon(
-                                            Icons.more_horiz,
-                                            color: Color(0xff99A7C7),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Image.asset(postImages[index])),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 45,
-                                            width: 90,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade200,
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            child: Center(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: const [
-                                                  Icon(
-                                                    Icons.favorite_border,
-                                                    color: Color(0xff99A7C7),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text('2.3k', style: TextStyle(fontSize: 10, color: Color(0xff99A7C7)))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Container(
-                                            height: 45,
-                                            width: 90,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade200,
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            child: Center(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: const [
-                                                  Icon(
-                                                    Icons.message,
-                                                    color: Color(0xff99A7C7),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text('2.3k', style: TextStyle(fontSize: 10, color: Color(0xff99A7C7)))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const Expanded(child: Text("")),
-                                          Container(
-                                              height: 45,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
-                                                borderRadius: BorderRadius.circular(100),
-                                              ),
-                                              child: const Center(
-                                                child: Icon(Icons.share, color: Color(0xff99A7C7)),
-                                              ))
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                            ],
-                          );
-                        }),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    const AppFooter()
-                  ],
-                ),
               ),
             ],
           ),

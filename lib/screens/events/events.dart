@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/utils/constant.dart';
-import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
+
+import '../../widgets/input_field.dart';
+import '../header/header.dart';
+import 'create_event.dart';
+import 'newdesign/browse_events.dart';
+import 'newdesign/create_event.dart';
+import 'newdesign/event_going.dart';
+import 'newdesign/intersted_event.dart';
+import 'newdesign/myevent.dart';
+import 'newdesign/past_event.dart';
 
 class Events extends StatefulWidget {
   const Events({super.key});
@@ -17,6 +26,8 @@ class _EventsState extends State<Events> {
     'Ongoing',
     'Invited',
   ];
+  TextEditingController name = TextEditingController();
+  int currentIndexTab =0;
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -42,198 +53,167 @@ class _EventsState extends State<Events> {
                     child: Column(
                       children: [
                         gap(h: 15),
-                        Container(
-                          width: double.infinity,
-                          height: height * 0.04,
-                          margin: spacing(horizontal: 5),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 3,
-                            itemBuilder: (context, i) {
-                              if (i > 0) {
-                                return Container(
-                                  padding:
-                                      spacing(horizontal: 20, vertical: 10),
-                                  margin: spacing(horizontal: 8),
+                        SizedBox(width: 5,),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    currentIndexTab =0;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    borderRadius: borderRadius(width),
-                                    color: white,
-                                  ),
-                                  child: Text(
-                                    buttonText[i - 1],
-                                    style: TextStyle(
-                                      color: grayPrimary,
+                                      color: currentIndexTab==0?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'Browse',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color:  currentIndexTab==0? Colors.white:Colors.black,
+
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                );
-                              }
-                              return Container(
-                                padding: spacing(horizontal: 20, vertical: 10),
-                                margin: spacing(horizontal: 8),
-                                decoration: BoxDecoration(
-                                  borderRadius: borderRadius(width),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft,
-                                    colors: [
-                                      HexColor('#FF9200'),
-                                      HexColor('#FDBA31')
-                                    ],
+                                ),
+                              ),
+                              const SizedBox(width: 7,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    currentIndexTab =1;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: currentIndexTab==1?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'My event',
+                                      style: TextStyle(
+                                          color: currentIndexTab==1? Colors.white:Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
-                                child: Text(
-                                  'Browse Events',
-                                  style: TextStyle(
-                                    color: white,
+                              ),
+                              const SizedBox(width: 7,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    currentIndexTab=2;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: currentIndexTab==2?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'past Event',
+                                      style: TextStyle(
+                                          color: currentIndexTab==2? Colors.white:Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                              const SizedBox(width: 7,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+
+                                    currentIndexTab =3;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: currentIndexTab==3?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'event Going',
+                                      style: TextStyle(
+                                          color:  currentIndexTab==3? Colors.white:Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 7,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+
+                                    currentIndexTab =4;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: currentIndexTab==4?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'intersted Event',
+                                      style: TextStyle(
+                                          color:  currentIndexTab==4? Colors.white:Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 7,),
+
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+
+                                    currentIndexTab =5;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: currentIndexTab==5?  HexColor('#FF9200'):Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child:  Center(
+                                    child: Text(
+                                      'Create',
+                                      style: TextStyle(
+                                          color:  currentIndexTab==5? Colors.white:Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10,),
+                            ],
                           ),
                         ),
                         gap(h: 15),
-                        Container(
-                          height: height * 0.8,
-                          width: double.infinity,
-                          child: ListView.builder(
-                            itemCount: 10,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                margin: spacing(horizontal: 15, vertical: 7),
-                                child: ClipRRect(
-                                  borderRadius: borderRadius(15),
-                                  child: Container(
-                                    color: white,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                            'assets/images/streamer.jpg'),
-                                        gap(h: 10),
-                                        Container(
-                                          margin: spacing(horizontal: 10),
-                                          child: Text(
-                                              'Cricket Match PSL 8 this year'),
-                                        ),
-                                        gap(h: 10),
-                                        Container(
-                                          margin: spacing(horizontal: 15),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                padding: spacing(
-                                                    horizontal: 10,
-                                                    vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  color: grayLight,
-                                                  borderRadius:
-                                                      borderRadius(width),
-                                                ),
-                                                child: Image.asset(
-                                                    'assets/new/icons/Calendar.png'),
-                                              ),
-                                              gap(w: 15),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '14 December, 2021',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: blackPrimary,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Tuesday, 4:00PM - 9:00PM',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: grayMed,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        gap(h: 10),
-                                        Container(
-                                          margin: spacing(horizontal: 15),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                padding: spacing(
-                                                    horizontal: 10,
-                                                    vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  color: grayLight,
-                                                  borderRadius:
-                                                      borderRadius(width),
-                                                ),
-                                                child: Image.asset(
-                                                    'assets/new/icons/location_event.png'),
-                                              ),
-                                              gap(w: 15),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    'Gala Convention Center',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: blackPrimary,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '36 Rot street, Los angeles',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: grayMed,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        gap(h: 15),
-                                        Container(
-                                          padding: spacing(
-                                              horizontal: 20, vertical: 12),
-                                          margin: spacing(
-                                              horizontal: 15, vertical: 5),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.centerRight,
-                                              end: Alignment.centerLeft,
-                                              colors: [
-                                                HexColor('#FF9200'),
-                                                HexColor('#FDBA31')
-                                              ],
-                                            ),
-                                            borderRadius: borderRadius(width),
-                                          ),
-                                          child: Text(
-                                            'Join Now',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: white,
-                                            ),
-                                          ),
-                                        ),
-                                        gap(h: 15),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        currentIndexTab ==0?
+                        BrowseEvents():Container(),
+                        currentIndexTab ==2?PastEvents():Container(),
+                        currentIndexTab ==1? MyEvents():Container(),
+                        currentIndexTab ==5? CreateEvetns():Container(),
+                        currentIndexTab==4?InterstedEvents(): Container(),
+                        currentIndexTab==3?EventsGoing(): Container(),
                       ],
                     ),
                   ),

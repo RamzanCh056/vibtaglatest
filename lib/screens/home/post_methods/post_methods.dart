@@ -5,14 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/provider/post_provider.dart';
-
+import 'package:vibetag/screens/home/post_types/post_poll.dart';
 import '../post_types/post_ads.dart';
 import '../post_types/post_blog.dart';
 import '../post_types/post_colored.dart';
 import '../post_types/post_event.dart';
 import '../post_types/post_photo.dart';
 import '../../../utils/constant.dart';
-import '../post_types/post_poll.dart';
 import '../post_types/post_product.dart';
 
 class PostMethods {
@@ -35,7 +34,7 @@ class PostMethods {
     if (homePostIds.length == 0) {
       isNoMorePostsHome = true;
     }
-    Provider.of<PostProvider>(context, listen: false).setPosts(posts);
+    Provider.of<PostProvider>(context, listen: false).setPostsWidgets(posts);
     getCategories();
   }
 
@@ -53,7 +52,7 @@ class PostMethods {
     if (homePostIds.length == 0) {
       isNoMorePostsHome = true;
     }
-    Provider.of<PostProvider>(context, listen: false).setPosts(posts);
+    Provider.of<PostProvider>(context, listen: false).setPostsWidgets(posts);
     getCategories();
   }
 
@@ -90,6 +89,7 @@ class PostMethods {
     };
     final result = await API().postData(data);
     loadedBuzzin = jsonDecode(result.body)['data'];
+    getPageCategories();
   }
 
   Future<void> reactOnPost({
@@ -102,7 +102,18 @@ class PostMethods {
       'user_id': loginUserId.toString(),
       'reaction': reactionValue,
     };
-    await API().postData(data);
+    final result = await API().postData(data);
+ 
+  }
+
+  getPageCategories() async {
+    final result = await API().postData({
+      'type': 'get_page_categories',
+      'user_id': loginUserId.toString(),
+    });
+
+    pageCategories = jsonDecode(result.body);
+    getCountries();
   }
 
   Future<void> removeReact({
@@ -176,6 +187,13 @@ class PostMethods {
     }
   }
 
+  Future<void> getCountries() async {
+    final result = await API().postData(
+      {'type': 'get_countries'},
+    );
+    countries = jsonDecode(result.body)['data'];
+  }
+
   List<Widget> setPosts({required List<dynamic> posts}) {
     List<Widget> _posts = [];
     if (posts.length > 0) {
@@ -185,7 +203,7 @@ class PostMethods {
             _posts.add(PostAds(
               post: posts[i],
             ));
-          } else if (posts[i]['poll_id'].toString() != '0') {
+          } else if (posts[i]['poll_id'].toString() != '0' && posts[i]['blog_id'] == '0') {
             _posts.add(PoolPost(
               post: posts[i],
             ));
@@ -246,5 +264,35 @@ class PostMethods {
     }
 
     return _posts;
+  }
+
+  Future<void> addVideoView(String postId) async {
+    await API().postData({
+      'type': 'posts_operations',
+      'sub_type': 'add_audio_video_views',
+      'user_id': '${loginUserId}',
+      'post_id': postId.toString(),
+    });
+  }
+
+  Future<void> savePost(String postId) async {
+    final response = await API().postData({
+      'type': 'posts_operations',
+      'sub_type': 'save_post',
+      'user_id': '${loginUserId}',
+      'post_id': postId.toString(),
+    });
+    ToastMessage(message: jsonDecode(response.body)['text']);
+  }
+
+  Future<void> reportPost(String postId, String reportText) async {
+    final response = await API().postData({
+      'type': 'reports',
+      'sub_type': 'report_post',
+      'user_id': '${loginUserId}',
+      'post_id': postId.toString(),
+      'text': '${reportText}'
+    });
+    ToastMessage(message: jsonDecode(response.body)['message']);
   }
 }

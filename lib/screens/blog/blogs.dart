@@ -55,10 +55,10 @@ class _BlogsState extends State<Blogs> {
                         const SizedBox(
                           height: 10,
                         ),
-                        SearchBar(
-                          hintText: 'Search Article',
-                          controller: search,
-                        ),
+                        // SearchBar(
+                        //   hintText: 'Search Article',
+                        //   controller: search,
+                        // ),
                         Container(
                           width: width,
                           height: height * 0.9,

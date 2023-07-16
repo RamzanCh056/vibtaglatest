@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/page/add_page.dart';
 import 'package:vibetag/screens/shop/my_product_widget.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
@@ -111,7 +111,7 @@ class _MyProductsState extends State<MyProducts> {
                                             ),
                                             Container(
                                               width: 15,
-                                              child: const SvgIcon(
+                                              child: SvgPicture.asset (
                                                 'assets/svg/chat/plus.svg',
                                                 color: Colors.white,
                                               ),

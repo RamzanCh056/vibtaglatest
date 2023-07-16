@@ -15,11 +15,6 @@ import '../../widgets/navbar.dart';
 import '../header/header.dart';
 import '../page/page.dart';
 import '../profile/profile.dart';
-import '../video_player/Single_video_player.dart';
-import '../video_player/video_player.dart';
-import '../video_player/video_player_landscap.dart';
-import 'my_playlist.dart';
-import 'other_playlist.dart';
 
 class PlayListScreen extends StatefulWidget {
   final Map<String, dynamic> playlist;
@@ -246,7 +241,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
     //       controller: videoController,
     //     ),
     //   );
-    //   print('++++++++++++++++++++++++++++++++++');
     // }
 
     return Scaffold(

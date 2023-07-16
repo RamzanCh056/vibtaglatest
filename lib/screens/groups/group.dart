@@ -8,8 +8,10 @@ import 'package:vibetag/methods/api.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/groups/Methods/group_methods.dart';
+import 'package:vibetag/screens/groups/group_members_screen.dart';
 import 'package:vibetag/screens/groups/post_tab_group.dart';
 import 'package:vibetag/screens/home/create_post/home_search.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/screens/home/widgets/home_tab_bar.dart';
 
 import '../header/header.dart';
@@ -35,7 +37,7 @@ class _GroupScreenState extends State<GroupScreen> {
   bool isLoading = false;
   List<Widget> aboutItems = [];
   bool isJoined = false;
-  int currentIndex = 1;
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -54,13 +56,15 @@ class _GroupScreenState extends State<GroupScreen> {
       'user_id': loginUserId,
     };
     final result = await API().postData(data);
+    await PostMethods().getPageCategories();
     group = jsonDecode(result.body)['group_data'];
     isJoined = group['is_joined'];
-
     addAboutItems();
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   joinGroup() async {
@@ -71,15 +75,6 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   addAboutItems() {
-    aboutItems.add(
-      AboutItems(
-        context: context,
-        iconsUrl: 'assets/new/icons/like_page.png',
-        leading: '${group['members_count']}',
-        itemName: 'Members',
-        haveIcon: true,
-      ),
-    );
     aboutItems.add(
       AboutItems(
         context: context,
@@ -94,7 +89,8 @@ class _GroupScreenState extends State<GroupScreen> {
         context: context,
         iconsUrl: 'assets/new/icons/Group.png',
         leading: '',
-        itemName: '${group['category']}',
+        itemName:
+            '${getPageCategory(int.parse(group['category_id'].toString()))}',
         haveIcon: true,
       ),
     );
@@ -160,68 +156,41 @@ class _GroupScreenState extends State<GroupScreen> {
                       ),
                     ),
                     gap(h: 10),
-                    Container(
-                      width: double.maxFinite,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            padding: spacing(
-                              horizontal: 40,
-                              vertical: 15,
+                    InkWell(
+                      onTap: () {
+                        pushRoute(
+                            context: context,
+                            screen: GroupMembersScreen(
+                              group_id: widget.group_id.toString(),
+                            ));
+                      },
+                      child: Container(
+                        padding: spacing(
+                          horizontal: 40,
+                          vertical: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: borderRadius(7),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '${getInK(number: int.parse(group['members_count'].toString()))}',
+                              style: TextStyle(
+                                color: blackPrimary,
+                                fontSize: 14,
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: borderRadius(7),
+                            Text(
+                              'Members',
+                              style: TextStyle(
+                                color: grayMed,
+                                fontSize: 10,
+                              ),
                             ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${getInK(number: int.parse(group['members_count'].toString()))}',
-                                  style: TextStyle(
-                                    color: blackPrimary,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  'Members',
-                                  style: TextStyle(
-                                    color: grayMed,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: spacing(
-                              horizontal: 40,
-                              vertical: 15,
-                            ),
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: borderRadius(7),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${getInK(number: int.parse(group['post_count'].toString()))}',
-                                  style: TextStyle(
-                                    color: blackPrimary,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  'Posts',
-                                  style: TextStyle(
-                                    color: grayMed,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     gap(h: 10),
@@ -466,7 +435,8 @@ class _GroupScreenState extends State<GroupScreen> {
                                                       width: 20,
                                                     ),
                                                     Text(
-                                                      '${group['group_title']}',
+                                                      setName(
+                                                          '${group['group_title']}'),
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -697,7 +667,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                         HomeTabBar(),
                                         Container(
                                           child: DefaultTabController(
-                                              initialIndex: 1,
+                                              initialIndex: currentIndex,
                                               length: 2,
                                               child: SingleChildScrollView(
                                                 child: Column(

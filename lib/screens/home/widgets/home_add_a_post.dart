@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 
 import '../../../utils/constant.dart';
 import '../../../widgets/post_option.dart';
@@ -154,7 +153,7 @@ Future<dynamic> Add_A_Post(
                                       children: [
                                         Container(
                                           width: width * 0.04,
-                                          child: const SvgIcon(
+                                          child: SvgPicture.asset (
                                             'assets/svg/post/world.svg',
                                           ),
                                         ),

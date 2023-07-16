@@ -1,10 +1,7 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/article/widgets.dart';
 import 'package:vibetag/screens/groups/groups.dart';
-import 'package:vibetag/screens/livestream/create%20stream/live.dart';
 import 'package:vibetag/screens/page/pages.dart';
 import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/product/recent_product.dart';
@@ -18,8 +15,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
 
 SetUpPopUp({required BuildContext context}) {
-  double width = deviceWidth(context: context);
-  double height = deviceHeight(context: context);
+  width = deviceWidth(context: context);
+  height = deviceHeight(context: context);
   return showBarModalBottomSheet(
     topControl: Container(),
     context: context,
@@ -326,8 +323,8 @@ setupPop({required BuildContext context}) {
 }
 
 MyVibes({required BuildContext context}) {
-  double width = deviceWidth(context: context);
-  double height = deviceHeight(context: context);
+  width = deviceWidth(context: context);
+  height = deviceHeight(context: context);
   return showBarModalBottomSheet(
     topControl: Container(),
     context: context,

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vibetag/screens/chat_screens/constants.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vibetag/utils/constant.dart';
+
+import '../screens/chat_screens/constants.dart';
 
 class API {
   postData(data) async {
@@ -58,6 +60,31 @@ class API {
     final result = await req.send();
     final response = await result.stream.bytesToString();
     return response;
+  }
+
+  Future multipleUploadRequest({
+    required List<XFile?> xfiles,
+    required String fieldName,
+    required Map<String, String> data,
+  }) async {
+    final uri = Uri.parse(API_Url);
+    try {
+      http.MultipartRequest request = http.MultipartRequest("POST", uri);
+      List<http.MultipartFile> multipartFile = [];
+      for (var file in xfiles) {
+        multipartFile.add(
+          await http.MultipartFile.fromPath(fieldName, file!.path),
+        );
+      }
+      request.files.addAll(multipartFile);
+      request.headers.addAll(_header());
+      request.fields.addAll(data);
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return jsonDecode(response.body);
+    } catch (e) {
+      return null;
+    }
   }
 
   getToken({
@@ -136,5 +163,12 @@ class API {
       print(e);
       return {'error': e};
     }
+  }
+
+  _header() {
+    return {
+      "Content-Type": "multipart/form-data",
+      'Authorization': 'Bearer ',
+    };
   }
 }

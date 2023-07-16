@@ -493,6 +493,7 @@ class _FilterScreenState extends State<FilterScreen> {
         },);
       },);
   }
+  TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -521,9 +522,16 @@ class _FilterScreenState extends State<FilterScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
+
+                      onChanged: (val) {
+                        setState(() {});
+                      },
+                      controller:search ,
                       decoration: InputDecoration(
                           hintText: "Search",
+
+
                           contentPadding: EdgeInsets.only(left: 10),
                           prefixIcon: Icon(Icons.search_outlined),
                           border: OutlineInputBorder(
@@ -572,255 +580,263 @@ class _FilterScreenState extends State<FilterScreen> {
               child: ListView.builder(
                   itemCount: findFriends.length,
                   itemBuilder: (_, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                height: 130,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF1EDED),
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        findFriends[index]['cover'],
-                                    ),
-                                    fit: BoxFit.cover
-                                  ),
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.vertical(
-                                    bottom: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 50,
-                                    ),
-                                    Text(
-                                      findFriends[index]['username'],
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                     findFriends[index]['working'],
-                                      style: TextStyle(
-                                          color: Color(0xFF485470),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.all(10),
-                                          alignment: Alignment.center,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.25,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Color(0xFFF8F9FB),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "Likes",
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                              findFriends[index]['total_likes'],
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.all(10),
-                                          alignment: Alignment.center,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.25,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Color(0xFFF8F9FB),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "Followers",
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "77",
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.all(10),
-                                          alignment: Alignment.center,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.25,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Color(0xFFF8F9FB),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "Following",
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "412",
-                                                style: TextStyle(
-                                                  color: Color(0xFF485470),
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            padding: EdgeInsets.all(16),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Color(0xFFFFC107),
-                                                  Color(0xFFFF8205),
-                                                ],
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "Follow",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            padding: EdgeInsets.all(17),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Color(0xFFFF8205),
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            child: Text(
-                                              "Message",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                color: Color(0xFFFF8205),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Positioned(
-                            top: 70,
-                            child: Container(
-                              padding: EdgeInsets.all(3),
-                              height: 120,
-                              width: 120,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+                    if ( findFriends[index]['username']
+                        .toLowerCase()
+                        .contains(search.text.toLowerCase())) {
+                      return   Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  height: 130,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF1EDED),
                                     image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: NetworkImage(
-                                          findFriends[index]['avatar']),
-                                    )),
+                                        image: NetworkImage(
+                                          findFriends[index]['cover'],
+                                        ),
+                                        fit: BoxFit.cover
+                                    ),
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.vertical(
+                                      bottom: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 50,
+                                      ),
+                                      Text(
+                                        findFriends[index]['username'],
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        findFriends[index]['working'],
+                                        style: TextStyle(
+                                            color: Color(0xFF485470),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            alignment: Alignment.center,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.25,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                              color: Color(0xFFF8F9FB),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "Likes",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  findFriends[index]['total_likes'],
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            alignment: Alignment.center,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.25,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                              color: Color(0xFFF8F9FB),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "Followers",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "77",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            alignment: Alignment.center,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.25,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                              color: Color(0xFFF8F9FB),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "Following",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "412",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF485470),
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              padding: EdgeInsets.all(16),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(15),
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color(0xFFFFC107),
+                                                    Color(0xFFFF8205),
+                                                  ],
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Follow",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              padding: EdgeInsets.all(17),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Color(0xFFFF8205),
+                                                ),
+                                                borderRadius:
+                                                BorderRadius.circular(15),
+                                              ),
+                                              child: Text(
+                                                "Message",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xFFFF8205),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                              top: 70,
+                              child: Container(
+                                padding: EdgeInsets.all(3),
+                                height: 120,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: Container(
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        fit: BoxFit.fitWidth,
+                                        image: NetworkImage(
+                                            findFriends[index]['avatar']),
+                                      )),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                          ],
+                        ),
+                      );
+                    }
+                    else {
+                      return Container();
+                    }
+
                   },
 
                ),

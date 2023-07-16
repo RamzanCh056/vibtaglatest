@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/blog/recent.dart';
 import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -481,7 +480,7 @@ class _PageScreen_OldState extends State<PageScreen_Old> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const TabBar(
+                                       TabBar(
                                         unselectedLabelColor:
                                             Color.fromARGB(255, 110, 107, 107),
                                         labelColor: Colors.orange,
@@ -491,36 +490,36 @@ class _PageScreen_OldState extends State<PageScreen_Old> {
                                         ),
                                         tabs: [
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/list-text.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/writing.svg'),
                                           ),
                                           Tab(
                                             icon:
-                                                SvgIcon('assets/svg/photo.svg'),
+                                                SvgPicture.asset('assets/svg/photo.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/play-button.svg'),
                                           ),
                                           Tab(
                                             icon:
-                                                SvgIcon('assets/svg/music.svg'),
+                                                SvgPicture.asset('assets/svg/music.svg'),
                                           ),
                                           Tab(
                                             icon:
-                                                SvgIcon('assets/svg/copy.svg'),
+                                                SvgPicture.asset('assets/svg/copy.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/position.svg'),
                                           ),
                                           Tab(
                                             icon:
-                                                SvgIcon('assets/svg/live.svg'),
+                                                SvgPicture.asset('assets/svg/live.svg'),
                                           ),
                                         ],
                                       ),
@@ -624,7 +623,7 @@ class _PageScreen_OldState extends State<PageScreen_Old> {
                                                   ),
                                                   Container(
                                                     width: width * 0.05,
-                                                    child: const SvgIcon(
+                                                    child:  SvgPicture.asset(
                                                       'assets/svg/globe.svg',
                                                       width: 16,
                                                     ),

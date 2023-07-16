@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:html_editor_enhanced/utils/utils.dart';
 import 'package:vibetag/utils/constant.dart';
 
 Widget followWidget({required List<dynamic> famousUsers}) {

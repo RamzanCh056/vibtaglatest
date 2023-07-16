@@ -10,8 +10,8 @@ Widget ShareOptions({
 }) {
   return Container(
     margin: spacing(
-      horizontal: 15,
-      vertical: 7,
+      horizontal: 7,
+      vertical: 3,
     ),
     padding: spacing(
       horizontal: 10,

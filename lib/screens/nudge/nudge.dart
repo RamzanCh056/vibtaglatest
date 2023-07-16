@@ -3,9 +3,9 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
+import 'package:vibetag/screens/header/header.dart';
 import 'package:vibetag/screens/nudge/you_nudge.dart';
 import 'package:vibetag/utils/constant.dart';
-import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'new_nudge.dart';
 

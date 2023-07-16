@@ -1,33 +1,48 @@
 import 'package:flutter/widgets.dart';
-import 'package:vibetag/screens/home/post_models/post_modal.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+
+import '../utils/constant.dart';
 
 class PostProvider with ChangeNotifier {
-  List<dynamic> _postModel = [];
+  List<Widget> _posts = [];
 
-  List<dynamic> get posts => _postModel;
+  List<Widget> get posts => _posts;
 
-  setPosts(List<dynamic> posts) {
-    _postModel = posts;
+  setPostsWidgets(List<dynamic> posts) {
+    List<Widget> postWidgets = PostMethods().setPosts(posts: posts);
+    _posts = postWidgets;
     notifyListeners();
+  }
+
+  filterPosts(List<dynamic> posts) {
+    List<dynamic> _allFilterPosts = [];
+    for (var post in posts) {
+      if (!(deletedPostIds.contains(post['id'].toString())) &&
+          !(hidePostIds.contains(post['id'].toString()))) {
+        _allFilterPosts.add(post);
+      }
+    }
+    setPostsWidgets(_allFilterPosts);
   }
 
   loadMorePosts(List<dynamic> posts) {
     if (posts.length > 0) {
       for (var i = 0; i < posts.length; i++) {
-        _postModel.add(posts[i]);
+        rawPostData.add(posts[i]);
       }
-      notifyListeners();
+      setPostsWidgets(rawPostData);
     }
   }
 
   clearAndSet(List<dynamic> posts) {
-    _postModel = [];
-    _postModel = posts;
+    _posts = [];
+    List<Widget> postWidgets = PostMethods().setPosts(posts: posts);
+    _posts = postWidgets;
     notifyListeners();
   }
 
   clear() {
-    _postModel = [];
+    _posts = [];
     notifyListeners();
   }
 }

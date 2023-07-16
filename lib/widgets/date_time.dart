@@ -85,28 +85,31 @@ class _DateTimePicterFieldState extends State<DateTimePicterField> {
             ),
             child: InkWell(
               onTap: () {
-                DatePicker.showDatePicker(context,
-                    showTitleActions: true,
-                    minTime: DateTime(0000, 01, 01),
-                    maxTime: DateTime.now(),
-                    theme: const DatePickerTheme(
-                        headerColor: Colors.orange,
-                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                        itemStyle: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                        doneStyle: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 16)), onChanged: (date) {
-                  print(
-                    'change $date in time zone ' +
-                        date.timeZoneOffset.inHours.toString(),
-                  );
-                },
-                    onConfirm: widget.onConfirm,
-                    currentTime: DateTime.now(),
-                    locale: LocaleType.en);
+                // DatePicker.showDatePicker(
+                //   context,
+                //   showTitleActions: true,
+                //   minTime: DateTime(0000, 01, 01),
+                //   maxTime: DateTime.now(),
+                //   // theme: DatePickerTheme(
+                //   //   headerColor: Colors.orange,
+                //   //   backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                //   //   itemStyle: TextStyle(
+                //   //       color: Color.fromARGB(255, 0, 0, 0),
+                //   //       fontWeight: FontWeight.bold,
+                //   //       fontSize: 18),
+                //   //   doneStyle: TextStyle(
+                //   //       color: Color.fromARGB(255, 0, 0, 0), fontSize: 16),
+                //   // ),
+                //   onChanged: (date) {
+                //     print(
+                //       'change $date in time zone ' +
+                //           date.timeZoneOffset.inHours.toString(),
+                //     );
+                //   },
+                //   onConfirm: widget.onConfirm,
+                //   currentTime: DateTime.now(),
+                //   // locale: LocaleType.en,
+                // );
               },
               child: widget.isSelected
                   ? Text(

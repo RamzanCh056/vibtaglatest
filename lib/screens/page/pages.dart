@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/page/page_old.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -128,7 +127,7 @@ class _PagesState extends State<Pages> {
                                             ),
                                             Container(
                                               width: 15,
-                                              child: const SvgIcon(
+                                              child: SvgPicture.asset (
                                                 'assets/svg/chat/plus.svg',
                                                 color: Colors.white,
                                               ),

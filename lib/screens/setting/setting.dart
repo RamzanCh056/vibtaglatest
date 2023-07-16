@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/blog/recent.dart';
 import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/widgets/footer.dart';

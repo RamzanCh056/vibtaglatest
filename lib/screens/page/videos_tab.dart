@@ -122,7 +122,7 @@ class _VideoTabState extends State<VideoTab> {
                         data: profileVideos[0]['postText'],
                         style: {
                           "body": Style(
-                            fontSize: const FontSize(12.0),
+                            fontSize:  FontSize(12.0),
                             textOverflow: TextOverflow.ellipsis,
                             color: Colors.black54,
                             maxLines: 3,
@@ -279,7 +279,7 @@ class _VideoTabState extends State<VideoTab> {
                                     data: profileVideos[i + 1]['postText'],
                                     style: {
                                       "body": Style(
-                                        fontSize: const FontSize(12.0),
+                                        fontSize:  FontSize(12.0),
                                         textOverflow: TextOverflow.ellipsis,
                                         color: Colors.black54,
                                         maxLines: 3,

@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/utils/constant.dart';
-import '../header/header.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 
+import '../header/header.dart';
 import '../home/comment/widget/post_comment_bar.dart';
 import '../home/widgets/revibe.dart';
 
 class EventDetail extends StatefulWidget {
-  const EventDetail({super.key});
+  EventDetail(this.events, this.curentIndex, {super.key});
+  var events = [];
+  var curentIndex;
 
   @override
   State<EventDetail> createState() => _EventDetailState();
@@ -88,8 +91,8 @@ class _EventDetailState extends State<EventDetail> {
                               Container(
                                 height: height * 0.3,
                                 width: double.infinity,
-                                child: Image.asset(
-                                  'assets/images/psl.png',
+                                child: Image.network(
+                                  widget.events[widget.curentIndex]['cover'],
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -181,10 +184,13 @@ class _EventDetailState extends State<EventDetail> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Cricket Match PSL 8 this year'),
+                              Text(
+                                widget.events[widget.curentIndex]['name'],
+                              ),
                               gap(h: 5),
                               Text(
-                                'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem dummy text ever since the 1500s... Read more',
+                                widget.events[widget.curentIndex]
+                                    ['description'],
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: grayMed,
@@ -211,14 +217,14 @@ class _EventDetailState extends State<EventDetail> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '14 December, 2021',
+                                          "${widget.events[widget.curentIndex]['start_date']} - ${widget.events[widget.curentIndex]['start_date']}",
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: blackPrimary,
                                           ),
                                         ),
                                         Text(
-                                          'Tuesday, 4:00PM - 9:00PM',
+                                          "${widget.events[widget.curentIndex]['start_time']} - ${widget.events[widget.curentIndex]['end_time']}",
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: grayMed,
@@ -250,14 +256,16 @@ class _EventDetailState extends State<EventDetail> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Gala Convention Center',
+                                          widget.events[widget.curentIndex]
+                                              ['location'],
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: blackPrimary,
                                           ),
                                         ),
                                         Text(
-                                          '36 Rot street, Los angeles',
+                                          widget.events[widget.curentIndex]
+                                              ['location'],
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: grayMed,
@@ -381,7 +389,11 @@ class _EventDetailState extends State<EventDetail> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Revibe(context: context);
+                                  createBottomModalSheet(
+                                      context: context,
+                                      screen: Revibe(
+                                        post: {},
+                                      ));
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,8 +449,10 @@ class _EventDetailState extends State<EventDetail> {
                                       padding: EdgeInsets.all(5.0),
                                       child: CircleAvatar(
                                         radius: width * 0.05,
-                                        foregroundImage: AssetImage(
-                                            'assets/images/streamer.jpg'),
+                                        foregroundImage: NetworkImage(
+                                          widget.events[widget.curentIndex]
+                                              ['user_data']['avatar'],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -447,7 +461,9 @@ class _EventDetailState extends State<EventDetail> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Gwen Stacy',
+                                      Text(
+                                          widget.events[widget.curentIndex]
+                                              ['user_data']['username'],
                                           style: TextStyle(
                                             fontSize: 12,
                                           )),
@@ -481,19 +497,30 @@ class _EventDetailState extends State<EventDetail> {
                             ],
                           ),
                         ),
-                        isLoading
-                            ? gap()
-                            : Container(
-                                height: height * 0.4,
-                                child: GoogleMap(
-                                  mapType: MapType.hybrid,
-                                  initialCameraPosition: _kGooglePlex,
-                                  onMapCreated:
-                                      (GoogleMapController controller) {
-                                    gcontroller.complete(controller);
-                                  },
-                                ),
-                              )
+                        SizedBox(
+                          height: 10,
+                        ),
+                        //   isLoading
+                        //   ? gap()
+                        //:
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Container(
+                            height: height * 0.4,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30)),
+                            child: GoogleMap(
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex,
+                              onMapCreated: (GoogleMapController controller) {
+                                gcontroller.complete(controller);
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                       ],
                     ),
                   ),

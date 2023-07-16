@@ -1,22 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import 'package:vibetag/methods/api.dart';
-import 'package:vibetag/screens/chat_screens/screen/Groups/group_list.dart';
-import 'package:vibetag/screens/chat_screens/screen/page_show.dart';
-import 'package:vibetag/screens/chat_screens/screen/pages/single_user_show.dart';
 import 'package:vibetag/screens/header/const.dart';
 import 'package:vibetag/screens/header/widget/new_search_filter_us.dart';
 import 'package:vibetag/screens/home/widgets/options.dart';
 
 import '../../utils/constant.dart';
 import '../chat_screens/constants.dart';
+import '../chat_screens/screen/Groups/group_list.dart';
+import '../chat_screens/screen/page_show.dart';
+import '../chat_screens/screen/pages/single_user_show.dart';
 import '../explore/explore.dart';
 
 class Header extends StatefulWidget {
+  bool shouldSearch;
   Header({
-    super.key,
-  });
+    Key? key,
+    this.shouldSearch = true,
+  }) : super(key: key);
 
   @override
   State<Header> createState() => _HeaderState();
@@ -24,7 +28,7 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
   bool showOptions = true;
-  bool showFilter = false;
+
   bool searchOptions = false;
   bool isLoading = false;
   TextEditingController keyword = TextEditingController();
@@ -58,16 +62,20 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
     }
     final result = await API().postData(data);
     response = jsonDecode(result.body);
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 3);
-    searchedText();
+    if (widget.shouldSearch) {
+      searchedText();
+    }
   }
 
   @override
@@ -86,12 +94,12 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: showOptions ? width * 0.75 : width * 0.95,
+                width: showSearchOption ? width * 0.95 : width * 0.75,
                 height: height * 0.05,
                 margin: spacing(horizontal: width * 0.025),
                 alignment: Alignment.bottomCenter,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: white,
                   borderRadius: BorderRadius.circular(
                     width * 0.1,
                   ),
@@ -103,7 +111,7 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                       top: 0,
                       bottom: 0,
                       child: Container(
-                        width: showOptions ? width * 0.55 : width * 0.9,
+                        width: showSearchOption ? width * 0.9 : width * 0.55,
                         child: TextFormField(
                           onTap: () {
                             showSearchOption = true;
@@ -117,7 +125,6 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                             if (e.position.dy > 118 || e.position.dy < 60) {
                               FocusScope.of(context).unfocus();
                               setState(() {
-                                showFilter = false;
                                 if (!showOptions) {
                                   showOptions = true;
                                 }
@@ -134,7 +141,7 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                             contentPadding: EdgeInsets.only(
                               top: 0,
                               bottom: 8,
-                              right: showFilter ? 130 : 10,
+                              right: 10,
                             ),
                             hintText: 'Search for anything',
                           ),
@@ -151,70 +158,12 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                         child: Image.asset('assets/new/icons/search.png'),
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: showOptions
-                          ? gap()
-                          : GestureDetector(
-                              onTap: () {
-                                pushRoute(
-                                  context: context,
-                                  screen: Explore(),
-                                );
-                                // setState(() {
-                                //   showFilter = true;
-                                //   showOptions = false;
-                                // });
-                                // SearchPopup(
-                                //   context: context,
-                                //   keyword: keyword.text,
-                                // );
-                              },
-                              child: Container(
-                                margin: spacing(
-                                  horizontal: 5,
-                                  vertical: 5,
-                                ),
-                                padding: spacing(
-                                  horizontal: 15,
-                                  vertical: 7,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: orange,
-                                  borderRadius: borderRadius(width),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 20,
-                                      child: Image.asset(
-                                        'assets/new/icons/filter_search.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    gap(w: 10),
-                                    Text(
-                                      'Filter',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: white,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                    ),
                   ],
                 ),
               ),
-              showOptions
-                  ? Container(
+              showSearchOption
+                  ? gap()
+                  : Container(
                       margin: EdgeInsets.only(
                         right: 10,
                       ),
@@ -253,16 +202,17 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                           ),
                         ],
                       ),
-                    )
-                  : gap(),
+                    ),
             ],
           ),
         ),
         showSearchOption
             ? Container(
                 height: height * 0.9,
+                color: white,
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
                         onTap: () {
@@ -274,7 +224,7 @@ class _HeaderState extends State<Header> with SingleTickerProviderStateMixin {
                             : NewSearchFilter(
                                 search: response,
                               ),
-                      )
+                      ),
                     ],
                   ),
                 ),

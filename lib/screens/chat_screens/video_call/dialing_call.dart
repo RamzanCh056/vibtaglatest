@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
-import 'package:vibetag/screens/chat_screens/video_call/incoming_call.dart';
 
 import '../../../methods/api.dart';
 import '../../../utils/constant.dart';

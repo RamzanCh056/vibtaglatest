@@ -39,12 +39,12 @@ BottomModalItems({
               child: Stack(
                 children: [
                   Container(
-                    width: width * 0.06,
-                    height: width * 0.06,
+                    width: 24,
+                    height: 24,
                     child: SvgPicture.asset(
                       iconPath,
-                      color: grayMed,
                       fit: BoxFit.cover,
+                      color: grayMed,
                     ),
                   ),
                   notifications != 0
@@ -87,7 +87,9 @@ BottomModalItems({
                 style: TextStyle(
                   color: bgColor != null ? white : blackPrimary,
                   overflow: TextOverflow.clip,
-                  fontSize: 16,
+                  fontSize: 15,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             )

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:svg_icon/svg_icon.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../utils/constant.dart';
 
@@ -33,7 +33,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.04,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/category.svg',
                           color: grayMed,
                         ),
@@ -42,7 +42,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/camera.svg',
                           color: grayMed,
                         ),
@@ -51,7 +51,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/live_stream.svg',
                           color: grayMed,
                         ),
@@ -60,7 +60,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/location.svg',
                           color: grayMed,
                         ),
@@ -69,7 +69,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/speaker.svg',
                           color: grayMed,
                         ),
@@ -78,7 +78,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/doc.svg',
                           color: grayMed,
                         ),
@@ -87,7 +87,7 @@ Widget HomeTabBar() {
                     Tab(
                       icon: Container(
                         width: width * 0.045,
-                        child: SvgIcon(
+                        child: SvgPicture.asset(
                           'assets/new/svg/live.svg',
                           color: grayMed,
                         ),

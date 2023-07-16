@@ -3,6 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import '../../utils/constant.dart';
 import '../../widgets/footer.dart';
+
 class OtherPlayList extends StatefulWidget {
   const OtherPlayList({Key? key}) : super(key: key);
 
@@ -24,7 +25,6 @@ class _OtherPlayListState extends State<OtherPlayList> {
     'assets/images/findvibe/findvibTwo.png',
   ];
 
-
   List<String> name = [
     'Cartoon Movies',
     'Full Harry Porter Movie',
@@ -40,12 +40,13 @@ class _OtherPlayListState extends State<OtherPlayList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-
             Container(
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black12, blurRadius: 6)
+                  ]),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +64,6 @@ class _OtherPlayListState extends State<OtherPlayList> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-
                   Container(
                     width: width,
                     height: height * 0.26,
@@ -87,37 +87,36 @@ class _OtherPlayListState extends State<OtherPlayList> {
                           ),
                           child: Column(
                             children: [
-                              Stack(children: [
-                                SizedBox(
-                                  height: height * 0.2,
-                                  width: 450,
-                                  child: ClipRRect(
-                                    borderRadius: borderRadius(
-                                      10,
-                                    ),
-                                    child: Image.asset(
-                                      images[index],
-                                      fit: BoxFit.cover,
+                              Stack(
+                                children: [
+                                  SizedBox(
+                                    height: height * 0.2,
+                                    width: 450,
+                                    child: ClipRRect(
+                                      borderRadius: borderRadius(
+                                        10,
+                                      ),
+                                      child: Image.asset(
+                                        images[index],
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const Positioned.fill(
-
-
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                        child: Text("12 Videos", style: TextStyle(color: Colors.white),)))
-                                
-                                
-
-                              ],),
-
+                                  const Positioned.fill(
+                                      child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text(
+                                            "12 Videos",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )))
+                                ],
+                              ),
                               SizedBox(
                                 height: height * 0.01,
                               ),
                               Expanded(
                                 child: Container(
-
                                   alignment: Alignment.topLeft,
                                   width: double.maxFinite,
                                   child: Text(
@@ -147,7 +146,9 @@ class _OtherPlayListState extends State<OtherPlayList> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black12, blurRadius: 6)
+                  ]),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +166,6 @@ class _OtherPlayListState extends State<OtherPlayList> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-
                   Container(
                     width: width,
                     height: height * 0.26,
@@ -189,37 +189,36 @@ class _OtherPlayListState extends State<OtherPlayList> {
                           ),
                           child: Column(
                             children: [
-                              Stack(children: [
-                                SizedBox(
-                                  height: height * 0.2,
-                                  width: 450,
-                                  child: ClipRRect(
-                                    borderRadius: borderRadius(
-                                      10,
-                                    ),
-                                    child: Image.asset(
-                                      LatesImages[index],
-                                      fit: BoxFit.cover,
+                              Stack(
+                                children: [
+                                  SizedBox(
+                                    height: height * 0.2,
+                                    width: 450,
+                                    child: ClipRRect(
+                                      borderRadius: borderRadius(
+                                        10,
+                                      ),
+                                      child: Image.asset(
+                                        LatesImages[index],
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const Positioned.fill(
-
-
-                                    child: Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Text("12 Videos", style: TextStyle(color: Colors.white),)))
-
-
-
-                              ],),
-
+                                  const Positioned.fill(
+                                      child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text(
+                                            "12 Videos",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )))
+                                ],
+                              ),
                               SizedBox(
                                 height: height * 0.01,
                               ),
                               Expanded(
                                 child: Container(
-
                                   alignment: Alignment.topLeft,
                                   width: double.maxFinite,
                                   child: Text(
@@ -249,7 +248,9 @@ class _OtherPlayListState extends State<OtherPlayList> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)]),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black12, blurRadius: 6)
+                  ]),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,12 +271,13 @@ class _OtherPlayListState extends State<OtherPlayList> {
                   const SizedBox(
                     height: 10,
                   ),
-
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                        child: Image.asset('assets/images/findvibe/Banner.png',)),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/images/findvibe/Banner.png',
+                        )),
                   ),
                   const SizedBox(
                     height: 15,
@@ -283,10 +285,7 @@ class _OtherPlayListState extends State<OtherPlayList> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            const AppFooter()
+            gap(h: 45),
           ],
         ),
       ),

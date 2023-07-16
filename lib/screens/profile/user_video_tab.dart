@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:vibetag/screens/profile/profile_video_timeline.dart';
 
 import 'package:vibetag/screens/video_player/page_video_player.dart';
 
@@ -70,66 +71,78 @@ class _UserVideoTabState extends State<UserVideoTab> {
                       child: profileVideos.length > 0
                           ? Column(
                               children: [
-                                Container(
-                                  margin: spacing(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
-                                  child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: borderRadius(10),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            height: height * 0.3,
-                                            width: double.maxFinite,
-                                            child: Center(
-                                              child: ClipRRect(
-                                                borderRadius: borderRadius(10),
-                                                child: Image.network(
-                                                    '${serverUrl}${profileVideos[0]['postFileThumb']}',
-                                                    fit: BoxFit.fitWidth),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 5,
-                                            left: 5,
-                                            child: Container(
-                                              padding: spacing(
-                                                  horizontal: 10, vertical: 5),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    Color.fromARGB(64, 0, 0, 0),
-                                                borderRadius: borderRadius(5),
-                                              ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 4),
-                                                    child: Icon(
-                                                      Icons.play_arrow_outlined,
-                                                      size: 16,
-                                                      color: white,
+                                InkWell(
+                                  onTap: () {
+                                    pushRoute(
+                                      context: context,
+                                      screen: ProfileVideoTimeline(
+                                          first: profileVideos[0],
+                                          posts: profileVideos),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: spacing(
+                                      horizontal: 10,
+                                      vertical: 10,
+                                    ),
+                                    child: Center(
+                                      child: ClipRRect(
+                                        borderRadius: borderRadius(10),
+                                        child: Stack(
+                                          children: [
+                                            profileVideos[0]['postFileThumb'] ==
+                                                    null
+                                                ? gap()
+                                                : ClipRRect(
+                                                    borderRadius:
+                                                        borderRadius(10),
+                                                    child: Image.network(
+                                                      '${serverUrl}${profileVideos[0]['postFileThumb']}',
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                  gap(w: 3),
-                                                  Text(
-                                                    '${getInK(number: int.parse(profileVideos[0]['videoViews']))}',
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color: whitePrimary,
+                                            Positioned(
+                                              bottom: 7,
+                                              left: 7,
+                                              child: Container(
+                                                padding: spacing(
+                                                    horizontal: 10,
+                                                    vertical: 5),
+                                                decoration: BoxDecoration(
+                                                  color: Color.fromARGB(
+                                                      64, 0, 0, 0),
+                                                  borderRadius: borderRadius(5),
+                                                  boxShadow: lightShadow,
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 4),
+                                                      child: Icon(
+                                                        Icons
+                                                            .play_arrow_outlined,
+                                                        size: 16,
+                                                        color: white,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                    gap(w: 3),
+                                                    Text(
+                                                      '${getInK(number: int.parse(profileVideos[0]['videoViews']))}',
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: whitePrimary,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -142,7 +155,7 @@ class _UserVideoTabState extends State<UserVideoTab> {
                                             data: profileVideos[0]['postText'],
                                             style: {
                                               "body": Style(
-                                                fontSize: const FontSize(12.0),
+                                                fontSize: FontSize(12.0),
                                                 textOverflow:
                                                     TextOverflow.ellipsis,
                                                 color: Colors.black54,
@@ -241,176 +254,224 @@ class _UserVideoTabState extends State<UserVideoTab> {
                                         childAspectRatio: 1,
                                       ),
                                       itemBuilder: (context, i) {
-                                        return Container(
-                                          color: whitePrimary,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Stack(
-                                                children: [
-                                                  Container(
-                                                    height: height * 0.13,
-                                                    child: Center(
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            borderRadius(10),
-                                                        child: Image.network(
-                                                            '${serverUrl}${profileVideos[i + 1]['postFileThumb']}'),
-                                                      ),
+                                        return i == (profileVideos.length - 2)
+                                            ? gap()
+                                            : InkWell(
+                                                onTap: () {
+                                                  pushRoute(
+                                                    context: context,
+                                                    screen:
+                                                        ProfileVideoTimeline(
+                                                      first:
+                                                          profileVideos[i + 1],
+                                                      posts: profileVideos,
                                                     ),
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 5,
-                                                    left: 5,
-                                                    child: Container(
-                                                      padding: spacing(
-                                                          horizontal: 10,
-                                                          vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                        color: Color.fromARGB(
-                                                            64, 0, 0, 0),
-                                                        borderRadius:
-                                                            borderRadius(5),
-                                                      ),
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  color: whitePrimary,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Stack(
                                                         children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 4),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .play_arrow_outlined,
-                                                              size: 16,
-                                                              color: white,
+                                                          profileVideos[i + 1][
+                                                                      'postFileThumb'] ==
+                                                                  null
+                                                              ? gap()
+                                                              : Container(
+                                                                  height:
+                                                                      height *
+                                                                          0.13,
+                                                                  child: Center(
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      borderRadius:
+                                                                          borderRadius(
+                                                                              10),
+                                                                      child: Image
+                                                                          .network(
+                                                                              '${serverUrl}${profileVideos[i + 1]['postFileThumb']}'),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                          Positioned(
+                                                            bottom: 5,
+                                                            left: 5,
+                                                            child: Container(
+                                                              padding: spacing(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        64,
+                                                                        0,
+                                                                        0,
+                                                                        0),
+                                                                borderRadius:
+                                                                    borderRadius(
+                                                                        5),
+                                                              ),
+                                                              child: Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        bottom:
+                                                                            4),
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .play_arrow_outlined,
+                                                                      size: 16,
+                                                                      color:
+                                                                          white,
+                                                                    ),
+                                                                  ),
+                                                                  gap(w: 3),
+                                                                  Text(
+                                                                    profileVideos[i +
+                                                                                1]['videoViews'] !=
+                                                                            null
+                                                                        ? '${getInK(number: int.parse(profileVideos[i + 1]['videoViews']))}'
+                                                                        : '0',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          10,
+                                                                      color:
+                                                                          whitePrimary,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                          gap(w: 3),
-                                                          Text(
-                                                            profileVideos[i + 1]
-                                                                        [
-                                                                        'videoViews'] !=
-                                                                    null
-                                                                ? '${getInK(number: int.parse(profileVideos[i + 1]['videoViews']))}'
-                                                                : '0',
-                                                            style: TextStyle(
-                                                              fontSize: 10,
-                                                              color:
-                                                                  whitePrimary,
-                                                            ),
-                                                          ),
+                                                          )
                                                         ],
                                                       ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              gap(h: 10),
-                                              Container(
-                                                width: width * 0.45,
-                                                padding:
-                                                    spacing(horizontal: 10),
-                                                child: profileVideos[i + 1]
-                                                            ['postText'] !=
-                                                        null
-                                                    ? Html(
-                                                        data:
-                                                            profileVideos[i + 1]
-                                                                ['postText'],
-                                                        style: {
-                                                          "body": Style(
-                                                            fontSize:
-                                                                const FontSize(
-                                                                    12.0),
-                                                            textOverflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            color:
-                                                                Colors.black54,
-                                                            maxLines: 3,
-                                                          ),
-                                                        },
+                                                      gap(h: 10),
+                                                      Container(
+                                                        width: width * 0.45,
+                                                        padding: spacing(
+                                                            horizontal: 10),
+                                                        child: profileVideos[
+                                                                        i + 1][
+                                                                    'postText'] !=
+                                                                null
+                                                            ? Html(
+                                                                data: profileVideos[
+                                                                        i + 1][
+                                                                    'postText'],
+                                                                style: {
+                                                                  "body": Style(
+                                                                    fontSize:
+                                                                         FontSize(
+                                                                            12.0),
+                                                                    textOverflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    maxLines: 3,
+                                                                  ),
+                                                                },
+                                                              )
+                                                            : gap(),
+                                                      ),
+                                                      gap(h: 10),
+                                                      Padding(
+                                                        padding: spacing(
+                                                            horizontal: 10),
+                                                        child: Row(
+                                                          children: [
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Container(
+                                                                  width: width *
+                                                                      0.03,
+                                                                  height:
+                                                                      width *
+                                                                          0.03,
+                                                                  child: Image
+                                                                      .asset(
+                                                                    'assets/new/icons/heart.png',
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                profileVideos[i +
+                                                                                1]
+                                                                            [
+                                                                            'post_likes'] !=
+                                                                        null
+                                                                    ? Text(
+                                                                        '${getInK(number: int.parse(profileVideos[i + 1]['post_likes']))}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              10,
+                                                                          color:
+                                                                              grayMed,
+                                                                        ),
+                                                                      )
+                                                                    : gap(),
+                                                              ],
+                                                            ),
+                                                            gap(w: 10),
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Container(
+                                                                  width: width *
+                                                                      0.03,
+                                                                  height:
+                                                                      width *
+                                                                          0.03,
+                                                                  child: Image
+                                                                      .asset(
+                                                                    'assets/new/icons/comment.png',
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                profileVideos[i +
+                                                                                1]
+                                                                            [
+                                                                            'post_comments'] !=
+                                                                        null
+                                                                    ? Text(
+                                                                        '${getInK(number: int.parse(profileVideos[i + 1]['post_comments']))}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              10,
+                                                                          color:
+                                                                              grayMed,
+                                                                        ),
+                                                                      )
+                                                                    : gap(),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       )
-                                                    : gap(),
-                                              ),
-                                              gap(h: 10),
-                                              Padding(
-                                                padding:
-                                                    spacing(horizontal: 10),
-                                                child: Row(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          width: width * 0.03,
-                                                          height: width * 0.03,
-                                                          child: Image.asset(
-                                                            'assets/new/icons/heart.png',
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
-                                                        profileVideos[i + 1][
-                                                                    'post_likes'] !=
-                                                                null
-                                                            ? Text(
-                                                                '${getInK(number: int.parse(profileVideos[i + 1]['post_likes']))}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 10,
-                                                                  color:
-                                                                      grayMed,
-                                                                ),
-                                                              )
-                                                            : gap(),
-                                                      ],
-                                                    ),
-                                                    gap(w: 10),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          width: width * 0.03,
-                                                          height: width * 0.03,
-                                                          child: Image.asset(
-                                                            'assets/new/icons/comment.png',
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
-                                                        profileVideos[i + 1][
-                                                                    'post_comments'] !=
-                                                                null
-                                                            ? Text(
-                                                                '${getInK(number: int.parse(profileVideos[i + 1]['post_comments']))}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 10,
-                                                                  color:
-                                                                      grayMed,
-                                                                ),
-                                                              )
-                                                            : gap(),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        );
+                                              );
                                       }),
                                 )
                               ],

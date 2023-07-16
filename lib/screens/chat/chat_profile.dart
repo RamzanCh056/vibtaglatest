@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/widgets/media_library.dart';
 import 'package:vibetag/screens/chat/chat_Tile.dart';
 import 'package:vibetag/widgets/select_field.dart';

@@ -5,6 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vibetag/screens/home/post_constants.dart';
 
 import 'package:vibetag/screens/home/post_types/post_file.dart';
 import 'package:vibetag/screens/home/post_types/widgets/post_bar.dart';
@@ -33,6 +34,8 @@ class _PostAdsState extends State<PostAds> {
   String responseData = '';
   int totalLikes = 0;
   int userLike = 0;
+  bool isSeeMore = false;
+  String seeMoreText = 'See more';
 
   void reactOnPost() async {
     setState(() {
@@ -96,28 +99,19 @@ class _PostAdsState extends State<PostAds> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: width * 0.12,
-                        height: width * 0.12,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius(width),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                orangePrimary,
-                                graySecondary,
-                              ],
-                            )),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          radius: width * 0.06,
-                          foregroundImage: NetworkImage(
-                            widget.post['dp'].contains(serverUrl)
-                                ? widget.post['dp']
-                                : '${serverUrl}${widget.post['dp']}',
+                      ClipRRect(
+                        borderRadius: borderRadius(width),
+                        child: Container(
+                          width: width * 0.12,
+                          height: width * 0.12,
+                          padding: spacing(
+                            horizontal: 2,
+                            vertical: 2,
                           ),
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius(width),
+                          ),
+                          child: netImage(widget.post['dp']),
                         ),
                       ),
                       const SizedBox(
@@ -127,20 +121,19 @@ class _PostAdsState extends State<PostAds> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          profileName(
                             widget.post['name'],
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: blackPrimary,
-                            ),
                           ),
                           Text(
-                            'sponsorsd',
+                            'Sponsored',
                             style: TextStyle(
-                              color: grayMed,
-                              fontSize: 10,
+                              color: orangePrimary,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Manrope',
                             ),
-                          )
+                          ),
                         ],
                       )
                     ],
@@ -150,9 +143,12 @@ class _PostAdsState extends State<PostAds> {
                       createBottomModalSheet(
                         context: context,
                         screen: PostBottomBar(
+                          post: widget.post,
                           is_publisher:
                               widget.post['publisher']['user_id'].toString() ==
-                                  loginUserId,
+                                      loginUserId
+                                  ? true
+                                  : false,
                         ),
                       );
                     },
@@ -169,23 +165,40 @@ class _PostAdsState extends State<PostAds> {
             ),
             gap(h: 10),
             Html(
-              data: widget.post['description'],
-              onAnchorTap: (str, rndr, map, e) {
-                pushRoute(
-                  context: context,
-                  screen: HashTrend(
-                      hashTag: e!.text.toString().contains('#')
-                          ? e.text.toString().replaceFirst(RegExp(r'#'), '')
-                          : e.text.toString()),
-                );
+              data: widget.post['description'].toString().length < 180
+                  ? widget.post['description']
+                  : isSeeMore
+                      ? '${widget.post['description']}  <a href="#"><strong style="color:blue;font-size:13px;"><b>${seeMoreText}</b></strong></a>'
+                      : '${widget.post['description'].toString().substring(0, 150)}  <a href="#"><strong style="color:blue;font-size:13px;"><b>${seeMoreText}</b></strong></a>',
+              onAnchorTap: (str, map, e) {
+                if (e!.text.toString() == 'See less' ||
+                    e.text.toString() == 'See more') {
+                  isSeeMore = !isSeeMore;
+                  seeMoreText = isSeeMore ? 'See less' : 'See more';
+                  setState(() {});
+                } else {
+                  pushRoute(
+                    context: context,
+                    screen: HashTrend(
+                        hashTag: e.text.toString().contains('#')
+                            ? e.text.toString().replaceFirst(RegExp(r'#'), '')
+                            : e.text.toString()),
+                  );
+                }
               },
               style: {
                 "body": Style(
-                  fontSize: FontSize(12.0),
-                  textOverflow: TextOverflow.ellipsis,
-                  color: Colors.black54,
-                  maxLines: 3,
-                ),
+                    fontSize: FontSize(14.0),
+                    textOverflow: TextOverflow.ellipsis,
+                    color: lightblue,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Manrope',
+                    maxLines: isSeeMore
+                        ? widget.post['Orginaltext'].toString().length % 60
+                        : 3),
+               'a': Style(
+                  color: orangePrimary,
+                )
               },
             ),
             Stack(

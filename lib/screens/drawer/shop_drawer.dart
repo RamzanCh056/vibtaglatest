@@ -4,7 +4,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/screens/shop/cart.dart';
-import 'package:vibetag/screens/find_friends_old/find_friends.dart';
 import 'package:vibetag/screens/drawer/drawer_item.dart';
 import 'package:vibetag/screens/shop/drop_down_list.dart';
 

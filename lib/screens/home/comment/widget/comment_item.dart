@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+import 'package:vibetag/screens/hast_tag/tred_screen.dart';
 
 import 'package:vibetag/screens/home/comment/widget/edit_comment.dart';
 import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
@@ -114,11 +114,12 @@ class _CommentWidgetState extends State<CommentWidget> {
                             ],
                           ),
                         ),
-                        gap(w: 10),
+                        gap(w: 5),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: width * 0.7,
+                              width: width * 0.75,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -153,7 +154,41 @@ class _CommentWidgetState extends State<CommentWidget> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        gap(h: 10),
+                                        Container(
+                                          width: width * 0.6,
+                                          margin: spacing(vertical: 3),
+                                          child: Html(
+                                            data: widget.comment['text'],
+                                            onAnchorTap: (str, map, e) {
+                                              print(widget.comment['text']);
+                                              pushRoute(
+                                                context: context,
+                                                screen: HashTrend(
+                                                    hashTag: e!.text
+                                                            .toString()
+                                                            .contains('#')
+                                                        ? e.text
+                                                            .toString()
+                                                            .replaceFirst(
+                                                                RegExp(r'#'),
+                                                                '')
+                                                        : e.text.toString()),
+                                              );
+                                            },
+                                            style: {
+                                              "body": Style(
+                                                fontSize: FontSize(12.0),
+                                                textOverflow:
+                                                    TextOverflow.ellipsis,
+                                                color: Colors.black54,
+                                                maxLines: 3,
+                                              ),
+                                            },
+                                          ),
+                                        ),
+                                        widget.comment['c_file'] != ''
+                                            ? gap(h: 5)
+                                            : gap(),
                                         widget.comment['c_file'] != ''
                                             ? Container(
                                                 width: width * 0.6,
@@ -167,41 +202,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                                 ),
                                               )
                                             : gap(),
-                                        Container(
-                                          width: width * 0.6,
-                                          margin: spacing(vertical: 3),
-                                          child: Html(
-                                            data: widget.comment['text'],
-                                            onAnchorTap: (str, rndr, map, e) {
-                                              print(str);
-                                              print(widget.comment['text']);
-                                              print(map);
-                                              // pushRoute(
-
-                                              //   context: context,
-                                              //   screen: HashTrend(
-                                              //       hashTag: e!.text
-                                              //               .toString()
-                                              //               .contains('#')
-                                              //           ? e.text
-                                              //               .toString()
-                                              //               .replaceFirst(
-                                              //                   RegExp(r'#'),
-                                              //                   '')
-                                              //           : e.text.toString()),
-                                              // );
-                                            },
-                                            style: {
-                                              "body": Style(
-                                                fontSize: FontSize(12.0),
-                                                textOverflow:
-                                                    TextOverflow.ellipsis,
-                                                color: Colors.black54,
-                                                maxLines: 3,
-                                              ),
-                                            },
-                                          ),
-                                        ),
+                                            gap(h: 7),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,

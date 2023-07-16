@@ -275,7 +275,7 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
                                           child) {
                                         //Do Something with the value.
                                         return Text(
-                                          '${value.position.inHours}:${value.position.inMinutes}:${value.position.inSeconds}',
+                                          '${value.position.inHours}:${value.position.inMinutes % 60}:${value.position.inSeconds % 60}',
                                           style: TextStyle(
                                             color: white,
                                           ),
@@ -283,7 +283,7 @@ class _SingleVideoPlayerState extends State<SingleVideoPlayer> {
                                       },
                                     ),
                                     Text(
-                                      ' / ${widget.controller.value.duration.inHours}:${widget.controller.value.duration.inMinutes}:${widget.controller.value.duration.inSeconds}',
+                                      ' / ${widget.controller.value.duration.inHours}:${widget.controller.value.duration.inMinutes%60}:${widget.controller.value.duration.inSeconds % 60}',
                                       style: TextStyle(
                                         color: white,
                                       ),

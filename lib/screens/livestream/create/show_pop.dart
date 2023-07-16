@@ -31,10 +31,10 @@ class _ShowStreamPopState extends State<ShowStreamPop> {
           children: [
             InkWell(
               onTap: () {
-                createBottomModalSheet(
-                  context: context,
-                  screen: CreatePost(),
-                );
+                // createBottomModalSheet(
+                //   context: context,
+                //   screen: CreatePost(),
+                // );
               },
               child: Container(
                 padding: spacing(

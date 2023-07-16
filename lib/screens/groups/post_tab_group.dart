@@ -43,7 +43,7 @@ class _PostTabGroupState extends State<PostTabGroup> {
     });
     final data = {
       'type': 'get_group_posts',
-      'group_profile_id': '20',
+      'group_profile_id': '${widget.group_id}',
       'user_id': loginUserId,
       'after_post_id': lastPostId,
     };
@@ -61,7 +61,6 @@ class _PostTabGroupState extends State<PostTabGroup> {
         }
       }
     }
-    print(lastPostId);
     if (newPosts.length == 0) {
       isNoMore = true;
     }
@@ -76,13 +75,10 @@ class _PostTabGroupState extends State<PostTabGroup> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
-    Map<String, dynamic> user = Provider.of<UserProvider>(context, listen: false).user;
+    Map<String, dynamic> user =
+        Provider.of<UserProvider>(context, listen: false).user;
     return isLoading
         ? loadingSpinner()
         : Container(
@@ -95,7 +91,7 @@ class _PostTabGroupState extends State<PostTabGroup> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                createPost(user),
+                // createPost(user),
                 Column(
                   children: posts,
                 ),

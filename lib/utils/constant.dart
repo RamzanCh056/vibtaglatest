@@ -12,9 +12,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
-
+import 'package:path/path.dart' as p;
 import '../methods/api.dart';
-import '../screens/chat_screens/video_call/video_call.dart';
 
 double deviceWidth({required BuildContext context}) {
   return MediaQuery.of(context).size.width;
@@ -83,9 +82,11 @@ Gradient gradient = LinearGradient(
 );
 String loginUserId = '';
 List<dynamic> following_data = [];
+List<dynamic> followers_data = [];
 List<dynamic> likes_data = [];
 List<dynamic> groups_data = [];
 List<dynamic> loadedBuzzin = [];
+Map<String, dynamic> countries = {};
 double deviceHeight({required BuildContext context}) {
   return MediaQuery.of(context).size.height -
       MediaQuery.of(context).padding.top;
@@ -143,6 +144,19 @@ Future<XFile?> pickImage() async {
     return image;
   }
   return null;
+}
+
+Future<List<XFile?>> pickMultipleImage() async {
+  final ImagePicker _picker = ImagePicker();
+  List<XFile?> image = await _picker.pickMultiImage();
+  if (image != null) {
+    List<XFile?> paths = [];
+    for (var imagePath in image) {
+      paths.add(imagePath);
+    }
+    return paths;
+  }
+  return [];
 }
 
 Future<XFile?> pickImageCamera() async {
@@ -215,23 +229,27 @@ String readTimestamp(int timestamp) {
   var date = DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
   var diff = date.difference(now);
   var time = '';
+  return DateFormat('hh:mm a')
+      .format(DateTime.fromMillisecondsSinceEpoch(int.parse(
+            timestamp.toString(),
+          ) *
+          1000));
+  // if (diff.inSeconds <= 0 ||
+  //     diff.inSeconds > 0 && diff.inMinutes == 0 ||
+  //     diff.inMinutes > 0 && diff.inHours == 0 ||
+  //     diff.inHours > 0 && diff.inDays == 0) {
+  //   DateTime setDate = DateTime.parse(date.toString());
 
-  if (diff.inSeconds <= 0 ||
-      diff.inSeconds > 0 && diff.inMinutes == 0 ||
-      diff.inMinutes > 0 && diff.inHours == 0 ||
-      diff.inHours > 0 && diff.inDays == 0) {
-    DateTime setDate = DateTime.parse(date.toString());
+  //   time = setDate.hour.toString() + ' hr';
+  // } else {
+  //   if (diff.inDays == 1) {
+  //     time = diff.inDays.toString() + ' day';
+  //   } else {
+  //     time = diff.inDays.toString() + ' days';
+  //   }
+  // }
 
-    time = setDate.hour.toString() + ' hr';
-  } else {
-    if (diff.inDays == 1) {
-      time = diff.inDays.toString() + ' day';
-    } else {
-      time = diff.inDays.toString() + ' days';
-    }
-  }
-
-  return time;
+  // return time;
 }
 
 Widget titleForDialog(BuildContext context, String title) {
@@ -304,6 +322,7 @@ bool isNoMorePostsHome = false;
 List<String> homePostIds = [];
 List<String> homePostAdsIds = [];
 List<String> playlistCategories = [];
+List<dynamic> pageCategories = [];
 List<String> playlistColors = [];
 
 double width = 0.0;
@@ -460,7 +479,7 @@ String getFullLink(String link) {
   return link.contains(serverUrl) ? link : '${serverUrl}${link}';
 }
 
-netImage(String url) {
+Widget netImage(String url) {
   if (url == '') {
     return Image.asset(
       'assets/placeholder.jpg',
@@ -470,10 +489,18 @@ netImage(String url) {
 
   return FadeInImage.assetNetwork(
     placeholder: 'assets/placeholder.jpg',
-    image: url.contains(serverUrl) ? url : '${serverUrl}${url}',
+    image: getFullLink(url),
     fit: BoxFit.fill,
+    placeholderFit: BoxFit.fill,
     imageErrorBuilder: (context, error, stackTrace) {
-      return Text('Image');
+      return Container(
+        child: Center(
+          child: Icon(
+            Icons.image,
+            size: 48,
+          ),
+        ),
+      );
     },
   );
 }
@@ -519,4 +546,67 @@ updateToken() async {
   };
   await API().postData(data);
 }
-bool isEnabledCallEvents=false;
+
+bool isEnabledCallEvents = false;
+
+TextEditingController revibeText = TextEditingController();
+
+String setInTwoNumber(int number) {
+  return number < 10 ? '0${number}' : '${number}';
+}
+
+String getPageCategory(int categoryId) {
+  String categoryText = 'History and Facts';
+  for (var category in pageCategories) {
+    if (category['value'].toString() == categoryId.toString()) {
+      categoryText = category['label'];
+      return categoryText;
+    }
+  }
+  return categoryText;
+}
+
+bool togglePlayers = false;
+String formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return '$twoDigitMinutes:$twoDigitSeconds';
+}
+
+String getRandomString(int len) {
+  var r = Random();
+  const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+}
+
+bool IsImage(String fileLink) {
+  String fileExtension = p.extension(fileLink);
+  return fileExtension == '.jpg' ||
+          fileExtension == '.png' ||
+          fileExtension == '.jpeg' ||
+          fileExtension == '.webp' ||
+          fileExtension == '.gif'
+      ? true
+      : false;
+}
+
+List<String> deletedPostIds = [];
+List<String> hidePostIds = [];
+List<dynamic> rawPostData = [];
+List<String> postReports = [
+  'I just do not like it',
+  'Nudity or pornography',
+  'Hate speech or symbols',
+  'Violence or threat of violence',
+  'Sale or promotion of firearms',
+  'Sale or promotion of drugs',
+  'Harassment or bullying',
+  'Intellectual property violation',
+  'Self injury',
+];
+
+Widget assetImage(String path) {
+  return Image.asset(path);
+}

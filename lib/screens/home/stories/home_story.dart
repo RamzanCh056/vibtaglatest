@@ -53,17 +53,21 @@ class _AddStroyState extends State<AddStroy> {
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       tempList = body['data'];
-      setState(() {
-        tempList;
-      });
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          tempList;
+        });
+        setState(() {
+          isLoading = false;
+        });
+      }
     } else {
       print(response.reasonPhrase);
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -323,17 +327,20 @@ class _AddStroyState extends State<AddStroy> {
                 right: 0,
                 child: Container(
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        width * 0.015,
-                      ),
-                      child:
-                          // isLoading
-                          //     ? Image.network(
-                          //         widget.user.avatar!,
-                          //         fit: BoxFit.cover,
-                          //       )
-                          // :
-                          netImage(tempList[index]['thumbnail'].toString(),),),
+                    borderRadius: BorderRadius.circular(
+                      width * 0.015,
+                    ),
+                    child:
+                        // isLoading
+                        //     ? Image.network(
+                        //         widget.user.avatar!,
+                        //         fit: BoxFit.cover,
+                        //       )
+                        // :
+                        netImage(
+                      tempList[index]['thumbnail'].toString(),
+                    ),
+                  ),
                 )),
             Positioned.fill(
                 child: Align(

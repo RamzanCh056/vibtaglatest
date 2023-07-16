@@ -1,337 +1,234 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+import 'package:vibetag/screens/page/review_widget.dart';
+
 import '../../utils/constant.dart';
 
-Widget ReviewTab({required BuildContext context}) {
-  double width = deviceWidth(context: context);
-  double height = deviceHeight(context: context);
-  return Container(
-    width: width,
-    height: height * 0.7,
-    color: backgroundColor,
-    child: Column(
-      children: [
-        gap(h: 10),
-        Container(
-          height: height * 0.1,
-          margin: spacing(
-            horizontal: 7,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: borderRadius(7),
-            color: white,
-          ),
-          child: Center(
-            child: Table(
-              border: TableBorder(
-                verticalInside: BorderSide(
-                  width: 1,
-                  color: grayMed,
-                ),
-              ),
-              children: [
-                TableRow(
+class PageReviews extends StatefulWidget {
+  final String page_id;
+  const PageReviews({
+    Key? key,
+    required this.page_id,
+  }) : super(key: key);
+
+  @override
+  State<PageReviews> createState() => _PageReviewsState();
+}
+
+class _PageReviewsState extends State<PageReviews> {
+  List<dynamic> reviews = [];
+  List<Widget> reviewWidgets = [];
+  bool isLoading = false;
+  int totalReviews = 0;
+  @override
+  void initState() {
+    super.initState();
+    getPageReviews();
+  }
+
+  getPageReviews() async {
+    setState(() {
+      isLoading = true;
+    });
+    final data = {
+      'type': 'get_page_rating',
+      'action': 'get_page_reviews',
+      'page_id': widget.page_id,
+      'limit': '10',
+    };
+    final result = await API().postData(data);
+    reviews = jsonDecode(result.body)['data'];
+    await PostMethods().getCountries();
+
+    print(reviews);
+    for (var review in reviews) {
+      if (review['valuation'] != null) {
+        totalReviews += int.parse(review['valuation'].toString());
+      }
+      reviewWidgets.add(
+        ReviewWiget(review: review),
+      );
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? loadingSpinner()
+        : reviews.length == 0
+            ? Center(
+                child: Text('No review yet'),
+              )
+            : Container(
+                width: width,
+                height: height * 0.7,
+                color: backgroundColor,
+                child: Column(
                   children: [
-                    TableCell(
-                      child: Column(
-                        children: [
-                          Text(
-                            'Positive Seller',
-                            style: TextStyle(
-                              color: blackLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                          gap(h: 7),
-                          const Text(
-                            '70%',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
+                    gap(h: 10),
+                    Container(
+                      height: height * 0.1,
+                      margin: spacing(
+                        horizontal: 7,
                       ),
-                    ),
-                    TableCell(
-                      child: Column(
-                        children: [
-                          Text(
-                            'Ship on Time',
-                            style: TextStyle(
-                              color: blackLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                          gap(h: 7),
-                          const Text(
-                            '91%',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius(7),
+                        color: white,
                       ),
-                    ),
-                    TableCell(
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      child: Center(
+                        child: Table(
+                          border: TableBorder(
+                            verticalInside: BorderSide(
+                              width: 1,
+                              color: grayMed,
+                            ),
+                          ),
                           children: [
-                            Text(
-                              'Response Rate',
-                              style: TextStyle(
-                                color: blackLight,
-                                fontSize: 12,
-                              ),
-                            ),
-                            gap(h: 7),
-                            const Text(
-                              '100%',
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
+                            TableRow(
+                              children: [
+                                TableCell(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Positive Seller',
+                                        style: TextStyle(
+                                          color: blackLight,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      gap(h: 7),
+                                      const Text(
+                                        '70%',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Ship on Time',
+                                        style: TextStyle(
+                                          color: blackLight,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      gap(h: 7),
+                                      const Text(
+                                        '91%',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          'Response Rate',
+                                          style: TextStyle(
+                                            color: blackLight,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        gap(h: 7),
+                                        const Text(
+                                          '100%',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        gap(h: 10),
-        Container(
-          height: height * 0.07,
-          margin: spacing(
-            horizontal: 7,
-          ),
-          padding: spacing(
-            horizontal: 10,
-            vertical: 5,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: borderRadius(7),
-            color: white,
-          ),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: orangePrimary,
-                      size: 32,
-                    ),
-                    gap(w: 5),
-                    const Text(
-                      '4.9',
-                      style: TextStyle(
-                        fontSize: 20,
+                    gap(h: 10),
+                    Container(
+                      height: height * 0.07,
+                      margin: spacing(
+                        horizontal: 7,
+                      ),
+                      padding: spacing(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius(7),
+                        color: white,
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: orangePrimary,
+                                  size: 32,
+                                ),
+                                gap(w: 5),
+                                Text(
+                                  reviews.length > 0
+                                      ? double.parse(
+                                              ((totalReviews / reviews.length))
+                                                  .toStringAsFixed(1))
+                                          .toString()
+                                      : '0',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  '/5.0',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: blackLight,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Text(
+                              '${reviews.length} Reviews',
+                              style: TextStyle(
+                                color: blackLight,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    Text(
-                      '/5.0',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: blackLight,
+                    gap(h: 10),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: reviewWidgets,
                       ),
                     )
                   ],
                 ),
-                Text(
-                  '33 Reviews',
-                  style: TextStyle(
-                    color: blackLight,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        gap(h: 10),
-        Container(
-          margin: spacing(
-            horizontal: 7,
-          ),
-          padding: spacing(
-            horizontal: 10,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: borderRadius(7),
-            color: white,
-          ),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: height * 0.1,
-                  width: double.maxFinite,
-                  alignment: Alignment.centerLeft,
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          const AssetImage('assets/new/images/user.png'),
-                      radius: height * 0.045,
-                    ),
-                    title: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Mark Henry',
-                          style: TextStyle(
-                            fontSize: 13,
-                          ),
-                        ),
-                        gap(w: 10),
-                        Icon(
-                          Icons.star,
-                          color: orangePrimary,
-                          size: 20,
-                        ),
-                        gap(w: 5),
-                        Text(
-                          '5.0',
-                          style: TextStyle(
-                            color: blackLight,
-                            fontSize: 12,
-                          ),
-                        )
-                      ],
-                    ),
-                    subtitle: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: width * 0.05,
-                          height: width * 0.05,
-                          child: Image.asset('assets/images/flag.png'),
-                        ),
-                        gap(w: 10),
-                        Container(
-                          width: width * 0.45,
-                          height: width * 0.05,
-                          child: Text(
-                            'Pakistan',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: blackLight,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  width: double.maxFinite,
-                  child: Text(
-                    'Good quality options and finishes, builder worked with me to make a design I really liked.',
-                    style: TextStyle(
-                      overflow: TextOverflow.clip,
-                      fontSize: 12,
-                      color: blackLight,
-                    ),
-                  ),
-                ),
-                gap(h: 15),
-              ],
-            ),
-          ),
-        ),
-        gap(h: 10),
-        Container(
-          margin: spacing(
-            horizontal: 7,
-          ),
-          padding: spacing(
-            horizontal: 10,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: borderRadius(7),
-            color: white,
-          ),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: height * 0.1,
-                  width: double.maxFinite,
-                  alignment: Alignment.centerLeft,
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          const AssetImage('assets/new/images/user.png'),
-                      radius: height * 0.045,
-                    ),
-                    title: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Mark Henry'),
-                        gap(w: 10),
-                        Icon(
-                          Icons.star,
-                          color: orangePrimary,
-                          size: 20,
-                        ),
-                        Text(
-                          '5.0',
-                          style: TextStyle(
-                            color: blackLight,
-                            fontSize: 12,
-                          ),
-                        )
-                      ],
-                    ),
-                    subtitle: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: width * 0.05,
-                          height: width * 0.05,
-                          child: Image.asset('assets/images/flag.png'),
-                        ),
-                        gap(w: 10),
-                        Container(
-                          width: width * 0.45,
-                          height: width * 0.05,
-                          child: Text(
-                            'Pakistan',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: blackLight,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  width: double.maxFinite,
-                  child: Text(
-                    'Good quality options and finishes, builder worked with me to make a design I really liked. Good quality options and finishes, builder worked with me to make a design I really liked.',
-                    style: TextStyle(
-                      overflow: TextOverflow.clip,
-                      fontSize: 12,
-                      color: blackLight,
-                    ),
-                  ),
-                ),
-                gap(h: 15),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+              );
+  }
 }

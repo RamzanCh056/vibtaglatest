@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vibetag/screens/story/add_story.dart';
 
 
 import '../../../utils/constant.dart';
-import '../../story/add_story.dart';
 
 Widget HomeStory({required Map<String, dynamic> modelUser}) {
   return StatefulBuilder(builder: ((context, setState) {

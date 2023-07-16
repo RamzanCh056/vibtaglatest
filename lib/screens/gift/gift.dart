@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:svg_icon/svg_icon.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -134,7 +134,7 @@ class _GiftState extends State<Gift> {
                                                     borderRadius:
                                                         borderRadius(20),
                                                   ),
-                                                  child: SvgIcon(
+                                                  child: SvgPicture.asset(
                                                     'assets/svg/post/ic_menu_gifters.svg',
                                                     width: width * 0.04,
                                                     color: white,

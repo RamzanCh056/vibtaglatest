@@ -37,7 +37,8 @@ BottomDrawer({required BuildContext context}) {
     ),
     context: context,
     builder: (context) {
-      Map<String, dynamic> modelUser = Provider.of<UserProvider>(context, listen: false).user;
+      Map<String, dynamic> modelUser =
+          Provider.of<UserProvider>(context, listen: false).user;
       return Container(
         height: height * 0.88,
         child: Column(
@@ -68,7 +69,7 @@ BottomDrawer({required BuildContext context}) {
                         child: Center(
                           child: CircleAvatar(
                             foregroundImage: NetworkImage(
-                             modelUser['avatar'],
+                              modelUser['avatar'],
                             ),
                             radius: width * 0.125,
                           ),
@@ -89,20 +90,27 @@ BottomDrawer({required BuildContext context}) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              gap(w: 20),
+                              gap(w: 40),
                               Text(
                                 modelUser['name'],
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Manrope',
+                                  fontSize: 16,
+                                  color: blackPrimary,
                                 ),
                               ),
                               gap(
                                 w: 10,
                               ),
                               modelUser['verified'] != '0'
-                                  ? const Icon(
-                                      Icons.verified,
-                                      color: Colors.cyan,
+                                  ? Container(
+                                      width: 12,
+                                      height: 12,
+                                      child: Icon(
+                                        Icons.verified,
+                                        color: Colors.cyan,
+                                      ),
                                     )
                                   : gap(),
                             ],
@@ -138,24 +146,13 @@ BottomDrawer({required BuildContext context}) {
                 child: Column(
                   children: [
                     BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/cart.svg',
-                      title: 'Cart',
-                      notifications: 5,
-                      onTap: () {
-                        pushReplacement(
-                          context: context,
-                          screen: Cart(),
-                        );
-                      },
-                    ),
-                    BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/album.svg',
                       title: 'Album',
                       notifications: 0,
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Album(),
+                          screen: AlbumScreen(),
                         );
                       },
                     ),
@@ -211,7 +208,9 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Activities(),
+                          screen: Activities(
+                            user_id: loginUserId,
+                          ),
                         );
                       },
                     ),
@@ -290,7 +289,9 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Explore(),
+                          screen: Explore(
+                            search: {},
+                          ),
                         );
                       },
                     ),

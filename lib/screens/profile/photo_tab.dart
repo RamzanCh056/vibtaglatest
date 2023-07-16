@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:vibetag/screens/profile/profile_photo_timeline.dart';
 
 import '../../methods/api.dart';
 import '../../utils/constant.dart';
@@ -20,6 +21,7 @@ class PhotoTab extends StatefulWidget {
 
 class _PhotoTabState extends State<PhotoTab> {
   List<String> Photos = [];
+  List<dynamic> PhotoPosts = [];
   bool isLoading = false;
   @override
   void initState() {
@@ -39,13 +41,13 @@ class _PhotoTabState extends State<PhotoTab> {
       'after_post_id': '0',
     };
     final result = await API().postData(data);
-    final photo = jsonDecode(result.body)['posts_data'];
-    if (photo.length > 0) {
-      for (var i = 0; i < photo.length; i++) {
-        if (photo[i]['postFile'].trim() != '') {
-          photo[i]['postFile'].toString().contains(serverUrl)
-              ? Photos.add(photo[i]['postFile'].toString())
-              : Photos.add('${serverUrl}${photo[i]['postFile']}');
+    PhotoPosts = jsonDecode(result.body)['posts_data'];
+    if (PhotoPosts.length > 0) {
+      for (var i = 0; i < PhotoPosts.length; i++) {
+        if (PhotoPosts[i]['postFile'].trim() != '') {
+          PhotoPosts[i]['postFile'].toString().contains(serverUrl)
+              ? Photos.add(PhotoPosts[i]['postFile'].toString())
+              : Photos.add('${serverUrl}${PhotoPosts[i]['postFile']}');
         }
       }
     }
@@ -87,10 +89,20 @@ class _PhotoTabState extends State<PhotoTab> {
                 childrenDelegate: SliverChildBuilderDelegate(
                   childCount: Photos.length,
                   (context, i) {
-                    return Image.network(
-                      Photos[i],
-                      fit: BoxFit.cover,
-                    );
+                    return InkWell(
+                        onTap: () {
+                          pushRoute(
+                            context: context,
+                            screen: ProfilePhotoTimeline(
+                              first: PhotoPosts[i],
+                              posts: PhotoPosts,
+                            ),
+                          );
+                        },
+                        child: Image.network(
+                          Photos[i],
+                          fit: BoxFit.cover,
+                        ));
                   },
                 ),
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
@@ -80,12 +79,6 @@ class _FrontPageState extends State<FrontPage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
   Map<String, dynamic> user = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   int currentIndex = 0;
 
   @override
@@ -160,7 +153,7 @@ class _FrontPageState extends State<FrontPage> {
                   children: [
                     Container(
                       height: height * 0.02,
-                      child: SvgIcon(
+                      child: SvgPicture.asset(
                         'assets/new/svg/home.svg',
                         color: currentIndex == 0 ? orangePrimary : grayMed,
                       ),
@@ -186,7 +179,7 @@ class _FrontPageState extends State<FrontPage> {
                   children: [
                     Container(
                       height: height * 0.02,
-                      child: SvgIcon(
+                      child: SvgPicture.asset(
                         'assets/new/svg/trending.svg',
                         color: currentIndex == 1 ? orangePrimary : grayMed,
                       ),
@@ -212,7 +205,7 @@ class _FrontPageState extends State<FrontPage> {
                   children: [
                     Container(
                       height: height * 0.02,
-                      child: SvgIcon(
+                      child: SvgPicture.asset(
                         'assets/new/svg/buzzin.svg',
                         color: currentIndex == 2 ? orangePrimary : grayMed,
                       ),
@@ -238,7 +231,7 @@ class _FrontPageState extends State<FrontPage> {
                   children: [
                     Container(
                       height: height * 0.02,
-                      child: SvgIcon(
+                      child: SvgPicture.asset(
                         'assets/new/svg/shopping.svg',
                         color: currentIndex == 3 ? orangePrimary : grayMed,
                       ),
@@ -265,7 +258,7 @@ class _FrontPageState extends State<FrontPage> {
                   children: [
                     Container(
                       height: height * 0.02,
-                      child: SvgIcon(
+                      child: SvgPicture.asset(
                         'assets/new/svg/category.svg',
                         color: currentIndex == 4 ? orangePrimary : grayMed,
                       ),
@@ -382,7 +375,7 @@ class _FrontPageState extends State<FrontPage> {
                                         children: [
                                           Container(
                                             width: width * 0.04,
-                                            child: const SvgIcon(
+                                            child: SvgPicture.asset(
                                               'assets/svg/post/world.svg',
                                             ),
                                           ),

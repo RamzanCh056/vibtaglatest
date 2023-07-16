@@ -54,8 +54,8 @@ class _CallKitIncomingCallState extends State<CallKitIncomingCall> {
                   type: 0,
                   textAccept: 'ACCEPT',
                   textDecline: 'DECLINE',
-                  textMissedCall: "Miss Call",
-                  textCallback: 'Call Back',
+                  // textMissedCall: "Miss Call",
+                  // textCallback: 'Call Back',
                   duration: 30000,
                   extra: {
                     'user_id': loginUserId,
@@ -63,8 +63,8 @@ class _CallKitIncomingCallState extends State<CallKitIncomingCall> {
                   android: AndroidParams(
                     isCustomNotification: true,
                     isShowLogo: false,
-                    isShowMissedCallNotification: true,
-                    isShowCallback: true,
+                    // isShowMissedCallNotification: true,
+                    // isShowCallback: true,
                     ringtonePath: 'system_ringtone_default',
                     backgroundColor: '#FF0000',
                     // backgroundUrl: 'https://i.pravata.cc/300',

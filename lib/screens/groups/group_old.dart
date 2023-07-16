@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 
 import 'package:vibetag/widgets/footer.dart';
 import '../header/header.dart';
@@ -43,12 +42,7 @@ class _GroupScreen_OldState extends State<GroupScreen_Old> {
             child: Column(
               children: [
                 Column(
-                  children: [
-                    NavBar(),
-                    Header(
-                    
-                    )
-                  ],
+                  children: [NavBar(), Header()],
                 ),
                 Container(
                   width: width,
@@ -206,7 +200,7 @@ class _GroupScreen_OldState extends State<GroupScreen_Old> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const TabBar(
+                                      TabBar(
                                         unselectedLabelColor:
                                             Color.fromARGB(255, 110, 107, 107),
                                         labelColor: Colors.orange,
@@ -216,36 +210,36 @@ class _GroupScreen_OldState extends State<GroupScreen_Old> {
                                         ),
                                         tabs: [
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/list-text.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/writing.svg'),
                                           ),
                                           Tab(
-                                            icon:
-                                                SvgIcon('assets/svg/photo.svg'),
+                                            icon: SvgPicture.asset(
+                                                'assets/svg/photo.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/play-button.svg'),
                                           ),
                                           Tab(
-                                            icon:
-                                                SvgIcon('assets/svg/music.svg'),
+                                            icon: SvgPicture.asset(
+                                                'assets/svg/music.svg'),
                                           ),
                                           Tab(
-                                            icon:
-                                                SvgIcon('assets/svg/copy.svg'),
+                                            icon: SvgPicture.asset(
+                                                'assets/svg/copy.svg'),
                                           ),
                                           Tab(
-                                            icon: SvgIcon(
+                                            icon: SvgPicture.asset(
                                                 'assets/svg/position.svg'),
                                           ),
                                           Tab(
-                                            icon:
-                                                SvgIcon('assets/svg/live.svg'),
+                                            icon: SvgPicture.asset(
+                                                'assets/svg/live.svg'),
                                           ),
                                         ],
                                       ),

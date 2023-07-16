@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/groups/add_new_group.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/footer.dart';
@@ -22,15 +21,10 @@ class Groups extends StatefulWidget {
 }
 
 class _GroupsState extends State<Groups> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
     return Scaffold(
       backgroundColor: backgroundColor,
-      key: _key,
       drawer: DrawerMenu(),
       body: SafeArea(
         child: Container(
@@ -39,12 +33,7 @@ class _GroupsState extends State<Groups> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Column(
-                  children: [
-                    NavBar(),
-                    Header(
-                     
-                    )
-                  ],
+                  children: [NavBar(), Header()],
                 ),
                 Container(
                   height: height * 0.8,
@@ -129,7 +118,7 @@ class _GroupsState extends State<Groups> {
                                             ),
                                             Container(
                                               width: 15,
-                                              child: const SvgIcon(
+                                              child: SvgPicture.asset(
                                                 'assets/svg/chat/plus.svg',
                                                 color: Colors.white,
                                               ),
@@ -509,8 +498,6 @@ class _GroupsState extends State<Groups> {
                     ),
                   ),
                 ),
-                SecondaryFooter(),
-                AppFooter(),
               ],
             ),
           ),

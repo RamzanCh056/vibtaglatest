@@ -135,32 +135,38 @@ Options({required BuildContext context}) {
                   const SizedBox(
                     height: 10,
                   ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        width: width * 0.045,
-                        child: SvgPicture.asset(
-                          'assets/new/svg/menu/help.svg',
-                          width: width * 0.045,
-                          height: width * 0.045,
-                          color: grayMed,
+                  InkWell(
+                    onTap: () {
+                      togglePlayers = !togglePlayers;
+                      setState(() {});
+                    },
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        child: const Text(
-                          'Help',
-                          style: TextStyle(
-                            fontSize: 14,
+                        Container(
+                          width: width * 0.045,
+                          child: SvgPicture.asset(
+                            'assets/new/svg/menu/help.svg',
+                            width: width * 0.045,
+                            height: width * 0.045,
+                            color: grayMed,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          child: const Text(
+                            'Help',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Row(

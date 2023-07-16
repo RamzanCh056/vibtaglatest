@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
 import 'package:vibetag/screens/trending/widgets/hash_trend_widget.dart';
 import 'package:vibetag/screens/trending/widgets/lastest_videos_widget.dart';
+import 'package:vibetag/screens/trending/widgets/most_recent_Articles.dart';
 import 'package:vibetag/screens/trending/widgets/page_trend_widget.dart';
 import 'package:vibetag/screens/trending/widgets/suggested_groups_trend_widget.dart';
 import 'package:vibetag/screens/trending/widgets/tofollow_trend_widget.dart';
@@ -31,10 +32,7 @@ class Trending extends StatefulWidget {
 }
 
 class _TrendingState extends State<Trending> {
-  List<Widget> trendingWorldNews = [];
   List<Widget> trendingHashTag = [];
-  List<Widget> trendingPopularBlogs = [];
-  List<Widget> trendingPopularArticles = [];
   List<Widget> trendingToFollow = [];
   List<Widget> trendingPages = [];
   List<Widget> trendActivities = [];
@@ -96,17 +94,6 @@ class _TrendingState extends State<Trending> {
       );
     }
 
-    for (var post in getTrending['world_news']) {
-      if (post['post_id'] != null) {
-        trendingWorldNews.add(
-          WordNewsTrend(
-            context: context,
-            worldnews: post,
-          ),
-        );
-      }
-    }
-
     for (var tag in getTrending['trending_hashtags']) {
       trendingHashTag.add(HashTrendWidget(hash: tag['tag']));
     }
@@ -114,6 +101,7 @@ class _TrendingState extends State<Trending> {
     for (var video in getTrending['latest_videos']) {
       trendVideos.add(TrendLatestVideos(video: video));
     }
+
     for (var vibe in getTrending['popular_vibes_today']) {
       trendVibesToday.add(
         TrendPostWidget(
@@ -121,24 +109,6 @@ class _TrendingState extends State<Trending> {
         ),
       );
     }
-
-    for (var activity in getTrending['popular_articles']) {
-      trendingPopularArticles.add(
-        blogTrendingWidget(
-          context: context,
-          blog: activity,
-        ),
-      );
-    }
-    for (var blog in getTrending['popular_blogs_today']) {
-      trendingPopularBlogs.add(
-        blogTrendingWidget(
-          context: context,
-          blog: blog,
-        ),
-      );
-    }
-
     for (var people in getTrending['people_to_follow']) {
       trendingToFollow.add(
         ToFollowTrendWidget(
@@ -177,8 +147,7 @@ class _TrendingState extends State<Trending> {
   Widget build(BuildContext context) {
     width = deviceWidth(context: context);
     height = deviceHeight(context: context);
-    print('++++++++++++Login User Id+++++++++++++++++++');
-    print(loginUserId);
+
     return isLoading
         ? loadingSpinner()
         : Container(
@@ -206,25 +175,17 @@ class _TrendingState extends State<Trending> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'World News',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                WorldNewSection(
+                                  world_news: getTrending['world_news'],
                                 ),
                                 gap(h: 10),
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: trendingWorldNews,
-                                  ),
-                                ),
-                                gap(h: 10),
-                                const Text(
+                                Text(
                                   'Hashtags',
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: blackPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Manrope',
                                   ),
                                 ),
                                 gap(h: 10),
@@ -235,35 +196,25 @@ class _TrendingState extends State<Trending> {
                                   ),
                                 ),
                                 gap(h: 10),
-                                const Text(
-                                  'Popular Vibes Today',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                gap(h: 10),
-                                LatestPostSlider(
-                                  posts: trendVibesToday,
-                                ),
-                                gap(h: 10),
-                                Container(
-                                  width: double.maxFinite,
-                                  height: 1,
-                                  color: grayMed,
-                                ),
-                                gap(h: 10),
-                                const Text(
-                                  'Popular Blogs Today',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                gap(h: 10),
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: trendingPopularBlogs,
-                                  ),
-                                ),
+                                trendVibesToday.length == 0
+                                    ? gap()
+                                    : Column(
+                                        children: [
+                                          Text(
+                                            'Popular Vibes Today',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: blackPrimary,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Manrope',
+                                            ),
+                                          ),
+                                          gap(h: 10),
+                                          LatestPostSlider(
+                                            posts: trendVibesToday,
+                                          ),
+                                        ],
+                                      ),
                                 gap(h: 10),
                                 Container(
                                   width: double.maxFinite,
@@ -271,19 +222,25 @@ class _TrendingState extends State<Trending> {
                                   color: grayMed,
                                 ),
                                 gap(h: 10),
-                                const Text(
-                                  'Most Recent Articles',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                getTrending['popular_blogs_today'].length == 0
+                                    ? gap()
+                                    : PopolarBlogsToday(
+                                        popular_blog_today:
+                                            getTrending['popular_blogs_today'],
+                                      ),
+                                gap(h: 10),
+                                Container(
+                                  width: double.maxFinite,
+                                  height: 1,
+                                  color: grayMed,
                                 ),
                                 gap(h: 10),
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: trendingPopularArticles,
-                                  ),
-                                ),
+                                getTrending['popular_articles'].length == 0
+                                    ? gap()
+                                    : MostRecentArticles(
+                                        most_recent_articles:
+                                            getTrending['popular_articles'],
+                                      ),
                                 gap(h: 10),
                                 Container(
                                   width: double.maxFinite,
@@ -307,10 +264,13 @@ class _TrendingState extends State<Trending> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
+                                          Text(
                                             'Page you may like',
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 18,
+                                              color: blackPrimary,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Manrope',
                                             ),
                                           ),
                                           Container(
@@ -367,10 +327,13 @@ class _TrendingState extends State<Trending> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
+                                          Text(
                                             'Suggested groups',
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 18,
+                                              color: blackPrimary,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Manrope',
                                             ),
                                           ),
                                           Container(
@@ -405,10 +368,13 @@ class _TrendingState extends State<Trending> {
                                   ),
                                 ),
                                 gap(h: 10),
-                                const Text(
+                                Text(
                                   'Invite your friends',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 18,
+                                    color: blackPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Manrope',
                                   ),
                                 ),
                                 gap(h: 10),
@@ -582,10 +548,13 @@ class _TrendingState extends State<Trending> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
+                                          Text(
                                             'Trending Products',
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 18,
+                                              color: blackPrimary,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Manrope',
                                             ),
                                           ),
                                           Container(
@@ -634,10 +603,13 @@ class _TrendingState extends State<Trending> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'People to follow',
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 18,
+                                                color: blackPrimary,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: 'Manrope',
                                               ),
                                             ),
                                             Container(
@@ -692,10 +664,13 @@ class _TrendingState extends State<Trending> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'Based on your interest',
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 18,
+                                                color: blackPrimary,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: 'Manrope',
                                               ),
                                             ),
                                             Container(
@@ -746,10 +721,13 @@ class _TrendingState extends State<Trending> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'Sponsored',
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 18,
+                                                color: blackPrimary,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: 'Manrope',
                                               ),
                                             ),
                                             Container(
@@ -799,10 +777,13 @@ class _TrendingState extends State<Trending> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'Latest Activity',
                                               style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 18,
+                                                color: blackPrimary,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: 'Manrope',
                                               ),
                                             ),
                                             Container(

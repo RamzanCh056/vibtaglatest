@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
+import 'package:vibetag/utils/constant.dart';
 
 import '../../constants.dart';
 // ignore: must_be_immutable
@@ -16,6 +18,7 @@ class UserGetMessage extends StatefulWidget {
 class _UserGetMessageState extends State<UserGetMessage> {
   @override
   Widget build(BuildContext context) {
+
     return   Column(
       children: [
         const SizedBox(
@@ -58,28 +61,64 @@ class _UserGetMessageState extends State<UserGetMessage> {
             //   ),
             // ),
             Container(
-              //  width: double.infinity,
+                width:200,
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffDBDEE5)),
-                  borderRadius: BorderRadius.circular(10),
-                  // color: const Color(0xFFEBEFFB)
-                ),
+    decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xffDBDEE5)),
+          borderRadius: BorderRadius.circular(10),
+          // color: const Color(0xFFEBEFFB)
+        ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 5,),
-                    Text(
+                    ReadMoreText(
                       widget.message.toString(),
-                      style: const TextStyle(
+                      trimLines: 6,
+                      colorClickableText: Colors.blueAccent,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: 'Read more',
+                      trimExpandedText: 'Read less',
+                      style: TextStyle(
                           fontSize: 12,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black),
+                          color: grayPrimary),
+                      moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 5,),
+                    // Text(
+                    //   widget.message.toString(),
+                    //   style: const TextStyle(
+                    //       fontSize: 12,
+                    //       fontWeight: FontWeight.w300,
+                    //       color: Colors.black),
+                    // ),
+                    // SizedBox(height: 5,),
                   ],)
             ),
+            // Container(
+            //   height: 200,
+            //   //  width: double.infinity,
+            //     padding: const EdgeInsets.all(10),
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: const Color(0xffDBDEE5)),
+            //       borderRadius: BorderRadius.circular(10),
+            //       // color: const Color(0xFFEBEFFB)
+            //     ),
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         SizedBox(height: 5,),
+            //         Text(
+            //           widget.message.toString(),
+            //           style: const TextStyle(
+            //               fontSize: 12,
+            //               fontWeight: FontWeight.w300,
+            //               color: Colors.black),
+            //         ),
+            //         SizedBox(height: 5,),
+            //       ],)
+            // ),
             SizedBox(width: 5,),
             Icon(Icons.done_all, size: 20,color: greyColor),
           ],

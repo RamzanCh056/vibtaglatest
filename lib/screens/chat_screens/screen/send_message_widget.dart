@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
+import 'package:vibetag/utils/constant.dart';
 
 import '../constants.dart';
 // ignore: must_be_immutable
@@ -85,7 +86,7 @@ class _UserSendMessageState extends State<UserSendMessage> {
                     ),
                     Text(
                       widget.message.toString(),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: Colors.black),
+                      style:  TextStyle(fontSize: 12, color: grayPrimary,),
                     ),
                     SizedBox(
                       height: 10,
@@ -111,15 +112,15 @@ class _UserSendMessageState extends State<UserSendMessage> {
                 SizedBox(height: 5,),
     ReadMoreText(
       widget.message.toString(),
-    trimLines: 2,
+    trimLines: 6,
     colorClickableText: Colors.blueAccent,
    trimMode: TrimMode.Line,
     trimCollapsedText: 'Read more',
     trimExpandedText: 'Read less',
     style: TextStyle(
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: FontWeight.w300,
-        color: Colors.black),
+        color: grayPrimary),
     moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     ),
                 // Text(
@@ -127,7 +128,7 @@ class _UserSendMessageState extends State<UserSendMessage> {
                 //   style: const TextStyle(
                 //       fontSize: 12,
                 //       fontWeight: FontWeight.w300,
-                //       color: Colors.black),
+                //       color: grayPrimary),
                 // ),
                 // SizedBox(height: 5,),
               ],)

@@ -45,16 +45,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAdUvotxOoUL0Z81ZQSqqVnEpMpIZSEhPo',
-    appId: '1:805337517924:web:c1482d5d2033312dfef471',
+    appId: '1:805337517924:web:f1d9cc21169d4ad9fef471',
     messagingSenderId: '805337517924',
     projectId: 'vibetag-27076',
     authDomain: 'vibetag-27076.firebaseapp.com',
     storageBucket: 'vibetag-27076.appspot.com',
+    measurementId: 'G-3XMHHZXHLL',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBBQh8LqhvXIrAwk2Zc5jgsSLc-AL8kXCE',
-    appId: '1:805337517924:android:a9978431cadfcfebfef471',
+    appId: '1:805337517924:android:ba54035442c6ec4ffef471',
     messagingSenderId: '805337517924',
     projectId: 'vibetag-27076',
     storageBucket: 'vibetag-27076.appspot.com',
@@ -62,21 +63,21 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAd8_Wo8bstHmK33I4JHyrPyxU4mL5HipI',
-    appId: '1:805337517924:ios:5fc4effbbe46773bfef471',
+    appId: '1:805337517924:ios:ed7e639dfb1787b8fef471',
     messagingSenderId: '805337517924',
     projectId: 'vibetag-27076',
     storageBucket: 'vibetag-27076.appspot.com',
-    iosClientId: '805337517924-3b8ker39vjuavlg1o1p74qrmscm1f7f0.apps.googleusercontent.com',
-    iosBundleId: 'com.example.vibetag',
+    iosClientId: '805337517924-o7auqt701b05a64303nmcs59bemuetpg.apps.googleusercontent.com',
+    iosBundleId: 'com.vibetag.vibe.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAd8_Wo8bstHmK33I4JHyrPyxU4mL5HipI',
-    appId: '1:805337517924:ios:5fc4effbbe46773bfef471',
+    appId: '1:805337517924:ios:ed7e639dfb1787b8fef471',
     messagingSenderId: '805337517924',
     projectId: 'vibetag-27076',
     storageBucket: 'vibetag-27076.appspot.com',
-    iosClientId: '805337517924-3b8ker39vjuavlg1o1p74qrmscm1f7f0.apps.googleusercontent.com',
-    iosBundleId: 'com.example.vibetag',
+    iosClientId: '805337517924-o7auqt701b05a64303nmcs59bemuetpg.apps.googleusercontent.com',
+    iosBundleId: 'com.vibetag.vibe.app',
   );
 }

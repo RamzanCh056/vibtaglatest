@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
+import 'full_image.dart';
 // ignore: must_be_immutable
 class PictureSendUserMessage extends StatefulWidget {
   String? time;
   String? message;
   String? image;
-  PictureSendUserMessage(this.time, this.message,this.image,{Key? key}) : super(key: key);
+  String? lastSceen;
+  String? profileImage;
+  String? userName;
+  PictureSendUserMessage(this.time, this.message,this.image,this.lastSceen,this.profileImage,this.userName,{Key? key}) : super(key: key);
 
   @override
   State<PictureSendUserMessage> createState() => _PictureSendUserMessageState();
@@ -63,10 +67,16 @@ class _PictureSendUserMessageState extends State<PictureSendUserMessage> {
                 ),
                 SizedBox(height: 8,),
 
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(widget.image.toString(),
-                    fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: (){
+                    print("ahahahahahha${widget.profileImage}");
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>FullImageSender(widget.image, widget.lastSceen,widget.profileImage,widget.userName,)));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(widget.image.toString(),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 )
               ],),

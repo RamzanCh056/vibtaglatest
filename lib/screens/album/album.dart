@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/album/all_albums.dart';
 import 'package:vibetag/screens/album/create_album.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
@@ -15,14 +14,14 @@ import 'package:vibetag/widgets/secondary_footer.dart';
 import '../drawer/shop_drawer.dart';
 import '../shop/shop_header.dart';
 
-class Album extends StatefulWidget {
-  const Album({super.key});
+class AlbumScreen extends StatefulWidget {
+  const AlbumScreen({super.key});
 
   @override
-  State<Album> createState() => _AlbumState();
+  State<AlbumScreen> createState() => _AlbumScreenState();
 }
 
-class _AlbumState extends State<Album> {
+class _AlbumScreenState extends State<AlbumScreen> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
 
   @override
@@ -43,7 +42,9 @@ class _AlbumState extends State<Album> {
                 Column(
                   children: [
                     const NavBar(),
-                    Header(),
+                    Header(
+
+                    ),
                   ],
                 ),
                 Container(
@@ -53,7 +54,7 @@ class _AlbumState extends State<Album> {
                     child: Column(
                       children: [
                         Container(
-                          height: height * 0.08,
+                          height: height * 0.09,
                           width: width,
                           child: Card(
                             child: Padding(
@@ -78,8 +79,8 @@ class _AlbumState extends State<Album> {
                                           children: [
                                             Center(
                                               child: Container(
-                                                width: width * 0.07,
-                                                height: width * 0.07,
+                                                width: width * 0.08,
+                                                height: width * 0.08,
                                                 padding: spacing(
                                                   horizontal: 5,
                                                   vertical: 5,
@@ -89,7 +90,7 @@ class _AlbumState extends State<Album> {
                                                   borderRadius:
                                                       borderRadius(20),
                                                 ),
-                                                child: SvgIcon(
+                                                child: SvgPicture.asset(
                                                   'assets/svg/post/image1.svg',
                                                   width: width * 0.04,
                                                   color: white,
@@ -110,6 +111,7 @@ class _AlbumState extends State<Album> {
                                       ),
                                       InkWell(
                                         onTap: () {
+                                          print("object");
                                           pushRoute(
                                             context: context,
                                             screen: const CreateAlbum(),
@@ -145,7 +147,7 @@ class _AlbumState extends State<Album> {
                                               ),
                                               Container(
                                                 width: 15,
-                                                child: const SvgIcon(
+                                                child: SvgPicture.asset(
                                                   'assets/svg/chat/plus.svg',
                                                   color: Colors.white,
                                                 ),

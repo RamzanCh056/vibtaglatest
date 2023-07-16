@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:svg_icon/svg_icon.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../screens/buzz/buzz.dart';
 import '../screens/drawer/bottom_modal_sheet.dart';
@@ -50,7 +50,7 @@ Widget AppBottomNavigationBar(
                 children: [
                   Container(
                     height: height * 0.035,
-                    child: SvgIcon(
+                    child: SvgPicture.asset(
                       'assets/new/svg/home.svg',
                       color: currentIndex == 0 ? orangePrimary : grayMed,
                     ),
@@ -76,7 +76,7 @@ Widget AppBottomNavigationBar(
                 children: [
                   Container(
                     height: height * 0.035,
-                    child: SvgIcon(
+                    child: SvgPicture.asset(
                       'assets/new/svg/trending.svg',
                       color: currentIndex == 1 ? orangePrimary : grayMed,
                     ),
@@ -102,7 +102,7 @@ Widget AppBottomNavigationBar(
                 children: [
                   Container(
                     height: height * 0.035,
-                    child: SvgIcon(
+                    child: SvgPicture.asset(
                       'assets/new/svg/buzzin.svg',
                       color: currentIndex == 2 ? orangePrimary : grayMed,
                     ),
@@ -128,7 +128,7 @@ Widget AppBottomNavigationBar(
                 children: [
                   Container(
                     height: height * 0.035,
-                    child: SvgIcon(
+                    child: SvgPicture.asset(
                       'assets/new/svg/shopping.svg',
                       color: currentIndex == 3 ? orangePrimary : grayMed,
                     ),
@@ -155,7 +155,7 @@ Widget AppBottomNavigationBar(
                 children: [
                   Container(
                     height: height * 0.035,
-                    child: SvgIcon(
+                    child: SvgPicture.asset(
                       'assets/new/svg/category.svg',
                       color: currentIndex == 4 ? orangePrimary : grayMed,
                     ),

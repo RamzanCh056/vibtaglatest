@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/provider/userProvider.dart';
 
 import '../utils/constant.dart';
@@ -53,7 +53,7 @@ class postOption extends StatelessWidget {
                 width * 0.1,
               ),
             ),
-            child: SvgIcon(
+            child: SvgPicture.asset(
               '${icon}',
               color: iconColor,
             ),

@@ -1,23 +1,45 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:vibetag/screens/home/create_post/audience_option.dart';
 import 'package:vibetag/screens/home/create_post/category_option.dart';
 import 'package:vibetag/utils/constant.dart';
+import 'package:http/http.dart' as http;
 
 class PostCategory extends StatefulWidget {
   const PostCategory({super.key});
+
 
   @override
   State<PostCategory> createState() => _PostCategoryState();
 }
 
 class _PostCategoryState extends State<PostCategory> {
+  getCtagories()async{
+    var headers = {
+      'Cookie': 'PHPSESSID=490af762c83ecdce8638443fb738b94c; _us=1680682130; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-04-04%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'get_post_categories',
+      'user_id': '34099'
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+    print(response.reasonPhrase);
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Container(
-      height: height * 0.75,
+      height: height * 0.85,
       width: double.maxFinite,
       decoration: BoxDecoration(
         color: white,

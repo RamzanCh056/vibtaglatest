@@ -119,43 +119,7 @@ class _AudioPlayState extends State<AudioPlay> {
         child: Column(
 
         children: [
-          ValueListenableBuilder<ProgressBarState>(
-            valueListenable: progressNotifier,
-            builder: (_, value, __) {
-              return ProgressBar(
-                progress: value.current,
-                buffered: value.buffered,
-                total: value.total,
-                onSeek: seek,
-              );
-            },
-          ),
-          ValueListenableBuilder<ButtonState>(
-            valueListenable: buttonNotifier,
-            builder: (_, value, __) {
-              switch (value) {
-                case ButtonState.loading:
-                  return Container(
-                    margin: const EdgeInsets.all(8.0),
-                    width: 32.0,
-                    height: 32.0,
-                    child: const CircularProgressIndicator(),
-                  );
-                case ButtonState.paused:
-                  return IconButton(
-                    icon: const Icon(Icons.play_arrow),
-                    iconSize: 32.0,
-                    onPressed: play,
-                  );
-                case ButtonState.playing:
-                  return IconButton(
-                    icon: const Icon(Icons.pause),
-                    iconSize: 32.0,
-                    onPressed: pause,
-                  );
-              }
-            },
-          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -172,6 +136,64 @@ class _AudioPlayState extends State<AudioPlay> {
               ),
             ],
           ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ValueListenableBuilder<ButtonState>(
+                  valueListenable: buttonNotifier,
+                  builder: (_, value, __) {
+                    switch (value) {
+                      case ButtonState.loading:
+                        return Container(
+                         // margin: const EdgeInsets.only(bottom: 20),
+                          width: 30.0,
+                          height: 30.0,
+                          child: const CircularProgressIndicator(),
+                        );
+                      case ButtonState.paused:
+                        return GestureDetector(
+                          onTap:  play,
+                            child: Icon(Icons.play_circle_outline_outlined, size: 32,));
+                        //   IconButton(
+                        //   icon: const Icon(Icons.play_arrow),
+                        //   iconSize: 30.0,
+                        //   onPressed: play,
+                        // );
+                      case ButtonState.playing:
+                        return GestureDetector(
+                            onTap:  pause,
+                            child: Icon(Icons.pause_circle_outline, size: 32,));
+                        //   IconButton(
+                        //   icon: const Icon(Icons.pause),
+                        //   iconSize: 30.0,
+                        //   onPressed: pause,
+                        // );
+                    }
+                  },
+                ),
+              ),
+                SizedBox(width: 8,),
+              Expanded(
+
+                child: ValueListenableBuilder<ProgressBarState>(
+                  valueListenable: progressNotifier,
+                  builder: (_, value, __) {
+                    return ProgressBar(
+                      progress: value.current,
+                      buffered: value.buffered,
+                      total: value.total,
+                      onSeek: seek,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+
+
+
+
         ],
       ),)
     );

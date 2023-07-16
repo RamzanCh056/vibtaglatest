@@ -1,25 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
-
+import 'package:provider/provider.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/provider/post_provider.dart';
+import 'package:vibetag/provider/userProvider.dart';
+import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
 import '../../utils/constant.dart';
-import '../home/comment/widget/post_comment_bar.dart';
-import '../home/create_post/home_search.dart';
-import '../home/widgets/home_tab_bar.dart';
-import '../home/post_types/post_colored.dart';
-import '../home/post_methods/post_methods.dart';
-import '../home/post_types/post_photo.dart';
-import '../home/widgets/revibe.dart';
 
 class PostTabProfile extends StatefulWidget {
   final String user_id;
-  final Map<String,dynamic> user;
+  final Map<String, dynamic> user;
   const PostTabProfile({
     Key? key,
     required this.user_id,
@@ -34,12 +26,14 @@ class _PostTabProfileState extends State<PostTabProfile> {
   bool isLoading = false;
   bool loadingMore = false;
   bool isAlreadyLoading = false;
+  List<String> adsIds = [];
   bool isNoMore = false;
+  late Map<String, dynamic> modelUser;
+
   String lastPostId = '';
-  List<Widget> posts = [];
-  List<dynamic> rawPosts = [];
   bool isFindId = false;
   List<String> postsId = [];
+  List<Widget> posts = [];
   @override
   void initState() {
     super.initState();
@@ -55,16 +49,21 @@ class _PostTabProfileState extends State<PostTabProfile> {
       'sub_type': 'get_user_posts',
       'user_id': loginUserId,
       'user_profile_id': widget.user_id,
+      'after_post_id': '0',
     };
 
     final result = await API().postData(data);
-    rawPosts = jsonDecode(result.body)['posts_data'];
-    for (var i = 0; i < rawPosts.length; i++) {
-      if (rawPosts[i]['post_id'] != null) {
-        postsId.add(rawPosts[i]['post_id'].toString());
+    List<dynamic> postList = jsonDecode(result.body)['posts_data'];
+    for (var i = 0; i < postList.length; i++) {
+      if (postList[i]['post_id'] != null) {
+        postsId.add(postList[i]['post_id'].toString());
+      } else {
+        adsIds.add(postList[i]['id'].toString());
       }
     }
-    posts = PostMethods().setPosts(posts: rawPosts);
+    rawPostData = postList;
+    Provider.of<PostProvider>(context, listen: false)
+        .setPostsWidgets(rawPostData);
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -78,20 +77,21 @@ class _PostTabProfileState extends State<PostTabProfile> {
       'sub_type': 'get_user_posts',
       'user_id': loginUserId,
       'user_profile_id': widget.user_id,
-      'after_post_id': postsId[(postsId.length - 1)],
+      'after_post_id': postsId[(postsId.length - 1)].toString(),
     };
     final result = await API().postData(data);
     final newPosts = jsonDecode(result.body)['posts_data'];
-
     if (newPosts.length > 0) {
       for (var i = 0; i < newPosts.length; i++) {
         if (newPosts[i]['post_id'] != null) {
           postsId.add(newPosts[i]['post_id'].toString());
+          rawPostData.add(newPosts[i]);
+        } else {
+          if (!(adsIds.contains(newPosts[i]['id']))) {
+            rawPostData.add(newPosts[i]);
+            adsIds.add(newPosts[i]['id']);
+          }
         }
-      }
-      List<Widget> formatedposts = PostMethods().setPosts(posts: newPosts);
-      for (var i = 0; i < formatedposts.length; i++) {
-        posts.add(formatedposts[i]);
       }
     } else {
       isNoMore = true;
@@ -103,6 +103,11 @@ class _PostTabProfileState extends State<PostTabProfile> {
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
+    posts = Provider.of<PostProvider>(context).posts;
+    modelUser = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).user;
     return isLoading
         ? loadingSpinner()
         : Container(
@@ -115,6 +120,12 @@ class _PostTabProfileState extends State<PostTabProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                widget.user_id.toString() == loginUserId.toString()
+                    ? gap(h: 10)
+                    : gap(),
+                widget.user_id.toString() == loginUserId.toString()
+                    ? createPost(modelUser)
+                    : gap(),
                 gap(h: 10),
                 Column(
                   children: posts,

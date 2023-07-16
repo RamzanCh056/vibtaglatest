@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:vibetag/screens/home/comment/audio_player.dart';
+import 'package:vibetag/screens/home/post_types/file_post.dart';
 import 'package:vibetag/screens/video_player/video_player.dart';
 import 'package:video_player/video_player.dart';
 
@@ -10,9 +11,11 @@ Widget postFile({
   required String file,
   required String thumbnail,
   required String post_id,
+  String postFileName = '',
   bool isAds = false,
   bool autoPlay = true,
   bool videoTimer = false,
+  bool disableTap = false,
 }) {
   final ex = p.extension(file);
   if (file == '') {
@@ -26,6 +29,7 @@ Widget postFile({
         post_id: post_id,
         autoPlay: autoPlay,
         videoTimer: videoTimer,
+        disableTap: disableTap,
       );
     } else {
       String url = serverUrl + file;
@@ -45,29 +49,15 @@ Widget postFile({
       ex == '.webp' ||
       ex == '.gif' ||
       ex == '.PNG') {
-    if ((file.contains(serverUrl))) {
-      return Container(
-        width: width,
-        child: FadeInImage.assetNetwork(
-          placeholder: 'assets/new/gif/image_loading1.gif',
-          image: file,
-          fit: BoxFit.fill,
-          placeholderFit: BoxFit.fitWidth,
-        ),
-      );
-    } else {
-      String url = serverUrl + file;
-      return FadeInImage.assetNetwork(
+    return Container(
+      width: width,
+      child: FadeInImage.assetNetwork(
         placeholder: 'assets/new/gif/image_loading1.gif',
-        image: url,
+        image: getFullLink(file),
         fit: BoxFit.fill,
-        placeholderFit: BoxFit.fitWidth,
-      );
-      // return Image.network(
-      //   url,
-      //   fit: BoxFit.cover,
-      // );
-    }
+        placeholderFit: BoxFit.fill,
+      ),
+    );
   } else if (ex == '.mp3' || ex == '.wave') {
     if ((file.contains(serverUrl))) {
       return AudioMediaPlayer(
@@ -81,6 +71,12 @@ Widget postFile({
         audioThumbnail: thumbnail,
       );
     }
+  } else if (ex == '.pdf' || ex == '.docx' || ex == '.doc') {
+    return FilePostView(
+      fileName: postFileName,
+      ex: ex,
+      url: file,
+    );
   } else {
     return Container();
   }

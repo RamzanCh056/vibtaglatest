@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/buzz/buzzin_native_player.dart';
 import 'package:vibetag/screens/buzz/buzzin_player.dart';
 import 'package:vibetag/screens/buzz/category_item.dart';
 import 'package:vibetag/screens/buzz/widget/buzz_bar.dart';
@@ -257,8 +258,9 @@ class _BuzzinState extends State<Buzzin> {
                           ),
                           Positioned(
                             child: BuzzinPlayer(
+                              post_id: buzzin[i]['id'],
                               thumbnail: buzzin[i]['postFileThumb'],
-                              videoUrl: buzzin[i]['postFile_full'],
+                              videoUrl: getFullLink(buzzin[i]['postFile_full']),
                             ),
                           ),
                           Positioned(
@@ -618,8 +620,7 @@ class _BuzzinState extends State<Buzzin> {
                                               width: width * 0.7,
                                               child: Html(
                                                 shrinkWrap: true,
-                                                onAnchorTap:
-                                                    (str, rndr, map, e) {
+                                                onAnchorTap: (str, map, e) {
                                                   pushRoute(
                                                     context: context,
                                                     screen: HashTrend(
@@ -775,7 +776,12 @@ class _BuzzinState extends State<Buzzin> {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          Revibe(context: context);
+                                          createBottomModalSheet(
+                                            context: context,
+                                            screen: Revibe(
+                                              post: {},
+                                            ),
+                                          );
                                         },
                                         child: Container(
                                           width: width * 0.06,

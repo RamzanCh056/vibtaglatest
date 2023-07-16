@@ -18,16 +18,26 @@ class CommentMethods {
     await API().postData(data);
   }
 
-  Future<void> loadCommets({required String postId}) async {
+  Future<void> loadCommets({
+    required String postId,
+    bool loadAll = false,
+    int totalComments = 10,
+  }) async {
     final data = {
       'type': 'comments',
       'sub_type': 'fetch_comments',
       'post_id': postId,
-      'limit': '10',
-      'offset': '0'
+      'limit': totalComments.toString(),
+      'offset': loadAll
+          ? '0'
+          : comments.length == 0
+              ? '0'
+              : comments[comments.length - 1]['id'].toString()
     };
+
     final result = await API().postData(data);
     comments = jsonDecode(result.body)['data'];
+    print(comments);
     setComments();
   }
 
@@ -68,8 +78,10 @@ class CommentMethods {
         'text': text,
         'user_id': loginUserId.toString(),
       };
-
-      await API().postData(data);
+      print('++++++++++++++++++++++++++++++++++++++++++++++');
+      print(data);
+      final response = await API().postData(data);
+      print(jsonDecode(response.body));
     } else {
       final data = {
         'type': 'comment_add',

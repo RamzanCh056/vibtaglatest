@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/advertising/new_compaign_details.dart';
 import 'package:vibetag/screens/advertising/new_textField.dart';
 import 'package:vibetag/screens/shop/drop_down_list.dart';
@@ -382,7 +382,7 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                       ),
                                       Center(
                                         child: Container(
-                                          child: SvgIcon(
+                                          child: SvgPicture.asset(
                                             'assets/svg/post/image.svg',
                                             width: width * 0.05,
                                             color: orange,
@@ -744,7 +744,7 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                               color: orange,
                                               borderRadius: borderRadius(20),
                                             ),
-                                            child: SvgIcon(
+                                            child: SvgPicture.asset(
                                               'assets/svg/post/info.svg',
                                               width: width * 0.04,
                                               color: white,
@@ -1431,7 +1431,7 @@ class _CreateNewCompaignState extends State<CreateNewCompaign> {
                                                 color: orange,
                                                 borderRadius: borderRadius(20),
                                               ),
-                                              child: SvgIcon(
+                                              child: SvgPicture.asset(
                                                 'assets/svg/post/target.svg',
                                                 width: width * 0.04,
                                                 color: white,

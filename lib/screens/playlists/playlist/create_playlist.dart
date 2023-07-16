@@ -52,7 +52,7 @@ class _CreatePlaylistState extends State<CreatePlaylist> {
       'type': 'playlist_api',
       'action': 'add_playist',
       'user_id': loginUserId.toString(),
-      'private': private ? '1' : '0',
+      'private': private ? '0' : '1',
       'playlist': playlistTitle.text.toString(),
       'background': selectedColor.toString(),
       'category':

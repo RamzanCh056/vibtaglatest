@@ -1,17 +1,113 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/methods/auth_method.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../utils/constant.dart';
 
 class Followers extends StatefulWidget {
-  const Followers({super.key});
+  final String user_id;
+  const Followers({
+    Key? key,
+    required this.user_id,
+  }) : super(key: key);
 
   @override
   State<Followers> createState() => _FollowersState();
 }
 
 class _FollowersState extends State<Followers> {
+  TextEditingController searchController = TextEditingController();
+  List<dynamic> response = [];
+  List<String> FollowersIds = [];
+  bool isLoading = false;
+  bool isNoMoreUser = false;
+  bool isLoadingMore = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserFollowers();
+  }
+
+  getUserFollowers() async {
+    setState(() {
+      isLoading = true;
+    });
+    final result = await API().postData({
+      'type': 'followers',
+      'action': 'get_followers',
+      'user_id': '${widget.user_id}',
+      'limit': '20',
+    });
+    final followers = jsonDecode(result.body)['data'];
+    for (var user in followers) {
+      if (!(FollowersIds.contains(user['user_id']))) {
+        FollowersIds.add(user['user_id']);
+        response.add(user);
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  getMoreFollowers() async {
+    String lastId = FollowersIds[(FollowersIds.length - 1)];
+    final data = {
+      'type': 'followers',
+      'action': 'get_more_followers',
+      'user_id': '${widget.user_id}',
+      'after_user_id': FollowersIds[(FollowersIds.length - 1)],
+      'limit': '1',
+    };
+
+    final result = await API().postData(data);
+    final followers = jsonDecode(result.body)['data'];
+
+    if (followers.length > 0) {
+      for (var user in followers) {
+        if (!(FollowersIds.contains(user['user_id']))) {
+          response.add(user);
+        }
+      }
+      print(FollowersIds);
+    }
+    if (lastId == FollowersIds[(FollowersIds.length - 1)]) {
+      isNoMoreUser = true;
+    }
+    isLoadingMore = false;
+    setState(() {});
+  }
+
+  searchFriend() async {
+    response = [];
+    isLoading = true;
+    setState(() {});
+    final data = {
+      'type': 'followers',
+      'action': 'filter_followers',
+      'profile_type': 'profile',
+      'placement_in': 'followers',
+      'limit': '10',
+      'user_id': '${widget.user_id}',
+      'filter_keyword': searchController.text.toString(),
+    };
+
+    final result = await API().postData(data);
+    response = jsonDecode(result.body)['data'];
+
+    isLoading = false;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -61,6 +157,14 @@ class _FollowersState extends State<Followers> {
                   ),
                   width: double.maxFinite,
                   child: TextFormField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        getUserFollowers();
+                      } else {
+                        searchFriend();
+                      }
+                    },
                     style: TextStyle(
                       color: grayMed,
                       fontSize: 12,
@@ -92,107 +196,145 @@ class _FollowersState extends State<Followers> {
                   ),
                 ),
                 gap(h: height * 0.01),
-                Container(
-                  height: height * 0.83,
-                  margin: spacing(
-                    horizontal: 15,
-                  ),
-                  child: ListView.builder(
-                    itemCount: 20,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        padding: spacing(
-                          vertical: 10,
-                        ),
+                isLoading
+                    ? loadingSpinner()
+                    : Container(
+                        height: height * 0.83,
                         margin: spacing(
-                          vertical: 5,
+                          horizontal: 15,
                         ),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 1,
-                              color: grayMed,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: width * 0.07,
-                                  backgroundColor: grayLight,
-                                  foregroundImage:
-                                      AssetImage('assets/new/images/user.png'),
-                                ),
-                                gap(w: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Mark Henry',
-                                      style: TextStyle(
-                                        color: blackPrimary,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    gap(h: 5),
-                                    Text(
-                                      '@mark_h01',
-                                      style: TextStyle(
-                                        color: grayMed,
-                                        fontSize: 10,
+                        child: ListView.builder(
+                          itemCount: (response.length + 1),
+                          itemBuilder: (context, i) {
+                            if (i == (response.length)) {
+                              if (searchController.text.isNotEmpty) {
+                                return gap();
+                              }
+                              return isNoMoreUser
+                                  ? Center(
+                                      child: Column(
+                                        children: [
+                                          gap(h: 10),
+                                          Text('No More User'),
+                                          gap(h: 30),
+                                        ],
                                       ),
                                     )
-                                  ],
-                                )
-                              ],
-                            ),
-                            i % 4 == 0
-                                ? Container(
-                                    padding: spacing(
-                                      horizontal: 35,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: borderRadius(5),
-                                      color: grayLight,
-                                    ),
-                                    child: Text(
-                                      'Following',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: i % 4 == 0 ? grayMed : orange,
+                                  : Column(
+                                      children: [
+                                        VisibilityDetector(
+                                          key: Key('Following LoadMore'),
+                                          onVisibilityChanged: (info) {
+                                            if (info.visibleFraction
+                                                    .toDouble() >
+                                                0.5) {
+                                              if (!isLoadingMore) {
+                                                getMoreFollowers();
+                                              }
+
+                                              isLoadingMore = true;
+                                            }
+                                          },
+                                          child: loadingSpinner(),
+                                        ),
+                                        gap(h: 25),
+                                      ],
+                                    );
+                            }
+                            return Container(
+                              padding: spacing(
+                                vertical: 10,
+                              ),
+                              margin: spacing(
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: grayMed,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: width * 0.07,
+                                        backgroundColor: grayLight,
+                                        foregroundImage:
+                                            NetworkImage(response[i]['avatar']),
+                                      ),
+                                      gap(w: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            setName(response[i]['name']),
+                                            style: TextStyle(
+                                              color: blackPrimary,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          gap(h: 5),
+                                          Text(
+                                            '@${response[i]['username']}',
+                                            style: TextStyle(
+                                              color: grayMed,
+                                              fontSize: 10,
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      AuthMethod()
+                                          .followUser(response[i]['user_id']);
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      padding: spacing(
+                                        horizontal: 35,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: borderRadius(5),
+                                        color: grayLight,
+                                        border: Border.all(
+                                          width: followers_data.contains(
+                                                  response[i]['user_id'])
+                                              ? 0
+                                              : 1,
+                                          color: orange,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        followers_data.contains(
+                                                response[i]['user_id'])
+                                            ? 'Following'
+                                            : 'Follow Back',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: followers_data.contains(
+                                                  response[i]['user_id'])
+                                              ? grayMed
+                                              : orange,
+                                        ),
                                       ),
                                     ),
                                   )
-                                : Container(
-                                    padding: spacing(
-                                      horizontal: 25,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: borderRadius(5),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: orange,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Follow Back',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: orange,
-                                      ),
-                                    ),
-                                  ),
-                          ],
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                )
+                      )
               ],
             ),
           ),

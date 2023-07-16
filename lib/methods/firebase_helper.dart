@@ -75,8 +75,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('++++++++++++++++++++++1+++++++++++++++++++++++');
-          print(channel);
+     
         }
         if (message.data['call_type'].toString() == "1") {
           remote_user_data = {
@@ -90,8 +89,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('++++++++++++++++++++1+++++++++++++++++++++++++');
-          print(channel);
+      
         }
 
         incommingCall(message.data);
@@ -114,8 +112,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('+++++++++++++++++++2++++++++++++++++++++++++++');
-          print(channel);
+        
         }
         if (message.data['call_type'].toString() == "1") {
           remote_user_data = {
@@ -129,8 +126,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('+++++++++++++++++++++2++++++++++++++++++++++++');
-          print(channel);
+        
         }
 
         incommingCall(message.data);
@@ -153,8 +149,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('+++++++++++++++++++3++++++++++++++++++++++++++');
-          print(channel);
+          
         }
         if (message.data['call_type'].toString() == "1") {
           remote_user_data = {
@@ -168,8 +163,7 @@ class FirebaseHelper {
             'call_action': message.data['call_action'].toString(),
           };
           channel = message.data['channel'].toString();
-          print('++++++++++++++++++++3+++++++++++++++++++++++++');
-          print(channel);
+      
         }
         incommingCall(message.data);
       }

@@ -107,7 +107,7 @@ class _LandScapeVideoPlayerState extends State<LandScapeVideoPlayer> {
             child: Center(
               child: widget.controller.value.isInitialized
                   ? AspectRatio(
-                      aspectRatio: widget.controller.value.aspectRatio,
+                      aspectRatio: 16/9,
                       child: VideoPlayer(widget.controller),
                     )
                   : Container(

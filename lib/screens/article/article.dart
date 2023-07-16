@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:svg_icon/svg_icon.dart';
 import 'package:vibetag/screens/article/add_new_article.dart';
 import 'package:vibetag/screens/article/widgets.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
@@ -134,7 +133,7 @@ class _ArticleState extends State<Article> {
                                             ),
                                             Container(
                                               width: 15,
-                                              child: const SvgIcon(
+                                              child:  SvgPicture.asset(
                                                 'assets/svg/chat/plus.svg',
                                                 color: Colors.white,
                                               ),

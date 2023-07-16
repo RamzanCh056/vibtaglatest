@@ -4,17 +4,25 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 
+
 import 'package:vibetag/screens/profile/edit_profile.dart';
+import 'package:vibetag/screens/profile/following_users.dart';
+import 'package:vibetag/screens/profile/profile_bottom_bar.dart';
 import 'package:vibetag/screens/profile/user_video_tab.dart';
 import 'package:vibetag/screens/profile/about_items.dart';
 import 'package:vibetag/screens/profile/group_tab.dart';
 import 'package:vibetag/screens/profile/like_tab.dart';
 import 'package:vibetag/screens/profile/photo_tab.dart';
 import 'package:vibetag/screens/profile/post_tab_profile.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:vibetag/widgets/bottom_navigation_bar.dart';
+import '../activties/activities.dart';
+import '../chat_screens/model/show_list_message_model.dart';
+import '../chat_screens/screen/private_message_screen.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -37,6 +45,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   List<Widget> aboutItems = [];
+  List<MessageList> messageButton = [];
   late dynamic profileUser;
   late dynamic profileUserDetails;
   bool isLoading = false;
@@ -80,6 +89,36 @@ class _ProfileState extends State<Profile> {
     final result = await API().postData(data);
     profileUser = jsonDecode(result.body)['user_data'];
     profileUserDetails = jsonDecode(result.body)['user_data']['details'];
+
+    if (widget.user_id != loginUserId) {
+      Map<String, dynamic> messageUser = {
+        'rec_name': profileUser['name'],
+        'sen_name': loginUser['name'],
+        'rec_pic': profileUser['avatar'],
+        'sent_time': DateFormat('hh:mm a').format(
+            DateTime.fromMillisecondsSinceEpoch(
+                int.parse(profileUser['joined'].toString()) * 1000)),
+        'message': '',
+        'rec_id': profileUser['user_id'],
+        'sen_pic': loginUser['avatar'],
+        'sen_id': loginUserId,
+        'attachment_url': '',
+        'last_online': DateFormat('hh:mm a').format(
+            DateTime.fromMillisecondsSinceEpoch(
+                int.parse(profileUser['lastseen'].toString()) * 1000)),
+        'online_status': '',
+        'attachment_type': '',
+        'is_map': '',
+        'lat': profileUser['lat'],
+        'lng': profileUser['lng'],
+        'is_reply': '',
+        'starred': '',
+        'is_story_reply': '',
+        'id': '0',
+      };
+      MessageList message = MessageList.fromJson(messageUser);
+      messageButton.add(message);
+    }
     aboutItems.add(
       AboutItems(
         context: context,
@@ -118,15 +157,7 @@ class _ProfileState extends State<Profile> {
         haveIcon: true,
       ),
     );
-    aboutItems.add(
-      AboutItems(
-        context: context,
-        iconsUrl: 'assets/new/icons/birthday_date.png',
-        leading: 'Born in',
-        itemName: profileUser['birthday'],
-        haveIcon: true,
-      ),
-    );
+    
     if (profileUser['side_fields'].length > 0) {
       for (var i = 0; i < profileUser['side_fields'].length; i++) {
         if (aboutIcons[i] != '') {
@@ -247,7 +278,12 @@ class _ProfileState extends State<Profile> {
                         children: [
                           InkWell(
                             onTap: () {
-                              pushRoute(context: context, screen: Followers());
+                              pushRoute(
+                                context: context,
+                                screen: Followers(
+                                  user_id: widget.user_id.toString(),
+                                ),
+                              );
                             },
                             child: Container(
                               padding: spacing(
@@ -284,7 +320,12 @@ class _ProfileState extends State<Profile> {
                           ),
                           InkWell(
                             onTap: () {
-                              pushRoute(context: context, screen: Followers());
+                              pushRoute(
+                                context: context,
+                                screen: Following(
+                                  user_id: widget.user_id.toString(),
+                                ),
+                              );
                             },
                             child: Container(
                               padding: spacing(
@@ -654,68 +695,99 @@ class _ProfileState extends State<Profile> {
                                                   ),
                                                 ),
                                           widget.user_id == loginUserId
-                                              ? Container(
-                                                  padding: spacing(
-                                                    horizontal: width * 0.12,
-                                                    vertical: 10,
-                                                  ),
-                                                  margin: spacing(
-                                                    horizontal: 2,
-                                                    vertical: 2,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        borderRadius(5),
-                                                    color: orange,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.list,
-                                                        size: 16,
-                                                        color: white,
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    pushRoute(
+                                                      context: context,
+                                                      screen: Activities(
+                                                        user_id: widget.user_id,
                                                       ),
-                                                      gap(w: 5),
-                                                      Text(
-                                                        'Activities',
-                                                        style: TextStyle(
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    padding: spacing(
+                                                      horizontal: width * 0.12,
+                                                      vertical: 10,
+                                                    ),
+                                                    margin: spacing(
+                                                      horizontal: 2,
+                                                      vertical: 2,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          borderRadius(5),
+                                                      color: orange,
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.list,
+                                                          size: 16,
                                                           color: white,
-                                                          fontSize: 12,
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : Container(
-                                                  padding: spacing(
-                                                    horizontal: width * 0.12,
-                                                    vertical: 10,
-                                                  ),
-                                                  margin: spacing(
-                                                    horizontal: 2,
-                                                    vertical: 2,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        borderRadius(5),
-                                                    border: Border.all(
-                                                      width: 1,
-                                                      color: orangePrimary,
+                                                        gap(w: 5),
+                                                        Text(
+                                                          'Activities',
+                                                          style: TextStyle(
+                                                            color: white,
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  child: Text(
-                                                    'Message',
-                                                    style: TextStyle(
-                                                      color: orangePrimary,
-                                                      fontSize: 12,
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    pushRoute(
+                                                      context: context,
+                                                      screen:
+                                                          PrivateMessageScreen(
+                                                        messageButton,
+                                                        0,
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    padding: spacing(
+                                                      horizontal: width * 0.12,
+                                                      vertical: 10,
+                                                    ),
+                                                    margin: spacing(
+                                                      horizontal: 2,
+                                                      vertical: 2,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          borderRadius(5),
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: orangePrimary,
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      'Message',
+                                                      style: TextStyle(
+                                                        color: orangePrimary,
+                                                        fontSize: 12,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                           widget.user_id == loginUserId
                                               ? gap()
-                                              : Icon(
-                                                  Icons.more_vert_rounded,
-                                                  color: grayMed,
+                                              : InkWell(
+                                                  onTap: () {
+                                                    createBottomModalSheet(
+                                                      context: context,
+                                                      screen:
+                                                          ProfileBotttomBar(),
+                                                    );
+                                                  },
+                                                  child: Icon(
+                                                    Icons.more_vert_rounded,
+                                                    color: grayMed,
+                                                  ),
                                                 )
                                         ],
                                       ),
@@ -723,7 +795,7 @@ class _ProfileState extends State<Profile> {
                                     Container(
                                       color: grayLight,
                                       child: DefaultTabController(
-                                          initialIndex: 1,
+                                          initialIndex: currentTab,
                                           length: 6,
                                           child: SingleChildScrollView(
                                             child: Column(

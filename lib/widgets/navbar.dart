@@ -3,8 +3,10 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:vibetag/front.dart';
+import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:vibetag/widgets/setup_pop.dart';
 
+import '../screens/home/widgets/revibe_on_page.dart';
 import '../utils/constant.dart';
 
 class NavBar extends StatefulWidget {

@@ -1,16 +1,116 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/constant.dart';
 
+class PopolarBlogsToday extends StatefulWidget {
+  List<dynamic> popular_blog_today;
+  PopolarBlogsToday({
+    Key? key,
+    required this.popular_blog_today,
+  }) : super(key: key);
+
+  @override
+  State<PopolarBlogsToday> createState() => _PopolarBlogsTodayState();
+}
+
+class _PopolarBlogsTodayState extends State<PopolarBlogsToday> {
+  List<Widget> trendingPopularBlogs = [];
+  List<Widget> currentWidgets = [];
+
+  int pageIndex = 0;
+  final PageController _BlogsController = PageController(initialPage: 0);
+  void setWidgets() {
+    int countWidget = 0;
+    currentWidgets = [];
+    for (var post in widget.popular_blog_today) {
+      countWidget++;
+      if (post['id'] != null) {
+        currentWidgets.add(
+          blogTrendingWidget(
+            blog: post,
+          ),
+        );
+        if (countWidget == 4 ||
+            post['id'] ==
+                widget.popular_blog_today[
+                    (widget.popular_blog_today.length - 1)]['id']) {
+          trendingPopularBlogs.add(
+            Column(children: currentWidgets),
+          );
+          countWidget = 0;
+          currentWidgets = [];
+        }
+      }
+    }
+    
+    setSlider();
+  }
+
+  @override
+  void initState() {
+    setWidgets();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Popular Blogs Today',
+          style: TextStyle(
+            fontSize: 18,
+            color: blackPrimary,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Manrope',
+          ),
+        ),
+        gap(h: 10),
+        Container(
+          width: width,
+          height: height * 0.53,
+          child: PageView(
+            reverse: true,
+            controller: _BlogsController,
+            children: trendingPopularBlogs,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void setSlider() {
+    Timer.periodic(
+      Duration(seconds: 90),
+      (Timer timer) {
+        if (mounted) {
+          if (pageIndex == (trendingPopularBlogs.length - 1)) {
+            setState(() {
+              pageIndex = 0;
+            });
+          } else {
+            setState(() {
+              pageIndex++;
+            });
+          }
+
+          _BlogsController.animateToPage(pageIndex,
+              duration: Duration(milliseconds: 300), curve: Curves.easeInSine);
+        }
+      },
+    );
+  }
+}
+
 blogTrendingWidget({
-  required BuildContext context,
   required Map<String, dynamic> blog,
 }) {
-  double width = deviceWidth(context: context);
-  double height = deviceHeight(context: context);
   return Container(
     margin: spacing(
       vertical: 5,
@@ -51,10 +151,15 @@ blogTrendingWidget({
                 data: blog['title'],
                 style: {
                   "body": Style(
-                    fontSize: FontSize(12.0),
+                    fontSize: FontSize(14.0),
                     textOverflow: TextOverflow.ellipsis,
                     color: blackPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Manrope',
                     maxLines: 2,
+                  ),
+                  'a': Style(
+                    color: orangePrimary,
                   ),
                 },
               ),
@@ -66,16 +171,20 @@ blogTrendingWidget({
                   Text(
                     'By',
                     style: TextStyle(
-                      fontSize: 8,
-                      color: grayMed,
+                      fontSize: 14,
+                      color: lightblue,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Manrope',
                     ),
                   ),
                   gap(w: 4),
                   Text(
                     blog['author']['name'],
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 14,
                       color: grayPrimary,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Manrope',
                     ),
                   ),
                 ],
@@ -95,8 +204,10 @@ blogTrendingWidget({
                       Text(
                         '${getInK(number: int.parse(blog['view'].toString()))}+ views',
                         style: TextStyle(
-                          fontSize: 8,
-                          color: grayMed,
+                          fontSize: 13,
+                          color: grayPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Manrope',
                         ),
                       ),
                     ],
@@ -104,8 +215,10 @@ blogTrendingWidget({
                   Text(
                     readTimestamp(int.parse(blog['posted'].toString())),
                     style: TextStyle(
-                      fontSize: 10,
-                      color: grayMed,
+                      fontSize: 13,
+                      color: lightblue,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Manrope',
                     ),
                   ),
                 ],

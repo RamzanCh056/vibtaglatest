@@ -25,7 +25,7 @@ Widget HashTrendWidget({
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            padding: spacing(horizontal: 10, vertical: 10),
+            padding: spacing(horizontal: 20, vertical: 20),
             decoration: BoxDecoration(
               color: HexColor('#FFF7ED'),
               borderRadius: borderRadius(5),
@@ -33,35 +33,40 @@ Widget HashTrendWidget({
             child: Icon(
               Icons.trending_up,
               color: blackPrimary,
-              size: 16,
+              size: 24,
             ),
           ),
           gap(w: 5),
           Container(
-            height: 25,
+            height: 50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  hash,
+                  '#${hash}',
                   style: TextStyle(
+                    fontSize: 16,
                     color: orangePrimary,
-                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Manrope',
                   ),
                 ),
                 Container(
                   child: Text(
                     '44 posts',
                     style: TextStyle(
-                      color: grayMed,
-                      fontSize: 8,
+                      fontSize: 12,
+                      color: lightblue,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Manrope',
                     ),
                   ),
                 )
               ],
             ),
           ),
+          gap(w: 5),
         ],
       ),
     ),

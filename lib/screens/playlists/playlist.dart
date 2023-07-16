@@ -26,23 +26,21 @@ class PlayList extends StatefulWidget {
 }
 
 class _PlayListState extends State<PlayList> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
   int currentTab = 0;
-  List<String> videoBar = ['My Playlist', 'Other Playlist'];
+  List<String> playListBar = ['My Playlist', 'Other Playlist'];
   List<Widget> screen = [MyPlaylist(), OtherPlayList()];
 
   @override
   void initState() {
+    currentTab = widget.currentPlay;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    currentTab = widget.currentPlay;
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     return Scaffold(
-      key: _key,
       backgroundColor: HexColor('#F1F4FB'),
       body: SafeArea(
         child: Container(
@@ -75,63 +73,65 @@ class _PlayListState extends State<PlayList> {
                                 height: height * 0.05,
                                 width: width * 0.8,
                                 child: ListView.builder(
-                                    itemCount: videoBar.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, i) {
-                                      if (i == currentTab) {
-                                        return Container(
-                                          margin: spacing(
-                                            horizontal: 10,
-                                            vertical: 5,
+                                  itemCount: playListBar.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, i) {
+                                    if (i == currentTab) {
+                                      return Container(
+                                        margin: spacing(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+                                        padding: spacing(
+                                          horizontal: 15,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: orangePrimary,
                                           ),
-                                          padding: spacing(
-                                            horizontal: 15,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              width: 1,
-                                              color: orangePrimary,
-                                            ),
-                                            borderRadius: borderRadius(width),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              videoBar[i],
-                                              style: TextStyle(
-                                                color: orange,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                      return InkWell(
-                                        onTap: () {
-                                          currentTab = i;
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          margin: spacing(
-                                            horizontal: 10,
-                                            vertical: 5,
-                                          ),
-                                          padding: spacing(
-                                            horizontal: 15,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: white,
-                                            borderRadius: borderRadius(width),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              videoBar[i],
-                                              style: TextStyle(
-                                                color: grayMed,
-                                              ),
+                                          borderRadius: borderRadius(width),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            playListBar[i],
+                                            style: TextStyle(
+                                              color: orange,
                                             ),
                                           ),
                                         ),
                                       );
-                                    }),
+                                    }
+                                    return InkWell(
+                                      onTap: () {
+                                        currentTab = i;
+                                        setState(() {});
+                                     
+                                      },
+                                      child: Container(
+                                        margin: spacing(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+                                        padding: spacing(
+                                          horizontal: 15,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: white,
+                                          borderRadius: borderRadius(width),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            playListBar[i],
+                                            style: TextStyle(
+                                              color: grayMed,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                               Container(
                                 decoration: BoxDecoration(

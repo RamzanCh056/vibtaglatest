@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +10,12 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:record_mp3/record_mp3.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
+import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/chat_screens/screen/picture_send.dart';
 import 'package:vibetag/screens/chat_screens/screen/picture_with_message.dart';
 import 'package:vibetag/screens/chat_screens/screen/profile_screen.dart';
@@ -23,8 +25,7 @@ import 'package:vibetag/screens/chat_screens/screen/view_media.dart';
 import 'package:vibetag/utils/constant.dart';
 
 import '../../../methods/api.dart';
-import '../../../methods/auth_method.dart';
-import '../../../provider/userProvider.dart';
+import '../../../widgets/custom_button.dart';
 import '../constants.dart';
 import '../model/show_list_message_model.dart';
 import '../video_call/dialing_call.dart';
@@ -34,7 +35,9 @@ import 'audio_player.dart';
 import 'forward_message.dart';
 import 'get_messages/get_location.dart';
 import 'get_messages/get_message.dart';
+import 'images_crope.dart';
 import 'location_send.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 // ignore: must_be_immutable
 class PrivateMessageScreen extends StatefulWidget {
@@ -48,17 +51,25 @@ class PrivateMessageScreen extends StatefulWidget {
 }
 
 class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  var urlAudio;
+
+  bool _isRecording = false;
+  bool _recordingText = false;
+  String statusText = "";
+  bool isComplete = false;
+  bool isImage = false;
+  bool isAudio = false;
+  bool pause = false;
+  String audioFileUrl = '';
   List<MessageList> User = [];
   String? comaSepread;
   var newComaSpreated;
   var coomas;
   var checker;
-  bool isTapAudioCallButton = false;
-  bool isTapVideoCallButton = false;
 
   String messageId = '';
   String? forwardMessage;
-  String? forwardMessageOwner;
   bool notification = false;
   String Url = "https://vibetagspace.nyc3.digitaloceanspaces.com/";
   TextEditingController message = TextEditingController();
@@ -135,11 +146,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      print("200");
       setState(() {
         isLoadDelete = false;
       });
       Navigator.pop(context);
     } else {
+      print(response.reasonPhrase);
       setState(() {
         isLoadDelete = false;
       });
@@ -165,12 +179,14 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       messageId = '';
       Fluttertoast.showToast(
         msg: "Successfully Star message",
       );
       Navigator.pop(context);
     } else {
+      print(response.reasonPhrase);
       messageId = '';
     }
   }
@@ -194,9 +210,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       messageId = '';
       Navigator.pop(context);
     } else {
+      print(response.reasonPhrase);
       messageId = '';
     }
   }
@@ -224,8 +242,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       succedRepotBottomsheet(context);
-    } else {}
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   blockUser() async {
@@ -250,12 +271,15 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       Fluttertoast.showToast(
         msg:
             "successfully block ${widget.list[widget.currentIndex].rec_name.toString()}",
       );
       Navigator.pop(context);
-    } else {}
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   var followUnfollowUser;
@@ -281,18 +305,24 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      //print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       followUnfollowUser = body['follow_status'];
       setState(() {
         followUnfollowUser;
       });
+      print("status of foolow unfollow is ==${followUnfollowUser}");
+      print("${widget.list[widget.currentIndex].rec_id.toString()}");
+      print("${loginUserId}");
       Fluttertoast.showToast(
         msg:
             "successfully ${followUnfollowUser} ${widget.list[widget.currentIndex].rec_name.toString()}",
       );
       Navigator.pop(context);
-    } else {}
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   showFriends() async {
@@ -313,13 +343,17 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      // print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       friendsShow = body['data']['friends'];
+      print("show friends == ${friendsShow}");
       setState(() {
         friendsShow;
       });
-    } else {}
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   late GoogleMapController _googleMapController;
@@ -336,9 +370,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   PlatformFile? file;
   String? docName;
   String? docPath;
-  Map<String, dynamic> user = {};
+  bool isTapAudioCallButton = false;
+  bool isTapVideoCallButton = false;
   Map<String, dynamic> remote_User = {};
-
   selectFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -347,10 +381,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     if (result == null) return;
     file = result.files.first;
     //   final path = result.files.single.path!;
+    print(file!.name);
+    print(file!.path);
 
     setState(() {
       docName = file!.name;
       docPath = file!.path;
+      print("file path == ${docPath}");
       if (docPath != null || docPath != "") {
         setState(() {
           uploadMessageFile();
@@ -401,6 +438,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     showFriends();
 
     // _pageManager = PageManager();
+    print(loginUserId);
+    print("${widget.list[widget.currentIndex].rec_id}");
+    print(longitude);
+    print('message text == ${message.text}');
     super.initState();
   }
 
@@ -413,13 +454,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   bool isLoad = true;
 
   getMessageList() {
-    if (mounted) {
-      getMessage();
-    }
+    getMessage();
   }
 
-  bool pause = false;
-  AudioPlayer audioPlayer = AudioPlayer();
   bool isForward = false;
 
   forwardMessages(reviveriD) async {
@@ -445,6 +482,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       setState(() {
         isForward = false;
       });
@@ -456,6 +494,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       });
       Navigator.pop(context);
     } else {
+      print(response.reasonPhrase);
       setState(() {
         messageId = "";
       });
@@ -502,6 +541,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+
       message.text = "";
 
       setState(() {
@@ -522,6 +563,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       setState(() {
         isLoadMessage = false;
       });
+      print(response.reasonPhrase);
     }
   }
 
@@ -562,17 +604,17 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
           [];
       todo;
       User = todo;
+
+      print("user messages == $User");
     } else {
       setState(() {
         isLoading = false;
       });
+      print(response.reasonPhrase);
     }
-
-    remote_User = await AuthMethod().getUserData(
-        loginUserId != widget.list[widget.currentIndex].rec_id
-            ? widget.list[widget.currentIndex].rec_id.toString()
-            : widget.list[widget.currentIndex].sen_id.toString());
   }
+
+  Map<String, dynamic> user = {};
 
   bool _isForwardMessage = false;
   bool _byDefaultMessage = true;
@@ -588,10 +630,11 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         ? widget.list[widget.currentIndex].rec_id.toString()
         : widget.list[widget.currentIndex].sen_id.toString();
     user = Provider.of<UserProvider>(context, listen: false).user;
+
     return Scaffold(
-        backgroundColor: white,
+        backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size(double.maxFinite, screenHeightSize(70, context)),
+          preferredSize: Size(double.maxFinite, screenHeightSize(63, context)),
           child: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0.0,
@@ -614,71 +657,71 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.arrow_back,
-                            color: white,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        // Stack(
-                        //   clipBehavior: Clip.none,
-                        //   alignment: Alignment.bottomRight,
-                        //   children: [
-                        //     ClipRRect(
-                        //       borderRadius: BorderRadius.circular(30),
-                        //       child: Image.network(
-                        //         loginUserId !=
-                        //                 widget.list[widget.currentIndex].rec_id
-                        //             ? widget.list[widget.currentIndex].rec_pic
-                        //                 .toString()
-                        //             : widget.list[widget.currentIndex].sen_pic
-                        //                 .toString(),
-                        //         height: 45,
-                        //         fit: BoxFit.fill,
-                        //       ),
-                        //     ),
-                        //     widget.list[widget.currentIndex].online_status ==
-                        //             "online"
-                        //         ? Positioned(
-                        //             top: -1,
-                        //             right: 3,
-                        //             child: Container(
-                        //               width: screenWidthSize(11, context),
-                        //               height: screenHeightSize(11, context),
-                        //               decoration: BoxDecoration(
-                        //                   color: widget
-                        //                               .list[widget.currentIndex]
-                        //                               .online_status ==
-                        //                           "online"
-                        //                       ? lightGreenColor
-                        //                       : Colors.grey,
-                        //                   border: Border.all(
-                        //                       width: 1, color: white),
-                        //                   shape: BoxShape.circle),
-                        //             ),
-                        //           )
-                        //         : Positioned(
-                        //             bottom: -1,
-                        //             right: 3,
-                        //             child: Container(
-                        //               width: screenWidthSize(11, context),
-                        //               height: screenHeightSize(11, context),
-                        //               decoration: BoxDecoration(
-                        //                   color: widget
-                        //                               .list[widget.currentIndex]
-                        //                               .online_status ==
-                        //                           "offline"
-                        //                       ? Colors.grey
-                        //                       : Colors.transparent,
-                        //                   border: Border.all(
-                        //                       width: 1, color: white),
-                        //                   shape: BoxShape.circle),
-                        //             ),
-                        //           ),
-                        //   ],
-                        // ),
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Image.network(
+                                loginUserId !=
+                                        widget.list[widget.currentIndex].rec_id
+                                    ? widget.list[widget.currentIndex].rec_pic
+                                        .toString()
+                                    : widget.list[widget.currentIndex].sen_pic
+                                        .toString(),
+                                height: 45,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            widget.list[widget.currentIndex].online_status ==
+                                    "online"
+                                ? Positioned(
+                                    top: -1,
+                                    right: 3,
+                                    child: Container(
+                                      width: screenWidthSize(11, context),
+                                      height: screenHeightSize(11, context),
+                                      decoration: BoxDecoration(
+                                          color: widget
+                                                      .list[widget.currentIndex]
+                                                      .online_status ==
+                                                  "online"
+                                              ? lightGreenColor
+                                              : Colors.grey,
+                                          border: Border.all(
+                                              width: 1, color: Colors.white),
+                                          shape: BoxShape.circle),
+                                    ),
+                                  )
+                                : Positioned(
+                                    bottom: -1,
+                                    right: 3,
+                                    child: Container(
+                                      width: screenWidthSize(11, context),
+                                      height: screenHeightSize(11, context),
+                                      decoration: BoxDecoration(
+                                          color: widget
+                                                      .list[widget.currentIndex]
+                                                      .online_status ==
+                                                  "offline"
+                                              ? Colors.grey
+                                              : Colors.transparent,
+                                          border: Border.all(
+                                              width: 1, color: Colors.white),
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ),
+                          ],
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -694,7 +737,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       .toString(),
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: white,
+                                  color: Colors.white,
                                   fontSize: screenWidthSize(15, context)),
                             ),
                             const SizedBox(
@@ -704,7 +747,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               'Last Seen: ${widget.list[widget.currentIndex].last_online.toString()}',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: white,
+                                  color: Colors.white,
                                   fontSize: screenWidthSize(12, context)),
                             ),
                           ],
@@ -771,7 +814,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       width: 1,
-                                      color: isTapVideoCallButton ? blue : white,
+                                      color:
+                                          isTapVideoCallButton ? blue : white,
                                     ),
                                   ),
                                   child: SvgPicture.asset(
@@ -843,7 +887,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
                                         width: 1,
-                                        color: isTapAudioCallButton ? blue : white,
+                                        color:
+                                            isTapAudioCallButton ? blue : white,
                                       )),
                                   child: SvgPicture.asset(
                                     'assets/images/Fill 6-8.svg',
@@ -935,7 +980,6 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
           ),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             StreamBuilder(
               stream: getMessageList(),
@@ -1001,13 +1045,12 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               return GestureDetector(
                                 onLongPress: () {
                                   messageId = User[index].id.toString();
-                                  forwardMessageOwner = User[index].sen_name;
                                   forwardMessage =
                                       User[index].message.toString();
 
                                   showModalBottomSheet(
                                     context: context,
-                                    backgroundColor: white,
+                                    backgroundColor: Colors.white,
                                     isScrollControlled: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
@@ -1161,7 +1204,21 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                                       User[index]
                                                                           .attachment_url
                                                                           .toString(),
-                                                                )
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .last_online
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_pic
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_name
+                                                                      .toString())
                                                               : Container(),
                                                         ],
                                                       ),
@@ -1196,7 +1253,21 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                                       User[index]
                                                                           .attachment_url
                                                                           .toString(),
-                                                                ),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .last_online
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_pic
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_name
+                                                                      .toString()),
                                                         ],
                                                       )
                                                     : Container(),
@@ -1266,7 +1337,21 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                                       User[index]
                                                                           .attachment_url
                                                                           .toString(),
-                                                                )
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .last_online
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_pic
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_name
+                                                                      .toString())
                                                               : Container(),
                                                         ],
                                                       ),
@@ -1281,14 +1366,17 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                                   .attachment_url
                                                                   .toString()
                                                                   .contains(
-                                                                      ".pdf")
-                                                              ? UserSendDocument(
-                                                                  User[index]
-                                                                      .attachment_url
-                                                                      .toString(),
-                                                                  User[index]
-                                                                      .sent_time
-                                                                      .toString(),
+                                                                      '.pdf')
+                                                              ? GestureDetector(
+                                                                  child:
+                                                                      UserSendDocument(
+                                                                    User[index]
+                                                                        .attachment_url
+                                                                        .toString(),
+                                                                    User[index]
+                                                                        .sent_time
+                                                                        .toString(),
+                                                                  ),
                                                                 )
                                                               : PictureSendUser(
                                                                   User[index]
@@ -1298,12 +1386,27 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                                                       User[index]
                                                                           .attachment_url
                                                                           .toString(),
-                                                                ),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .last_online
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_pic
+                                                                      .toString(),
+                                                                  widget
+                                                                      .list[widget
+                                                                          .currentIndex]
+                                                                      .rec_name
+                                                                      .toString()),
                                                         ],
                                                       )
                                                     : Container(),
                                                 User[index].attachment_type ==
                                                         "audio/mp4"
+                                                    //||  User[index].attachment_type == "application/octet-stream"
                                                     ? AudioPlay(
                                                         time: User[index]
                                                             .sent_time
@@ -1401,7 +1504,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       //                         Text(
                                       //                           User[index].message.toString(),
                                       //                           style: const TextStyle(
-                                      //                             color: white,
+                                      //                             color: Colors.white,
                                       //                           ),
                                       //                         ),
                                       //                         Row(
@@ -1414,7 +1517,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                       //                               ) *
                                       //                                   1000)),
                                       //                               style: const TextStyle(
-                                      //                                 color: white,
+                                      //                                 color: Colors.white,
                                       //                                 fontSize: 12.0,
                                       //                                 fontWeight: FontWeight.bold,
                                       //                               ),
@@ -1448,121 +1551,111 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
             //  Expanded(child: SizedBox(height: 5,)),
             Visibility(
               visible: _isForwardMessage,
-              child: Container(
-                padding: spacing(horizontal: 10),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius(7),
-                  color: white,
-                  boxShadow: lightShadow,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isForwardMessage = false;
-                          _byDefaultMessage = true;
-                        });
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  //   height: 200,
+                  width: double.infinity,
+                  //screenHeightSize(70, context),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(-4, 0),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                          color: Color.fromRGBO(125, 140, 172, 0.47)),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isForwardMessage = false;
+                            _byDefaultMessage = true;
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.close),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text(forwardMessage.toString()),
+                      Divider(
+                        thickness: 1,
+                        color: Colors.black,
+                      ),
+                      Row(
                         children: [
-                          Icon(Icons.close),
+                          GestureDetector(
+                            onTap: () {
+                              _AddModalBottomSheet(context);
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: greyColor,
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: screenWidthSize(28, context),
+                                )),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            width: screenWidthSize(200, context),
+                            child: TextField(
+                              controller: message,
+                              decoration: InputDecoration(
+                                hintText: 'Type a message here',
+                                hintStyle: TextStyle(
+                                    color: fontColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              sendMessage();
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.all(13),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: orangeColor,
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/images/chatfill.svg',
+                                  color: Colors.white,
+                                )),
+                          ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 7,
-                    ),
-                    Container(
-                      width: double.maxFinite,
-                      padding: spacing(vertical: 7, horizontal: 7),
-                      decoration: BoxDecoration(
-                          color: grayLight, borderRadius: borderRadius(7)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            forwardMessageOwner.toString(),
-                            style: TextStyle(
-                              color: orange,
-                              fontSize: 12,
-                            ),
-                          ),
-                          gap(h: 5),
-                          Text(
-                            forwardMessage.toString(),
-                            style: TextStyle(
-                              color: grayMed,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    gap(h: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _AddModalBottomSheet(context);
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: greyColor,
-                              ),
-                              child: Icon(
-                                Icons.add,
-                                color: white,
-                                size: screenWidthSize(28, context),
-                              )),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          width: screenWidthSize(230, context),
-                          child: TextField(
-                            controller: message,
-                            decoration: InputDecoration(
-                              hintText: 'Type a message here',
-                              hintStyle: TextStyle(
-                                  color: fontColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            sendMessage();
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.all(13),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: orangeColor,
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/chatfill.svg',
-                                color: white,
-                              )),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -1571,8 +1664,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: screenHeightSize(70, context),
-                decoration: BoxDecoration(
-                  color: white,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
                         offset: Offset(-4, 0),
@@ -1605,10 +1698,29 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                   ),
                                   child: Icon(
                                     Icons.add,
-                                    color: white,
+                                    color: Colors.white,
                                     size: screenWidthSize(28, context),
                                   )),
                             ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                                onLongPressEnd: (LongPressEndDetailsd) {
+                                  print("fdfdfdf");
+                                  setState(() {
+                                    _isRecording = true;
+                                    _recordingText = false;
+                                  });
+                                  stopRecord();
+                                },
+                                onLongPress: () {
+                                  startRecord();
+                                  setState(() {
+                                    _recordingText = true;
+                                  });
+                                },
+                                child: Icon(Icons.mic)),
                             const SizedBox(
                               width: 10,
                             ),
@@ -1635,7 +1747,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        sendMessage();
+                        message == null || message.text == ''
+                            ? print("chal o chal")
+                            : sendMessage();
                       },
                       child: Container(
                           padding: const EdgeInsets.all(13),
@@ -1644,13 +1758,24 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                             color: orangeColor,
                           ),
                           child: SvgPicture.asset(
-                            'assets/chatfill.svg',
-                            color: white,
+                            'assets/images/chatfill.svg',
+                            color: Colors.white,
                           )),
                     ),
                   ],
                 ),
               ),
+            ),
+
+            _isRecording
+                ? SizedBox(
+                    height: 1,
+                  )
+                : Container(),
+            _isRecording ? _buildRecordingView() : Container(),
+            _recordingText ? _onRecordingText() : Container(),
+            SizedBox(
+              height: 1,
             ),
           ],
         ));
@@ -1665,6 +1790,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     if (selectedImages!.isNotEmpty) {
       imageFileList!.addAll(selectedImages);
     }
+    print("Image List Length:" + imageFileList!.length.toString());
 
     setState(() {
       // _customProgress(context);
@@ -1679,7 +1805,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         constraints:
             BoxConstraints(minHeight: MediaQuery.of(context).size.height / 2),
         context: context,
-        backgroundColor: white,
+        backgroundColor: Colors.white,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -1716,16 +1842,40 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                               Navigator.pop(context);
                             }
                             if (index == 2) {
-                              selectImages();
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CropeImage()));
+                              // selectImages();
+                              // Navigator.pop(context);
                             }
                             if (index == 7) {
                               showSticker(context, 7);
                               //  Navigator.pop(context);
                             }
+
                             if (index == 6) {
-                              showSticker(context, 6);
+                              showGif(context);
+                              // showSticker(context, 6);
                               //  Navigator.pop(context);
+                            }
+                            if (index == 5) {
+                              GestureDetector(
+                                  onLongPressEnd: (LongPressEndDetailsd) {
+                                    print("fdfdfdf");
+                                    setState(() {
+                                      _isRecording = true;
+                                      _recordingText = false;
+                                    });
+                                    stopRecord();
+                                  },
+                                  onLongPress: () {
+                                    startRecord();
+                                    setState(() {
+                                      _recordingText = true;
+                                    });
+                                  },
+                                  child: Icon(Icons.mic));
                             }
                           },
                           child: Column(
@@ -1771,9 +1921,9 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         progressType: ProgressType.valuable,
         backgroundColor: const Color(0xff212121),
         progressValueColor: const Color(0xff3550B4),
-        progressBgColor: white,
-        msgColor: white,
-        valueColor: white);
+        progressBgColor: Colors.white70,
+        msgColor: Colors.white,
+        valueColor: Colors.white);
 
     /// Added to test late loading starts
     await Future.delayed(const Duration(milliseconds: 3000));
@@ -1783,14 +1933,16 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       i++;
       await Future.delayed(const Duration(milliseconds: 100));
     }
+
     sendMessage();
   }
 
+  String? newUrl;
   uploadMessageFile() async {
     setState(() {
       isUploadFile = true;
     });
-    _customProgress(context);
+
     var headers = {
       'Cookie':
           'PHPSESSID=889a1b67168f738c3c7e93ce07601f99; _us=1674205168; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-01-19%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; src=1'
@@ -1811,6 +1963,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       request.files
           .add(await http.MultipartFile.fromPath('attachment[]', docPath!));
     }
+    if (recordFilePath != null) {
+      request.files.add(
+          await http.MultipartFile.fromPath('attachment[]', recordFilePath!));
+    }
     // for (int i = 0; i < imageFileList!.length; i++) {
     //   request.files.add(
     //       await http.MultipartFile.fromPath('attachment[]',  imageFileList![i].path));
@@ -1827,10 +1983,18 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      //print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
-      comaSepread = body['comma_seperated_string'];
+      String trimmedString = body['comma_seperated_string'];
+      comaSepread = trimmedString
+          .toString()
+          .replaceAll('application/octet-stream', 'audio/mp4');
+      print("newcomasepread${comaSepread}");
+      // print("trimmedString${trimmedString}");
+
       setState(() {
+        _customProgress(context);
         comaSepread;
       });
 
@@ -1842,7 +2006,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
       // coomas.toString().split(',');
       // newComaSpreated = coomas;
       // newComaSpreated.toString().replaceFirst('application/octet-stream', 'image/png');
+      print("newUrl== ${newUrl.toString()}");
+      print("comaSepread== ${comaSepread.toString()}");
     } else {
+      print(response.reasonPhrase);
       setState(() {
         isUploadFile = false;
       });
@@ -1872,7 +2039,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   reportUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: white,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -1911,6 +2078,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                     return GestureDetector(
                       onTap: () {
                         msgForReport = report[curentIndx];
+                        print("report msg ==${msgForReport}");
                         reportUser();
                         setState(() {});
                         Navigator.pop(context);
@@ -1948,7 +2116,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   succedRepotBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: white,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -1977,13 +2145,13 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
               const SizedBox(
                 height: 15,
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
                 backgroundColor: Color(0xffFF9200),
                 child: Center(
                   child: Icon(
                     Icons.done,
-                    color: white,
+                    color: Colors.white,
                     size: 28,
                   ),
                 ),
@@ -2001,10 +2169,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: const Color(0xffFF9200)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Okay',
-                      style: TextStyle(color: white),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -2019,7 +2187,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   unfollowUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: white,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -2093,10 +2261,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: const Color(0xffFD4585)),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Yes',
-                            style: TextStyle(color: white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -2117,7 +2285,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   blockUserBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: white,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -2189,10 +2357,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: const Color(0xffFD4585)),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Yes',
-                            style: TextStyle(color: white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -2215,7 +2383,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
         // constraints: BoxConstraints(
         //      minHeight: MediaQuery.of(context).size.height / 2),
         context: context,
-        backgroundColor: white,
+        backgroundColor: Colors.white,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -2330,7 +2498,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   deleteChatBottomsheet(context) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: white,
+      backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -2378,6 +2546,8 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
+                            print(
+                                "id ${widget.list[widget.currentIndex].rec_id}");
                             //  Navigator.pop(context);
                           },
                           child: Container(
@@ -2413,10 +2583,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                         borderRadius:
                                             BorderRadius.circular(100),
                                         color: const Color(0xffFD4585)),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         'Yes',
-                                        style: TextStyle(color: white),
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -2439,7 +2609,7 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
 
   showSticker(context, int index) {
     showModalBottomSheet(
-        backgroundColor: white,
+        backgroundColor: Colors.white,
         context: context,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
@@ -2564,6 +2734,151 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
                                     ),
                                     onTap: () {
                                       stickerUrl = stickerData[index];
+                                      print("gif Link is $stickerUrl");
+                                      sendMessage();
+                                      // Future.delayed(const Duration(seconds: 3), () {
+                                      //  Navigator.pop(context);
+                                      // });
+                                      //Navigator.pop(context);
+                                      //    initState();
+                                      setState(() {});
+                                    },
+                                  );
+                                });
+                          }
+                        }),
+
+                    SizedBox(
+                      height: 70,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  showGif(context) {
+    showModalBottomSheet(
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(25.0),
+          ),
+        ),
+        builder: (ctx) {
+          return Container(
+              //color: Colors.grey[600],
+              padding: EdgeInsets.all(15),
+              child: FractionallySizedBox(
+                heightFactor: 0.88,
+                child: Column(
+                  children: [
+                    //Icon and Read by
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            // Navigator.pop(context);
+                            // initState();
+                          },
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xFFF1F1F1)),
+                            child: Icon(Icons.keyboard_arrow_down_sharp),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                        ),
+                        Text(
+                          "Gif",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      controller: gifKeyWork,
+                      onChanged: (value) {
+                        //Do something with the user input.
+                      },
+                      decoration: InputDecoration(
+                        errorStyle: const TextStyle(
+                            color: Colors.redAccent, fontSize: 15),
+                        filled: true,
+                        fillColor: Colors.grey[300],
+                        hintText: 'Search',
+                        suffixIcon: Icon(Icons.search),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 2.0),
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please Enter gif';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FutureBuilder(
+                        future: getGif(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else {
+                            return GridView.builder(
+                                itemCount: stickerData.length,
+                                shrinkWrap: true,
+                                physics: ScrollPhysics(),
+                                //gifData.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  // crossAxisSpacing: 4.0,
+                                  // mainAxisSpacing: 4.0
+                                ),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 80.0,
+                                          child: Image.network(
+                                            stickerData[index],
+                                            width: 75,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      stickerUrl = stickerData[index];
+                                      print("gif Link is $stickerUrl");
                                       sendMessage();
                                       // Future.delayed(const Duration(seconds: 3), () {
                                       //  Navigator.pop(context);
@@ -2587,8 +2902,10 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
   }
 
   var stickerData = [];
+  var gifData = [];
   var stickerUrl = '';
   TextEditingController stikerKeyWork = TextEditingController();
+  TextEditingController gifKeyWork = TextEditingController();
   getSticker() async {
     var headers = {
       'Cookie':
@@ -2608,10 +2925,229 @@ class _PrivateMessageScreenState extends State<PrivateMessageScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      //  print(await response.stream.bytesToString());
       var res = await response.stream.bytesToString();
       var body = jsonDecode(res);
       stickerData = body['data'];
       setState(() {});
-    } else {}
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  getGif() async {
+    var headers = {
+      'Cookie':
+          'DO-LB="MTAuMTA2LjAuNDo0NDM="; PHPSESSID=p6t91ppmpkp92t4dmke4n6i10q; _us=1685967879; access=1; ad-con=%7B%26quot%3Bdate%26quot%3B%3A%26quot%3B2023-06-04%26quot%3B%2C%26quot%3Bads%26quot%3B%3A%5B%5D%7D; mode=day; post_privacy=0; src=1'
+    };
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://vibetag.com/app_api.php'));
+    request.fields.addAll({
+      'type': 'search_gifs_stickers',
+      'sub_type': 'get_gifs',
+      'keyword': gifKeyWork.text,
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      // print(await response.stream.bytesToString());
+      var res = await response.stream.bytesToString();
+      var body = jsonDecode(res);
+      gifData = body['data'];
+      setState(() {});
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  String recordFilePath = "";
+  Widget _onRecordingText() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Center(
+          child: Text(
+            "Recoding Audio.....",
+            style: TextStyle(
+              fontSize: 15.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecordingView() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.orange,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            statusText,
+            style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  child: CustButton(
+                onTap: play,
+                title: 'Play',
+                fontSize: 14,
+                height: 38,
+              )),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: CustButton(
+                onTap: () {
+                  _isRecording = false;
+                  play(pause: true);
+                  recordFilePath = '';
+                  setState(() {});
+                },
+                title: 'Cancel',
+                fontSize: 14,
+                height: 38,
+              )),
+              SizedBox(
+                width: 10,
+              ),
+              statusText == "Record complete"
+                  ? Expanded(
+                      child: CustButton(
+                      onTap: () async {
+                        print("recording path $recordFilePath");
+                        uploadMessageFile();
+                        //commentApi();
+                        Fluttertoast.showToast(msg: "Voice send successfully");
+
+                        //    Get.to(MyHomePage());
+                        // await _postMessage();
+                      },
+                      title: 'Send',
+                      fontSize: 14,
+                      height: 38,
+                    ))
+                  : Container(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void play({bool pause = false}) {
+    if (recordFilePath != null && File(recordFilePath).existsSync()) {
+      if (pause) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play(
+          UrlSource(recordFilePath),
+        );
+      }
+    }
+  }
+
+  void playAudio() {
+    print("url in function is =  $urlAudio");
+    if (urlAudio != null) {
+      if (pause) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play(
+          UrlSource(urlAudio),
+        );
+      }
+    }
+  }
+
+  Future<String> getFilePath() async {
+    Directory storageDirectory = await getApplicationDocumentsDirectory();
+    String sdPath = storageDirectory.path + "/record";
+    var d = Directory(sdPath);
+    if (!d.existsSync()) {
+      d.createSync(recursive: true);
+    }
+    return sdPath + "/test_.mp3";
+  }
+
+  void stopRecord() {
+    bool s = RecordMp3.instance.stop();
+    if (s) {
+      statusText = "Record complete";
+      isComplete = true;
+      setState(() {});
+    }
+  }
+
+  void resumeRecord() {
+    bool s = RecordMp3.instance.resume();
+    if (s) {
+      statusText = "Recording...";
+      setState(() {});
+    }
+  }
+
+  Future<bool> checkPermission() async {
+    if (!await Permission.microphone.isGranted) {
+      PermissionStatus status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void startRecord() async {
+    bool hasPermission = await checkPermission();
+    if (hasPermission) {
+      statusText = "Recording...";
+      recordFilePath = await getFilePath();
+      isComplete = false;
+      RecordMp3.instance.start(recordFilePath, (type) {
+        statusText = "Record error--->$type";
+        setState(() {});
+      });
+      _isRecording = false;
+    } else {
+      statusText = "No microphone permission";
+    }
+    print(recordFilePath);
+    setState(() {});
+  }
+
+  void pauseRecord() {
+    if (RecordMp3.instance.status == RecordStatus.PAUSE) {
+      bool s = RecordMp3.instance.resume();
+      if (s) {
+        statusText = "Recording...";
+        setState(() {});
+      }
+    } else {
+      bool s = RecordMp3.instance.pause();
+      if (s) {
+        statusText = "Recording pause...";
+        setState(() {});
+      }
+    }
   }
 }
