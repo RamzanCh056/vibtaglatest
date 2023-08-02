@@ -66,9 +66,10 @@ class CommentMethods {
     required String image,
     required String post_id,
     required String stickerUrl,
+    required String gifUrl,
     required String text,
   }) async {
-    if (image == '') {
+    if (image == '' && gifUrl == '') {
       final data = {
         'type': 'comment_add',
         'post_id': post_id,
@@ -78,10 +79,19 @@ class CommentMethods {
         'text': text,
         'user_id': loginUserId.toString(),
       };
-      print('++++++++++++++++++++++++++++++++++++++++++++++');
-      print(data);
+
       final response = await API().postData(data);
       print(jsonDecode(response.body));
+    } else if (gifUrl != '') {
+      final data = {
+        'type': 'comment_add',
+        'post_id': post_id,
+        'audio': '',
+        'image_url': gifUrl,
+        'text': text,
+        'user_id': loginUserId.toString(),
+      };
+      await API().MultiPartRequest(path: image, data: data);
     } else {
       final data = {
         'type': 'comment_add',

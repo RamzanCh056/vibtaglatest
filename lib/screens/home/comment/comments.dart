@@ -35,6 +35,7 @@ class _CommentsState extends State<Comments> {
   bool isShowReactions = false;
   bool showMedia = false;
   bool showSticker = false;
+  bool showGif = false;
   List<bool> showReplyComments = [];
   int reactionBarId = 0;
   String commentId = '';
@@ -85,12 +86,23 @@ class _CommentsState extends State<Comments> {
     setState(() {});
   }
 
-  List<String> mediaText = ['Camera', 'Gallery', 'Sticker', 'Location'];
+  loadGif() async {
+    final data = {
+      'type': 'search_gifs_stickers',
+      'sub_type': 'get_gifs',
+      'keyword': textController.text,
+    };
+    final result = await API().postData(data);
+    searchedGifs = jsonDecode(result.body)['data'];
+    setState(() {});
+  }
+
+  List<String> mediaText = ['Camera', 'Gallery', 'Sticker', 'Gif'];
   List<String> mediaImage = [
     'assets/new/icons/commets_media/camera.png',
     'assets/new/icons/commets_media/gallery.png',
     'assets/new/icons/commets_media/stickers.png',
-    'assets/new/icons/commets_media/location.png'
+    'assets/new/icons/commets_media/gifs.png'
   ];
 
   selectImage() async {
@@ -258,6 +270,12 @@ class _CommentsState extends State<Comments> {
                                                   showSticker = true;
                                                   setState(() {});
                                                 }
+                                                if (i == 3) {
+                                                  showMedia = false;
+                                                  showSticker = false;
+                                                  showGif = true;
+                                                  setState(() {});
+                                                }
                                               },
                                               child: Column(
                                                 mainAxisAlignment:
@@ -379,6 +397,97 @@ class _CommentsState extends State<Comments> {
                                 ),
                               )
                             : gap(),
+                        showGif
+                            ? Positioned(
+                                bottom: 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    showGif = !showGif;
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    height: height * 0.35,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          bottom: 0,
+                                          left: 0,
+                                          child: RotatedBox(
+                                            quarterTurns: 2,
+                                            child: RawMaterialButton(
+                                              elevation: 10,
+                                              onPressed: () {},
+                                              child: CustomPaint(
+                                                painter: TrianglePainter(
+                                                  strokeColor: Colors.white,
+                                                  strokeWidth: 10,
+                                                  paintingStyle:
+                                                      PaintingStyle.fill,
+                                                ),
+                                                child: Container(
+                                                  height: 50,
+                                                  width: 40,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: height * 0.3,
+                                          margin: spacing(
+                                            horizontal: 10,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                offset: Offset.zero,
+                                                spreadRadius: 1,
+                                                blurRadius: 4,
+                                                color:
+                                                    Color.fromARGB(61, 0, 0, 0),
+                                              )
+                                            ],
+                                            color: white,
+                                            borderRadius: borderRadius(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          width: width * 0.95,
+                                          child: GridView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 5,
+                                              crossAxisSpacing: 0,
+                                              mainAxisSpacing: 0,
+                                              childAspectRatio: 1,
+                                            ),
+                                            itemCount: searchedGifs.length,
+                                            itemBuilder: (context, i) {
+                                              return InkWell(
+                                                onTap: () {
+                                                  showGif = !showGif;
+                                                  gifUrl = searchedGifs[i];
+                                                
+                                                  textController.text = '';
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                  width: width * 0.1,
+                                                  child: Image.network(
+                                                    searchedGifs[i],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : gap(),
                       ],
                     ),
                   ),
@@ -391,7 +500,9 @@ class _CommentsState extends State<Comments> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /////////////////////////
-                        (stickerUrl != '' || image != '') ? gap(h: 10) : gap(),
+                        (stickerUrl != '' || gifUrl != '' || image != '')
+                            ? gap(h: 10)
+                            : gap(),
                         Container(
                           width: width,
                           child: SingleChildScrollView(
@@ -410,6 +521,21 @@ class _CommentsState extends State<Comments> {
                                         child: ClipRRect(
                                           borderRadius: borderRadius(15),
                                           child: netImage(stickerUrl),
+                                        ),
+                                      )
+                                    : gap(),
+                                gifUrl != ''
+                                    ? Container(
+                                        margin: spacing(horizontal: 10),
+                                        height: height * 0.25,
+                                        width: width * 0.5,
+                                        decoration: BoxDecoration(
+                                            color: grayLight,
+                                            boxShadow: boxShadow,
+                                            borderRadius: borderRadius(15)),
+                                        child: ClipRRect(
+                                          borderRadius: borderRadius(15),
+                                          child: netImage(gifUrl),
                                         ),
                                       )
                                     : gap(),
@@ -466,6 +592,9 @@ class _CommentsState extends State<Comments> {
                                         if (showSticker) {
                                           loadSticker();
                                         }
+                                        if (showGif) {
+                                          loadGif();
+                                        }
                                         if (textController.text == '' &&
                                             replyTo.isNotEmpty) {
                                           replyTo = '';
@@ -495,6 +624,7 @@ class _CommentsState extends State<Comments> {
                                         post_id: widget.postId,
                                         stickerUrl: stickerUrl,
                                         text: textController.text,
+                                        gifUrl: gifUrl,
                                       );
                                       await CommentMethods().loadCommets(
                                         postId: widget.postId,

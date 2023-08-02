@@ -20,7 +20,7 @@ import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import '../../../utils/constant.dart';
 import '../../groups/group.dart';
 import '../../hast_tag/tred_screen.dart';
-import '../../playlists/playlist/playlist_sheet.dart';
+import '../../page/playlists/playlist/playlist_sheet.dart';
 
 class Post extends StatefulWidget {
   final dynamic post;
@@ -538,7 +538,7 @@ class _PostState extends State<Post> {
           SizedBox(
             height: 10,
           ),
-          widget.post['photo_album'].length > 2
+          widget.post['photo_album'].length > 0
               ? Container(
                   width: double.infinity,
                   height: height * 0.35,
@@ -555,28 +555,46 @@ class _PostState extends State<Post> {
                             borderRadius: borderRadius(7),
                             child: Stack(
                               children: [
-                                netImage(
-                                    widget.post['photo_album'][i]['image']),
-                                Positioned(
-                                  right: 10,
-                                  top: 10,
-                                  child: Container(
-                                    padding: spacing(
-                                      horizontal: 7,
-                                      vertical: 3,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: borderRadius(2.5),
-                                      color: const Color.fromARGB(54, 0, 0, 0),
-                                    ),
-                                    child: Text(
-                                      '${i + 1}/${widget.post['photo_album'].length}',
-                                      style: TextStyle(
-                                        color: white,
-                                      ),
-                                    ),
+                                Container(
+                                  width: width - 8,
+                                  child: Image.network(
+                                    widget.post['photo_album'][i]['image'],
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.image,
+                                            size: 48,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                )
+                                ),
+                                widget.post['photo_album'].length > 1
+                                    ? Positioned(
+                                        right: 10,
+                                        top: 10,
+                                        child: Container(
+                                          padding: spacing(
+                                            horizontal: 7,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: borderRadius(2.5),
+                                            color: const Color.fromARGB(
+                                                54, 0, 0, 0),
+                                          ),
+                                          child: Text(
+                                            '${i + 1}/${widget.post['photo_album'].length}',
+                                            style: TextStyle(
+                                              color: white,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : gap()
                               ],
                             ),
                           ),
@@ -584,18 +602,6 @@ class _PostState extends State<Post> {
                       }),
                 )
               : gap(),
-          // togglePlayers
-          //     ? ChewieVideoMediaPlayer(
-          //         post: widget.post,
-          //       )
-          //     : NativeVideoMediaPlayer(
-          //         videoUrl: getFullLink(
-          //           widget.post['postFile'],
-          //         ),
-          //         post_id: widget.post['post_id'].toString(),
-          //       ),
-
-          // :
           widget.post['photo_multi'] != null
               ? Container(
                   width: width,

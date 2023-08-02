@@ -108,6 +108,9 @@ dependencies:
   flutter_pdfview: ^1.2.5
   styled_text: ^5.1.0
   flutter_cached_pdfview: ^0.4.2
+  linear_progress_bar: ^1.1.0
+  scroll_date_picker: ^3.7.3
+  page_indicator: ^0.4.1
  
 
 dev_dependencies:
@@ -191,6 +194,7 @@ flutter:
     - assets/new/svg/menu/
     - assets/new/svg/bottom_drawer/
     - assets/new/gif/
+    - assets/shop/
     - assets/images/
     - assets/images/compaign/
     - assets/images/drawer/
@@ -205,6 +209,21 @@ flutter:
     - assets/svg/live/
     - assets/svg/product/
     - assets/new/icons/livestream/
+    - Asset/icons/
+    - Asset/images/
+    - Asset/icons/register/
+    - Asset/images/Movie/
+    - Asset/icons/movie/
+    - Asset/images/cart/
+    - Asset/images/order/
+    - Asset/icons/order/
+    - Asset/images/product/
+    - Asset/images/productTrend/
+    - Asset/icons/form/
+    - Asset/images/form/
+    - Asset/images/blog/
+    - Asset/images/setting/
+    - Asset/icons/settings/
     
 
   fonts:

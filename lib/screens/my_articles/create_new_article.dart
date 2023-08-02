@@ -119,6 +119,7 @@ class _CreateNewArticleState extends State<CreateNewArticle> {
             title: titleForDialog(context, 'Select catagory'),
             content:Container(
               height: 540,
+              width: width*0.75,
               child: FutureBuilder(
                   future:  getBlogCatagories(),
                   builder: (context,AsyncSnapshot snapshot) {
@@ -683,85 +684,6 @@ class _CreateNewArticleState extends State<CreateNewArticle> {
               ),
               const SizedBox(
                 height: 20,
-              ),
-              Container(
-                height: 200,
-                color: const Color(0xFFFF9200),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Market Place\nTerms",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Your\nWishlist",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Refund\nPolicy",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "On Sale\nItems",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Start\nSelling",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Find Help &\nSupport",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: const [
-                    Text("C 2022 VibeTag"),
-                    Spacer(),
-                    Text("C 2022 VibeTag"),
-                  ],
-                ),
               ),
             ],
           ),

@@ -1,14 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:vibetag/screens/blog/recent.dart';
+import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/widgets/footer.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
-import 'package:vibetag/widgets/search_bar.dart';
 import 'package:vibetag/widgets/secondary_footer.dart';
 
 import '../../utils/constant.dart';
@@ -22,7 +22,72 @@ class SavedPost extends StatefulWidget {
 
 class _SavedPostState extends State<SavedPost> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+  List<dynamic> response = [];
   final TextEditingController search = TextEditingController();
+  List<Widget> savedPosts = [];
+  List<String> postIds = [];
+  bool isLoading = false;
+  bool isNoMorePosts = false;
+  bool isAlreadyCalled = false;
+  getSavedPosts() async {
+    isLoading = true;
+    setState(() {});
+    final result = await API().postData({
+      'type': 'saved_posts',
+      'action': 'get_saved_posts',
+      'user_id': '${loginUserId}',
+    });
+    response = jsonDecode(result.body);
+    for (var post in response) {
+      postIds.add(post['id']);
+    }
+    savedPosts = PostMethods().setPosts(posts: response);
+
+    isLoading = false;
+    if (response.length == 0) {
+      isNoMorePosts = true;
+    }
+    setState(() {});
+  }
+
+  loadMoreSavePosts() async {
+    List<dynamic> loadmore = [];
+    if (response.length > 0) {
+      isAlreadyCalled = true;
+      final result = await API().postData({
+        'type': 'saved_posts',
+        'action': 'get_more_saved_posts',
+        'user_id': '${loginUserId}',
+        'after_post_id': response[(response.length - 1)]['post_id'].toString()
+      });
+      loadmore = jsonDecode(result.body);
+      for (var post in loadmore) {
+        if (!(postIds.contains(post['id'].toString()))) {
+          response.add(post);
+          postIds.add(post['id'].toString());
+        }
+      }
+
+      List<Widget> loadMorePosts = PostMethods().setPosts(posts: response);
+      if (loadMorePosts.length > 0) {
+        for (var post in loadMorePosts) {
+          savedPosts.add(post);
+        }
+      } else {
+        isNoMorePosts = true;
+        setState(() {});
+      }
+      isAlreadyCalled = false;
+
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    getSavedPosts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,201 +97,44 @@ class _SavedPostState extends State<SavedPost> {
       drawer: DrawerMenu(),
       key: _key,
       body: SafeArea(
-        child: Container(
-          width: width,
-          height: height,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    NavBar(),
-                    Header(
-                    
-                    )
-                  ],
-                ),
-                Container(
-                  height: height,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          width: width * 0.95,
-                          height: height * 0.85,
-                          child: ListView.builder(
-                            itemCount: 10,
-                            itemBuilder: (context, i) => Container(
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(
-                                  width * 0.02,
+        child: isLoading
+            ? loadingSpinner()
+            : Container(
+                width: width,
+                height: height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [NavBar(), Header()],
+                      ),
+                      Column(
+                        children: savedPosts,
+                      ),
+                      VisibilityDetector(
+                        key: Key('Saved post load more'),
+                        onVisibilityChanged: (info) {
+                          if (info.visibleFraction > 0.5 && !isAlreadyCalled) {
+                            loadMoreSavePosts();
+                          }
+                        },
+                        child: isNoMorePosts
+                            ? Center(
+                                child: Column(
+                                  children: [
+                                    gap(h: 25),
+                                    Text('No more posts'),
+                                    gap(h: 25),
+                                  ],
                                 ),
-                              ),
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    leading: const CircleAvatar(
-                                      foregroundImage: AssetImage(
-                                          'assets/images/streamer.jpg'),
-                                    ),
-                                    title: Text('David Millan'),
-                                    subtitle: Row(
-                                      children: [
-                                        const Text('5 minutes ago'),
-                                        SizedBox(
-                                          width: width * 0.02,
-                                        ),
-                                        Container(
-                                          width: width * 0.04,
-                                          child: SvgPicture.asset(
-                                            'assets/svg/globe.svg',
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    trailing: const Icon(
-                                      Icons.more_horiz,
-                                    ),
-                                  ),
-                                  Image.asset('assets/images/cover.jpg'),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  Padding(
-                                    padding: spacing(
-                                      horizontal: width * 0.01,
-                                      vertical: 0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 30,
-                                              child: Image.asset(
-                                                'assets/icons/like1.png',
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: width * 0.02,
-                                            ),
-                                            Column(
-                                              children: const [
-                                                Text(
-                                                  'Likes',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  '465',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 30,
-                                              child: Image.asset(
-                                                'assets/icons/comment1.png',
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: width * 0.02,
-                                            ),
-                                            Column(
-                                              children: const [
-                                                Text(
-                                                  'Comments',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  '321',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 30,
-                                              child: Image.asset(
-                                                'assets/icons/revibe1.png',
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: width * 0.02,
-                                            ),
-                                            Column(
-                                              children: const [
-                                                Text(
-                                                  'Revibed',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  '212',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                              )
+                            : loadingSpinner(),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                SecondaryFooter(),
-                AppFooter(),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }

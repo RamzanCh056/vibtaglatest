@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import 'package:vibetag/screens/buzz/buzz.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_sheet.dart';
+import 'package:vibetag/screens/new_shop/shop.dart';
 
 import 'package:vibetag/screens/shop/shop.dart';
 import 'package:vibetag/screens/trending/trending.dart';
@@ -79,7 +80,7 @@ class _FrontPageState extends State<FrontPage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   bool isLoading = false;
   Map<String, dynamic> user = {};
-  int currentIndex = 0;
+  int currentIndex = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class _FrontPageState extends State<FrontPage> {
       Home(),
       Trending(),
       Buzzin(),
-      Shop(),
+      ShopScreen(),
       Market(),
     ];
     double width = deviceWidth(context: context);

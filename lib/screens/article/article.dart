@@ -89,7 +89,7 @@ class _ArticleState extends State<Article> {
                                     if (value == 1) {
                                       pushRoute(
                                         context: context,
-                                        screen: const Blogs(),
+                                        screen:Blogs(),
                                       );
                                     }
                                     if (value == 2) {

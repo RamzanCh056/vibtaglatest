@@ -509,6 +509,7 @@ List<dynamic> comments = [];
 String comment_id = '';
 String replyTo = '';
 List<dynamic> stickers = [];
+List<dynamic> searchedGifs = [];
 
 Map<String, dynamic> loginUser = {};
 
@@ -520,9 +521,9 @@ isEmpty(list) {
   }
 }
 
-String setName(String name) {
-  if (name.length > 17) {
-    return name.substring(0, 13).toString() + '...';
+String setName(String name, {int length = 13}) {
+  if (name.length > (length + 4)) {
+    return name.substring(0, length).toString() + '...';
   }
   return name;
 }
@@ -610,3 +611,5 @@ List<String> postReports = [
 Widget assetImage(String path) {
   return Image.asset(path);
 }
+
+String gifUrl = '';

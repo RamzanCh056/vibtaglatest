@@ -6,6 +6,7 @@ import 'package:vibetag/screens/AddProductScreen/add_product_screen.dart';
 import 'package:vibetag/screens/home/create_post/create_poll.dart';
 import 'package:vibetag/screens/home/create_post/post_audience.dart';
 import 'package:vibetag/screens/home/create_post/post_category.dart';
+import 'package:vibetag/screens/home/create_post/select_gif.dart';
 import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import '../../../utils/constant.dart';
 import 'dart:convert';
@@ -552,6 +553,7 @@ class _CreatePostState extends State<CreatePost> {
             ),
           ),
           gap(h: 15),
+
           Container(
               height: selectedImage != null ? 190 : 100,
               width: double.infinity,
@@ -735,6 +737,27 @@ class _CreatePostState extends State<CreatePost> {
                       )),
                 )
               : Container(),
+          gifUrl != ''
+              ? Container(
+                  width: double.infinity,
+                  margin: spacing(horizontal: 7),
+                  alignment: Alignment.centerLeft,
+                  child: ClipRRect(
+                    borderRadius: borderRadius(5),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        boxShadow: boxShadow,
+                      ),
+                      child: Image.network(
+                        gifUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                )
+              : gap(),
           Visibility(
             visible: _isShowColor,
             child: SizedBox(
@@ -1063,8 +1086,12 @@ class _CreatePostState extends State<CreatePost> {
                       setState(() {});
                     }
                     if (i == 9) {
-                      await selectMusicFile();
-                      setState(() {});
+                      // await selectMusicFile();
+                      // setState(() {});
+                      createBottomModalSheet(
+                        context: context,
+                        screen: SelectGif(),
+                      );
                     }
                     if (i == 7) {
                       // pop(context);

@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:vibetag/screens/blog/recent.dart';
-import 'package:vibetag/screens/shop/drop_down_list.dart';
 import 'package:vibetag/widgets/footer.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
-import 'package:vibetag/widgets/search_bar.dart';
-import 'package:vibetag/widgets/secondary_footer.dart';
 
 import '../../utils/constant.dart';
-import '../../widgets/custom_painter.dart';
 
 class PageScreen_Old extends StatefulWidget {
   const PageScreen_Old({super.key});

@@ -103,7 +103,6 @@ class PostMethods {
       'reaction': reactionValue,
     };
     final result = await API().postData(data);
- 
   }
 
   getPageCategories() async {
@@ -203,7 +202,8 @@ class PostMethods {
             _posts.add(PostAds(
               post: posts[i],
             ));
-          } else if (posts[i]['poll_id'].toString() != '0' && posts[i]['blog_id'] == '0') {
+          } else if (posts[i]['poll_id'].toString() != '0' &&
+              posts[i]['blog_id'] == '0') {
             _posts.add(PoolPost(
               post: posts[i],
             ));
@@ -267,7 +267,7 @@ class PostMethods {
   }
 
   Future<void> addVideoView(String postId) async {
-    await API().postData({
+    final result = await API().postData({
       'type': 'posts_operations',
       'sub_type': 'add_audio_video_views',
       'user_id': '${loginUserId}',

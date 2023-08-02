@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:vibetag/front.dart';
+import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/screens/video_player/suggested_videos_link.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -335,6 +337,7 @@ class _VideoScreenLinkVideoState extends State<VideoScreenLinkVideo> {
       onWillPop: () async {
         await controller.pause();
         await controller.dispose();
+        Provider.of<PostProvider>(context, listen: false).clear();
         pushReplacement(
           context: context,
           screen: FrontPage(),
@@ -874,6 +877,8 @@ class _VideoScreenLinkVideoState extends State<VideoScreenLinkVideo> {
                                                             children: [
                                                               InkWell(
                                                                 onTap: () {
+                                                                  controller
+                                                                      .pause();
                                                                   if (post['publisher']
                                                                           [
                                                                           'page_id'] !=
@@ -917,6 +922,8 @@ class _VideoScreenLinkVideoState extends State<VideoScreenLinkVideo> {
                                                                 children: [
                                                                   InkWell(
                                                                     onTap: () {
+                                                                      controller
+                                                                          .pause();
                                                                       if (post['publisher']
                                                                               [
                                                                               'page_id'] !=

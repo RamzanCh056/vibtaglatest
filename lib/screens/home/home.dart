@@ -93,23 +93,7 @@ class _HomeState extends State<Home> {
       isLoading = true;
     });
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (preferences.getString('userData') != null) {
-      Map<String, dynamic> userData =
-          jsonDecode(preferences.getString('userData')!);
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        userData,
-      );
-    }
-    // if (preferences.getString('posts') != null) {
-    //   List<dynamic> preferencesPosts =
-    //       jsonDecode(preferences.getString('posts')!);
-    //   PostMethods().setSharedPreferencePosts(
-    //     posts: preferencesPosts,
-    //     context: context,
-    //   );
-    // }
-
+    await AuthMethod().setUser(context: context);
     modelUser = Provider.of<UserProvider>(
       context,
       listen: false,
@@ -137,10 +121,7 @@ class _HomeState extends State<Home> {
         screen: const AddPhoto(),
       );
     }
-    if (preferences.getString('posts') != null) {
-      // await PostMethods().getPosts(context: context);
-      // await AuthMethod().setUser(context: context);
-    }
+
     if (modelUser.isNotEmpty) {
       await AuthMethod().setUser(
         context: context,
@@ -185,6 +166,9 @@ class _HomeState extends State<Home> {
     double width = deviceWidth(context: context);
     double height = deviceHeight(context: context);
     posts = Provider.of<PostProvider>(context, listen: false).posts;
+    if (posts.length == 0) {
+      setUser();
+    }
 
     if (!isEnabledCallEvents) {
       callEvents(context);

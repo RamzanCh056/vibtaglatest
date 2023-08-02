@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:vibetag/screens/playlists/playlist/playlist_sheet.dart';
+import 'package:vibetag/screens/page/playlists/playlist/playlist_sheet.dart';
 import 'package:vibetag/screens/video_player/video_player_landscap.dart';
 import 'package:vibetag/screens/video_player/video_setting.dart';
 import 'package:vibetag/utils/constant.dart';

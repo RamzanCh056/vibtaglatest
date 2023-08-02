@@ -4,26 +4,27 @@ import 'package:provider/provider.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
-import 'package:vibetag/screens/album/album.dart';
 import 'package:vibetag/screens/article/widgets.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
 import 'package:vibetag/screens/drawer/see_more_popup.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/gift/gift.dart';
+import 'package:vibetag/screens/groups/group_setting/group_setting_screen.dart';
 import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
 import 'package:vibetag/screens/page/page.dart';
+import 'package:vibetag/screens/page/setting/page%20general%20setting.dart';
+import 'package:vibetag/screens/page/setting/my_page_screen.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/screens/saved_post/saved_post.dart';
-import 'package:vibetag/screens/shop/cart.dart';
 import 'package:vibetag/screens/shop/product/my_products.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 
 import '../../utils/constant.dart';
 import '../events/events.dart';
 import '../explore/explore.dart';
-import '../playlists/playlist.dart';
+import '../page/playlists/playlist.dart';
 
 BottomDrawer({required BuildContext context}) {
   double width = deviceWidth(context: context);
@@ -145,17 +146,17 @@ BottomDrawer({required BuildContext context}) {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/album.svg',
-                      title: 'Album',
-                      notifications: 0,
-                      onTap: () {
-                        pushReplacement(
-                          context: context,
-                          screen: AlbumScreen(),
-                        );
-                      },
-                    ),
+                    // BottomModalItems(
+                    //   iconPath: 'assets/new/svg/bottom_drawer/album.svg',
+                    //   title: 'Album',
+                    //   notifications: 0,
+                    //   onTap: () {
+                    //     pushReplacement(
+                    //       context: context,
+                    //       screen: AlbumScreen(),
+                    //     );
+                    //   },
+                    // ),
                     BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/Saved posts.svg',
                       title: 'Saved Post',
@@ -221,23 +222,21 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Groups(),
+                          screen: MyGroupScreen(),
                         );
                       },
                     ),
-                    BottomModalItems(
-                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
-                      title: 'My Page',
-                      notifications: 0,
-                      onTap: () {
-                        pushReplacement(
-                          context: context,
-                          screen: PageScreen(
-                            page_id: 1.toString(),
-                          ),
-                        );
-                      },
-                    ),
+                    // BottomModalItems(
+                    //   iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                    //   title: 'My Page',
+                    //   notifications: 0,
+                    //   onTap: () {
+                    //     pushReplacement(
+                    //       context: context,
+                    //       screen: MyPageScreen(),
+                    //     );
+                    //   },
+                    // ),
                     BottomModalItems(
                       iconPath: 'assets/new/svg/bottom_drawer/blog.svg',
                       title: 'Blog',

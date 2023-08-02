@@ -68,6 +68,20 @@ class _PostBottomBarState extends State<PostBottomBar> {
     await PostMethods().savePost(postId);
   }
 
+  pinPost() async {
+    hidePostIds.add('${widget.post['id']}');
+    final response = await API().postData({
+      'type': 'posts_operations',
+      'sub_type': 'pin_post',
+      'post_type': 'profile',
+      'item_id': '${loginUserId}',
+      'user_id': '${loginUserId}',
+      'post_id': widget.post['id'].toString(),
+    });
+    ToastMessage(message: jsonDecode(response.body)['text']);
+    pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -145,15 +159,23 @@ class _PostBottomBarState extends State<PostBottomBar> {
                   )
                 : gap(),
             widget.is_publisher
-                ? BarItems(
-                    icon: 'assets/new/icons/buzzin/new_tab.png',
-                    text: 'Pin Post',
+                ? InkWell(
+                    onTap: () {
+                      pinPost();
+                    },
+                    child: BarItems(
+                      icon: 'assets/new/icons/buzzin/new_tab.png',
+                      text: 'Pin Post',
+                    ),
                   )
                 : gap(),
             widget.is_publisher
-                ? BarItems(
-                    icon: 'assets/new/icons/buzzin/new_tab.png',
-                    text: 'Boast Post',
+                ? InkWell(
+                    onTap: () {},
+                    child: BarItems(
+                      icon: 'assets/new/icons/buzzin/new_tab.png',
+                      text: 'Boast Post',
+                    ),
                   )
                 : gap(),
             widget.is_publisher

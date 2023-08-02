@@ -41,8 +41,10 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
       widget.videoUrl.toString(),
     )..initialize().then(
         (_) {
+          setState(() {});
           controller.play();
           controller.setLooping(true);
+          controller.addListener(videoListener);
           Timer(Duration(seconds: 3), () {
             if (mounted) {
               setState(() {
@@ -59,6 +61,11 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
       isViewAdd = true;
       addVideoView();
     }
+    if (controller.value.isPlaying) {
+      isMuted ? controller.setVolume(0) : controller.setVolume(1);
+    } else {
+      controller.setVolume(0);
+    }
   }
 
   addVideoView() async {
@@ -68,10 +75,8 @@ class _BuzzinPlayerState extends State<BuzzinPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    double width = deviceWidth(context: context);
-    double height = deviceHeight(context: context);
-    isMuted ? controller.setVolume(0) : controller.setVolume(1);
-
+    width = deviceWidth(context: context);
+    height = deviceHeight(context: context);
     return Stack(
       children: [
         controller.value.isInitialized

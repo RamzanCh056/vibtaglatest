@@ -123,9 +123,9 @@ class _PostTabProfileState extends State<PostTabProfile> {
                 widget.user_id.toString() == loginUserId.toString()
                     ? gap(h: 10)
                     : gap(),
-                widget.user_id.toString() == loginUserId.toString()
-                    ? createPost(modelUser)
-                    : gap(),
+                // widget.user_id.toString() == loginUserId.toString()
+                //     ? createPost(modelUser)
+                //     : gap(),
                 gap(h: 10),
                 Column(
                   children: posts,

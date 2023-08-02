@@ -45,4 +45,8 @@ class PostProvider with ChangeNotifier {
     _posts = [];
     notifyListeners();
   }
+
+   clearOnly() {
+    _posts = [];
+  }
 }

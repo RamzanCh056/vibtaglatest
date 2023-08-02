@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import 'package:vibetag/provider/userProvider.dart';
 import 'package:vibetag/screens/activties/activities.dart';
-import 'package:vibetag/screens/album/album.dart';
-import 'package:vibetag/screens/article/widgets.dart';
-import 'package:vibetag/screens/blog/blog.dart';
 import 'package:vibetag/screens/blog/blogs.dart';
-import 'package:vibetag/screens/chat/chat_Tile.dart';
-import 'package:vibetag/screens/chat/chat_details.dart';
 import 'package:vibetag/screens/drawer/bottom_modal_items.dart';
 import 'package:vibetag/screens/drawer/see_more_popup.dart';
-import 'package:vibetag/screens/events/events_old_version.dart';
 import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
 import 'package:vibetag/screens/gift/gift.dart';
+import 'package:vibetag/screens/groups/group_setting/group_setting_screen.dart';
 import 'package:vibetag/screens/groups/groups.dart';
 import 'package:vibetag/screens/my_articles/my_article_main_screen.dart';
 import 'package:vibetag/screens/nudge/nudge.dart';
-import 'package:vibetag/screens/page/page.dart';
-import 'package:vibetag/screens/page/page_old.dart';
-import 'package:vibetag/screens/playlists/playlists_detail.dart';
+import 'package:vibetag/screens/page/setting/my_page_screen.dart';
 import 'package:vibetag/screens/product_newUI/screens/MainProduct.dart';
 import 'package:vibetag/screens/product_newUI/screens/product_trending.dart';
 import 'package:vibetag/screens/profile/profile.dart';
@@ -36,9 +27,8 @@ import '../album/my_album.dart';
 import '../events/events.dart';
 import '../explore/explore.dart';
 import '../find_friend/filter_screen.dart';
-import '../my_page_screen/browse_event_screen.dart';
-import '../my_page_screen/my_page.dart';
-import '../playlists/playlist.dart';
+import '../page/my_page_screen/browse_event_screen.dart';
+import '../page/playlists/playlist.dart';
 import '../vibtag_boster/boster_home.dart';
 
 BottomDrawer({required BuildContext context}) {
@@ -275,7 +265,18 @@ BottomDrawer({required BuildContext context}) {
                       onTap: () {
                         pushReplacement(
                           context: context,
-                          screen: Groups(),
+                          screen: MyGroupScreen(),
+                        );
+                      },
+                    ),
+                    BottomModalItems(
+                      iconPath: 'assets/new/svg/bottom_drawer/mypage.svg',
+                      title: 'My Page',
+                      notifications: 0,
+                      onTap: () {
+                        pushReplacement(
+                          context: context,
+                          screen: MyPageScreen(),
                         );
                       },
                     ),

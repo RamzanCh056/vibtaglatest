@@ -95,7 +95,7 @@ class _TrendingState extends State<Trending> {
     }
 
     for (var tag in getTrending['trending_hashtags']) {
-      trendingHashTag.add(HashTrendWidget(hash: tag['tag']));
+      trendingHashTag.add(HashTrendWidget(hash: tag));
     }
 
     for (var video in getTrending['latest_videos']) {
@@ -199,6 +199,8 @@ class _TrendingState extends State<Trending> {
                                 trendVibesToday.length == 0
                                     ? gap()
                                     : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Popular Vibes Today',

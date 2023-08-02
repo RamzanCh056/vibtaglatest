@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:vibetag/front.dart';
+import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import 'package:vibetag/widgets/setup_pop.dart';
 
@@ -35,6 +37,7 @@ class _NavBarState extends State<NavBar> {
             children: [
               InkWell(
                 onTap: () {
+                  Provider.of<PostProvider>(context, listen: false).clear();
                   pushReplacement(
                     context: context,
                     screen: const FrontPage(),

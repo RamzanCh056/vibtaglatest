@@ -13,6 +13,14 @@ class API {
     );
   }
 
+  Future<Map<String, dynamic>> newPostData(data) async {
+    final result = await http.post(
+      Uri.parse(API_Url),
+      body: data,
+    );
+    return jsonDecode(result.body);
+  }
+
   getData({required Map<String, dynamic> data}) async {
     String url = API_Url;
     final response = await http.get(Uri.parse(url));

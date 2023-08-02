@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:vibetag/methods/api.dart';
+import 'package:vibetag/screens/activties/view_post.dart';
 import 'package:vibetag/screens/drawer/drawer.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/utils/constant.dart';
@@ -28,7 +29,7 @@ class Activities extends StatefulWidget {
 class _ActivitiesState extends State<Activities> {
   final GlobalKey<ScaffoldState> key = GlobalKey();
   List<dynamic> activities = [];
-  int currentActive = 0;
+  int currentActive = 1;
   bool isLoading = false;
   List<String> buttonText = [
     'Activities',
@@ -60,7 +61,7 @@ class _ActivitiesState extends State<Activities> {
 
   String reactionType(String reactionType, Map<String, dynamic> activity) {
     if (reactionType.contains('post')) {
-      return ' reacted to ${activity['postData']['publisher']['name']} post.';
+      return ' reacted to ${activity['activator']['name']} post.';
     }
     if (reactionType.contains('friend')) {
       return ' started following you';
@@ -100,10 +101,10 @@ class _ActivitiesState extends State<Activities> {
                     Header(),
                   ],
                 ),
-                gap(h: 10),
+                gap(h: 5),
                 Container(
                   width: double.infinity,
-                  height: height * 0.05,
+                  height: 40,
                   child: ListView.builder(
                     itemCount: buttonText.length,
                     scrollDirection: Axis.horizontal,
@@ -143,111 +144,113 @@ class _ActivitiesState extends State<Activities> {
                     },
                   ),
                 ),
-                gap(h: 15),
-                isLoading
-                    ? loadingSpinner()
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: activities.length,
-                        itemBuilder: (context, i) {
-                          return Container(
-                            margin: spacing(vertical: 5),
-                            padding: spacing(vertical: 7),
-                            decoration: BoxDecoration(
-                              color: white,
-                            ),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        pushRoute(
-                                            context: context,
-                                            screen: Profile(
-                                              user_id: activities[i]
-                                                  ['activator']['user_id'],
-                                            ));
-                                      },
-                                      child: CircleAvatar(
-                                        radius: width * 0.07,
-                                        foregroundImage: NetworkImage(
-                                            activities[i]['activator']
-                                                ['avatar']),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                          borderRadius: borderRadius(25),
-                                        ),
-                                        child: reactionIcons(
-                                          activities[i]['activity_type'],
+                gap(h: 7),
+              currentActive==1? ViewPosts():  Container(
+                  child: isLoading
+                      ? loadingSpinner()
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: activities.length,
+                          itemBuilder: (context, i) {
+                            return Container(
+                              margin: spacing(vertical: 5),
+                              padding: spacing(vertical: 7),
+                              decoration: BoxDecoration(
+                                color: white,
+                              ),
+                              child: Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          pushRoute(
+                                              context: context,
+                                              screen: Profile(
+                                                user_id: activities[i]
+                                                    ['activator']['user_id'],
+                                              ));
+                                        },
+                                        child: CircleAvatar(
+                                          radius: width * 0.07,
+                                          foregroundImage: NetworkImage(
+                                              activities[i]['activator']
+                                                  ['avatar']),
                                         ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                gap(
-                                  w: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            pushRoute(
-                                                context: context,
-                                                screen: Profile(
-                                                  user_id: activities[i]
-                                                      ['activator']['user_id'],
-                                                ));
-                                          },
-                                          child: Text(
-                                            activities[i]['activator']['name'],
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                            borderRadius: borderRadius(25),
+                                          ),
+                                          child: reactionIcons(
+                                            activities[i]['activity_type'],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  gap(
+                                    w: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              pushRoute(
+                                                  context: context,
+                                                  screen: Profile(
+                                                    user_id: activities[i]
+                                                        ['activator']['user_id'],
+                                                  ));
+                                            },
+                                            child: Text(
+                                              activities[i]['activator']['name'],
+                                              style: TextStyle(
+                                                color: blackPrimary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            reactionType(
+                                              activities[i]['activity_type'],
+                                              activities[i],
+                                            ),
                                             style: TextStyle(
                                               color: blackPrimary,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14,
+                                              fontSize: 12,
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          reactionType(
-                                            activities[i]['activity_type'],
-                                            activities[i],
-                                          ),
-                                          style: TextStyle(
-                                            color: blackPrimary,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    gap(h: 5),
-                                    Text(
-                                      readTimestamp(int.parse(
-                                          activities[i]['time'].toString())),
-                                      style: TextStyle(
-                                        color: blackPrimary,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      )
+                                      gap(h: 5),
+                                      Text(
+                                        readTimestamp(int.parse(
+                                            activities[i]['time'].toString())),
+                                        style: TextStyle(
+                                          color: blackPrimary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                )
               ],
             ),
           ),

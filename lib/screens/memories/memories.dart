@@ -3,7 +3,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:vibetag/screens/blog/recent.dart';
 import 'package:vibetag/widgets/footer.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';

@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:vibetag/methods/auth_method.dart';
+import 'package:vibetag/methods/api.dart';
 
+import 'package:vibetag/methods/auth_method.dart';
+import 'package:vibetag/screens/home/post_methods/post_methods.dart';
+import 'package:vibetag/screens/home/post_models/post_modal.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
 import '../../utils/constant.dart';
@@ -9,9 +12,11 @@ import '../header/header.dart';
 
 class Explore extends StatefulWidget {
   final Map<String, dynamic> search;
-  const Explore({
+  bool isSearched;
+  Explore({
     Key? key,
     required this.search,
+    this.isSearched = true,
   }) : super(key: key);
 
   @override
@@ -20,7 +25,26 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   bool isLiking = false;
+  List<Widget> explorePosts = [];
   bool isFollowing = false;
+  @override
+  void initState() {
+    if (widget.isSearched) {
+      setData();
+    } else {
+      getExplore();
+    }
+    super.initState();
+  }
+
+  setData() {
+    explorePosts = PostMethods().setPosts(posts: widget.search['posts']);
+  }
+
+  getExplore() async {
+    await API().newPostData({});
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = deviceWidth(context: context);
@@ -45,7 +69,7 @@ class _ExploreState extends State<Explore> {
                   children: [
                     DefaultTabController(
                       length: 4,
-                      initialIndex: 1,
+                      initialIndex: 0,
                       child: Column(
                         children: [
                           Container(
@@ -77,7 +101,9 @@ class _ExploreState extends State<Explore> {
                             height: height * 0.82,
                             child: TabBarView(
                               children: [
-                                Container(),
+                                ListView(
+                                  children: explorePosts,
+                                ),
                                 Container(
                                   child: SingleChildScrollView(
                                     child: Column(
@@ -209,8 +235,8 @@ class _ExploreState extends State<Explore> {
                                                                       .center,
                                                               children: [
                                                                 Container(
-                                                                  width: width *
-                                                                      0.2,
+                                                                  width: 50,
+                                                                  height: 50,
                                                                   padding: spacing(
                                                                       horizontal:
                                                                           2,
@@ -536,174 +562,174 @@ class _ExploreState extends State<Explore> {
                                                                   ),
                                                                 ),
                                                                 gap(h: 15),
-                                                                Container(
-                                                                  margin:
-                                                                      spacing(
-                                                                    horizontal:
-                                                                        15,
-                                                                  ),
-                                                                  padding:
-                                                                      spacing(
-                                                                    horizontal:
-                                                                        15,
-                                                                    vertical:
-                                                                        15,
-                                                                  ),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color:
-                                                                        grayLight,
-                                                                    borderRadius:
-                                                                        borderRadius(
-                                                                            10),
-                                                                  ),
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Container(
-                                                                        padding:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              10,
-                                                                        ),
-                                                                        margin:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              5,
-                                                                        ),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          border:
-                                                                              Border(
-                                                                            bottom:
-                                                                                BorderSide(
-                                                                              width: 2,
-                                                                              color: grayMed,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Text('Hours'),
-                                                                            Row(
-                                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                                              children: [
-                                                                                Container(
-                                                                                  width: 10,
-                                                                                  height: 10,
-                                                                                  decoration: BoxDecoration(
-                                                                                    borderRadius: borderRadius(width),
-                                                                                    color: green,
-                                                                                  ),
-                                                                                ),
-                                                                                gap(w: 5),
-                                                                                Text('Open Now'),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Container(
-                                                                        padding:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              10,
-                                                                        ),
-                                                                        margin:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              5,
-                                                                        ),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          border:
-                                                                              Border(
-                                                                            bottom:
-                                                                                BorderSide(
-                                                                              width: 2,
-                                                                              color: grayMed,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Text('Open Days'),
-                                                                            Text('Mon - Sat'),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Container(
-                                                                        padding:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              10,
-                                                                        ),
-                                                                        margin:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              5,
-                                                                        ),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          border:
-                                                                              Border(
-                                                                            bottom:
-                                                                                BorderSide(
-                                                                              width: 2,
-                                                                              color: grayMed,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Text('Closed Day'),
-                                                                            Text('Sun Only'),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Container(
-                                                                        padding:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              10,
-                                                                        ),
-                                                                        margin:
-                                                                            spacing(
-                                                                          vertical:
-                                                                              5,
-                                                                        ),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          border:
-                                                                              Border(
-                                                                            bottom:
-                                                                                BorderSide(
-                                                                              width: 2,
-                                                                              color: grayMed,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Text('Open Hours'),
-                                                                            Text('12PM - 8PM'),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
+                                                                // Container(
+                                                                //   margin:
+                                                                //       spacing(
+                                                                //     horizontal:
+                                                                //         15,
+                                                                //   ),
+                                                                //   padding:
+                                                                //       spacing(
+                                                                //     horizontal:
+                                                                //         15,
+                                                                //     vertical:
+                                                                //         15,
+                                                                //   ),
+                                                                //   decoration:
+                                                                //       BoxDecoration(
+                                                                //     color:
+                                                                //         grayLight,
+                                                                //     borderRadius:
+                                                                //         borderRadius(
+                                                                //             10),
+                                                                //   ),
+                                                                //   child: Column(
+                                                                //     children: [
+                                                                //       Container(
+                                                                //         padding:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               10,
+                                                                //         ),
+                                                                //         margin:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               5,
+                                                                //         ),
+                                                                //         decoration:
+                                                                //             BoxDecoration(
+                                                                //           border:
+                                                                //               Border(
+                                                                //             bottom:
+                                                                //                 BorderSide(
+                                                                //               width: 2,
+                                                                //               color: grayMed,
+                                                                //             ),
+                                                                //           ),
+                                                                //         ),
+                                                                //         child:
+                                                                //             Row(
+                                                                //           mainAxisAlignment:
+                                                                //               MainAxisAlignment.spaceBetween,
+                                                                //           children: [
+                                                                //             Text('Hours'),
+                                                                //             Row(
+                                                                //               crossAxisAlignment: CrossAxisAlignment.center,
+                                                                //               children: [
+                                                                //                 Container(
+                                                                //                   width: 10,
+                                                                //                   height: 10,
+                                                                //                   decoration: BoxDecoration(
+                                                                //                     borderRadius: borderRadius(width),
+                                                                //                     color: green,
+                                                                //                   ),
+                                                                //                 ),
+                                                                //                 gap(w: 5),
+                                                                //                 Text('Open Now'),
+                                                                //               ],
+                                                                //             ),
+                                                                //           ],
+                                                                //         ),
+                                                                //       ),
+                                                                //       Container(
+                                                                //         padding:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               10,
+                                                                //         ),
+                                                                //         margin:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               5,
+                                                                //         ),
+                                                                //         decoration:
+                                                                //             BoxDecoration(
+                                                                //           border:
+                                                                //               Border(
+                                                                //             bottom:
+                                                                //                 BorderSide(
+                                                                //               width: 2,
+                                                                //               color: grayMed,
+                                                                //             ),
+                                                                //           ),
+                                                                //         ),
+                                                                //         child:
+                                                                //             Row(
+                                                                //           mainAxisAlignment:
+                                                                //               MainAxisAlignment.spaceBetween,
+                                                                //           children: [
+                                                                //             Text('Open Days'),
+                                                                //             Text('Mon - Sat'),
+                                                                //           ],
+                                                                //         ),
+                                                                //       ),
+                                                                //       Container(
+                                                                //         padding:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               10,
+                                                                //         ),
+                                                                //         margin:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               5,
+                                                                //         ),
+                                                                //         decoration:
+                                                                //             BoxDecoration(
+                                                                //           border:
+                                                                //               Border(
+                                                                //             bottom:
+                                                                //                 BorderSide(
+                                                                //               width: 2,
+                                                                //               color: grayMed,
+                                                                //             ),
+                                                                //           ),
+                                                                //         ),
+                                                                //         child:
+                                                                //             Row(
+                                                                //           mainAxisAlignment:
+                                                                //               MainAxisAlignment.spaceBetween,
+                                                                //           children: [
+                                                                //             Text('Closed Day'),
+                                                                //             Text('Sun Only'),
+                                                                //           ],
+                                                                //         ),
+                                                                //       ),
+                                                                //       Container(
+                                                                //         padding:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               10,
+                                                                //         ),
+                                                                //         margin:
+                                                                //             spacing(
+                                                                //           vertical:
+                                                                //               5,
+                                                                //         ),
+                                                                //         decoration:
+                                                                //             BoxDecoration(
+                                                                //           border:
+                                                                //               Border(
+                                                                //             bottom:
+                                                                //                 BorderSide(
+                                                                //               width: 2,
+                                                                //               color: grayMed,
+                                                                //             ),
+                                                                //           ),
+                                                                //         ),
+                                                                //         child:
+                                                                //             Row(
+                                                                //           mainAxisAlignment:
+                                                                //               MainAxisAlignment.spaceBetween,
+                                                                //           children: [
+                                                                //             Text('Open Hours'),
+                                                                //             Text('12PM - 8PM'),
+                                                                //           ],
+                                                                //         ),
+                                                                //       ),
+                                                                //     ],
+                                                                //   ),
+                                                                // ),
                                                                 gap(h: 15),
                                                                 Container(
                                                                   margin: spacing(

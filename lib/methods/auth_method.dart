@@ -54,7 +54,7 @@ class AuthMethod {
   }
 
   Future<void> followUser(String user_id) async {
-     if (following_data.contains(user_id)) {
+    if (following_data.contains(user_id)) {
       following_data.remove(user_id);
     } else {
       following_data.add(user_id);
@@ -64,7 +64,22 @@ class AuthMethod {
       'user_id': loginUserId,
       'user': user_id,
     };
-
     await API().postData(data);
+  }
+
+  Future<void> joinGroup(String group_id) async {
+    if (groups_data.contains(loginUserId)) {
+      groups_data.remove(loginUserId);
+    } else {
+      groups_data.add(loginUserId);
+    }
+    final data = {
+      'type': 'follow_like_join',
+      'action': 'join_group',
+      'user_id': loginUserId,
+      'group_id': group_id,
+    };
+    final response = await API().postData(data);
+    ToastMessage(message: jsonDecode(response['join']));
   }
 }

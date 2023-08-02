@@ -14,6 +14,7 @@ import 'package:vibetag/screens/home/create_post/home_search.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/screens/home/widgets/home_tab_bar.dart';
 
+import '../../provider/post_provider.dart';
 import '../header/header.dart';
 import 'package:vibetag/widgets/navbar.dart';
 
@@ -355,236 +356,325 @@ class _GroupScreenState extends State<GroupScreen> {
               ),
             ),
           ];
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: isLoading
-            ? loadingSpinner()
-            : Container(
-                width: width,
-                height: height,
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        NavBar(),
-                        Header(),
-                        Container(
-                          width: double.infinity,
-                          height: height * 0.89,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: width,
-                                  height: width * 0.75,
-                                  decoration: BoxDecoration(
-                                    color: white,
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: width,
-                                        height: width * 0.4,
-                                        child: Image.network(
-                                          group['cover']
-                                                  .toString()
-                                                  .contains(serverUrl)
-                                              ? group['cover'].toString().trim()
-                                              : '${serverUrl}${group['cover'].toString().trim()}',
-                                          fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async {
+        Provider.of<PostProvider>(context, listen: false).clear();
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
+          child: isLoading
+              ? loadingSpinner()
+              : Container(
+                  width: width,
+                  height: height,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          NavBar(),
+                          Header(),
+                          Container(
+                            width: double.infinity,
+                            height: height * 0.89,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: width,
+                                    height: width * 0.75,
+                                    decoration: BoxDecoration(
+                                      color: white,
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: width,
+                                          height: width * 0.4,
+                                          child: Image.network(
+                                            group['cover']
+                                                    .toString()
+                                                    .contains(serverUrl)
+                                                ? group['cover']
+                                                    .toString()
+                                                    .trim()
+                                                : '${serverUrl}${group['cover'].toString().trim()}',
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        top: width * 0.25,
-                                        left: 0,
-                                        right: 0,
-                                        child: Center(
-                                          child: CircleAvatar(
-                                            radius: width * 0.15,
-                                            foregroundImage: NetworkImage(
-                                              group['avatar']
-                                                      .toString()
-                                                      .contains(serverUrl)
-                                                  ? group['avatar']
-                                                      .toString()
-                                                      .trim()
-                                                  : '${serverUrl}${group['avatar'].toString().trim()}',
+                                        Positioned(
+                                          top: width * 0.25,
+                                          left: 0,
+                                          right: 0,
+                                          child: Center(
+                                            child: CircleAvatar(
+                                              radius: width * 0.15,
+                                              foregroundImage: NetworkImage(
+                                                group['avatar']
+                                                        .toString()
+                                                        .contains(serverUrl)
+                                                    ? group['avatar']
+                                                        .toString()
+                                                        .trim()
+                                                    : '${serverUrl}${group['avatar'].toString().trim()}',
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        bottom: width * 0.05,
-                                        child: Container(
-                                          width: width,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    Text(
-                                                      setName(
-                                                          '${group['group_title']}'),
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18,
+                                        Positioned(
+                                          bottom: width * 0.05,
+                                          child: Container(
+                                            width: width,
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 20,
                                                       ),
+                                                      Text(
+                                                        setName(
+                                                            '${group['group_title']}'),
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                      gap(w: 5),
+                                                      Icon(
+                                                        Icons.verified,
+                                                        color: Colors.cyan,
+                                                        size: 18,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  gap(h: 2.5),
+                                                  Text(
+                                                    '${group['username']}',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
                                                     ),
-                                                    gap(w: 5),
-                                                    Icon(
-                                                      Icons.verified,
-                                                      color: Colors.cyan,
-                                                      size: 18,
-                                                    )
-                                                  ],
-                                                ),
-                                                gap(h: 2.5),
-                                                Text(
-                                                  '${group['username']}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            color: white,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Container(
+                                                  padding: spacing(
+                                                    horizontal: 20,
+                                                    vertical: 10,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: grayMed),
+                                                    borderRadius:
+                                                        borderRadius(7),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        '2.1M',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'Likes',
+                                                        style: TextStyle(
+                                                          color: blackLight,
+                                                          fontSize: 8,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
+                                                Container(
+                                                  padding: spacing(
+                                                    horizontal: 20,
+                                                    vertical: 10,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: grayMed),
+                                                    borderRadius:
+                                                        borderRadius(7),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        '${group['members_count']}',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'Members',
+                                                        style: TextStyle(
+                                                          color: blackLight,
+                                                          fontSize: 8,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: spacing(
+                                                    horizontal: 20,
+                                                    vertical: 10,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: grayMed),
+                                                    borderRadius:
+                                                        borderRadius(7),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        '${group['post_count']}',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'Posts',
+                                                        style: TextStyle(
+                                                          color: blackLight,
+                                                          fontSize: 8,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          color: white,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Container(
-                                                padding: spacing(
-                                                  horizontal: 20,
-                                                  vertical: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 1, color: grayMed),
-                                                  borderRadius: borderRadius(7),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    const Text(
-                                                      '2.1M',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
+                                          group['is_owner']
+                                              ? Container(
+                                                  color: white,
+                                                  padding: spacing(
+                                                    vertical: 10,
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Container(
+                                                        height: height * 0.045,
+                                                        width: width * 0.3,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: orange,
+                                                          borderRadius:
+                                                              borderRadius(5),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            'Edit',
+                                                            style: TextStyle(
+                                                              color: white,
+                                                              fontSize: 12,
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      'Likes',
-                                                      style: TextStyle(
-                                                        color: blackLight,
-                                                        fontSize: 8,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: spacing(
-                                                  horizontal: 20,
-                                                  vertical: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 1, color: grayMed),
-                                                  borderRadius: borderRadius(7),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      '${group['members_count']}',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Members',
-                                                      style: TextStyle(
-                                                        color: blackLight,
-                                                        fontSize: 8,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: spacing(
-                                                  horizontal: 20,
-                                                  vertical: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 1, color: grayMed),
-                                                  borderRadius: borderRadius(7),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      '${group['post_count']}',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Posts',
-                                                      style: TextStyle(
-                                                        color: blackLight,
-                                                        fontSize: 8,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        group['is_owner']
-                                            ? Container(
-                                                color: white,
-                                                padding: spacing(
-                                                  vertical: 10,
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      height: height * 0.045,
-                                                      width: width * 0.3,
-                                                      decoration: BoxDecoration(
-                                                        color: orange,
-                                                        borderRadius:
-                                                            borderRadius(5),
-                                                      ),
-                                                      child: Center(
+                                                      gap(w: 20),
+                                                      Container(
+                                                        height: height * 0.045,
+                                                        width: width * 0.3,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: orange,
+                                                          borderRadius:
+                                                              borderRadius(5),
+                                                        ),
+                                                        child: Center(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                'Add Frieds',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: white,
+                                                                  fontSize: 12,
+                                                                ),
+                                                              ),
+                                                              gap(w: 10),
+                                                              Image.asset(
+                                                                'assets/icons/lock.png',
+                                                                color: white,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    joinGroup();
+                                                  },
+                                                  child: Container(
+                                                    color: white,
+                                                    padding:
+                                                        spacing(vertical: 15),
+                                                    child: Center(
+                                                      child: Container(
+                                                        width: width * 0.9,
+                                                        padding: spacing(
+                                                          horizontal:
+                                                              width * 0.12,
+                                                          vertical: 10,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: orangePrimary,
+                                                          borderRadius:
+                                                              borderRadius(5),
+                                                        ),
                                                         child: Text(
-                                                          'Edit',
+                                                          isJoined
+                                                              ? 'Joined'
+                                                              : 'Join Now',
                                                           style: TextStyle(
                                                             color: white,
                                                             fontSize: 12,
@@ -594,133 +684,66 @@ class _GroupScreenState extends State<GroupScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    gap(w: 20),
-                                                    Container(
-                                                      height: height * 0.045,
-                                                      width: width * 0.3,
-                                                      decoration: BoxDecoration(
-                                                        color: orange,
-                                                        borderRadius:
-                                                            borderRadius(5),
-                                                      ),
-                                                      child: Center(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                              'Add Frieds',
-                                                              style: TextStyle(
-                                                                color: white,
-                                                                fontSize: 12,
-                                                              ),
+                                                  ),
+                                                ),
+                                          HomeTabBar(),
+                                          Container(
+                                            child: DefaultTabController(
+                                                initialIndex: currentIndex,
+                                                length: 2,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        height: height * 0.05,
+                                                        child: TabBar(
+                                                          onTap: (i) {
+                                                            currentIndex = i;
+                                                            setState(() {});
+                                                          },
+                                                          isScrollable: true,
+                                                          unselectedLabelColor:
+                                                              blackLight,
+                                                          labelColor:
+                                                              orangePrimary,
+                                                          labelStyle:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                          unselectedLabelStyle:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                          tabs: const [
+                                                            Tab(
+                                                              text: 'About',
                                                             ),
-                                                            gap(w: 10),
-                                                            Image.asset(
-                                                              'assets/icons/lock.png',
-                                                              color: white,
-                                                            )
+                                                            Tab(
+                                                              text: 'Timeline',
+                                                            ),
                                                           ],
                                                         ),
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : InkWell(
-                                                onTap: () {
-                                                  joinGroup();
-                                                },
-                                                child: Container(
-                                                  color: white,
-                                                  padding:
-                                                      spacing(vertical: 15),
-                                                  child: Center(
-                                                    child: Container(
-                                                      width: width * 0.9,
-                                                      padding: spacing(
-                                                        horizontal:
-                                                            width * 0.12,
-                                                        vertical: 10,
-                                                      ),
-                                                      decoration: BoxDecoration(
-                                                        color: orangePrimary,
-                                                        borderRadius:
-                                                            borderRadius(5),
-                                                      ),
-                                                      child: Text(
-                                                        isJoined
-                                                            ? 'Joined'
-                                                            : 'Join Now',
-                                                        style: TextStyle(
-                                                          color: white,
-                                                          fontSize: 12,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ),
-                                        HomeTabBar(),
-                                        Container(
-                                          child: DefaultTabController(
-                                              initialIndex: currentIndex,
-                                              length: 2,
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      height: height * 0.05,
-                                                      child: TabBar(
-                                                        onTap: (i) {
-                                                          currentIndex = i;
-                                                          setState(() {});
-                                                        },
-                                                        isScrollable: true,
-                                                        unselectedLabelColor:
-                                                            blackLight,
-                                                        labelColor:
-                                                            orangePrimary,
-                                                        labelStyle:
-                                                            const TextStyle(
-                                                          fontSize: 14,
-                                                        ),
-                                                        unselectedLabelStyle:
-                                                            const TextStyle(
-                                                          fontSize: 14,
-                                                        ),
-                                                        tabs: const [
-                                                          Tab(
-                                                            text: 'About',
-                                                          ),
-                                                          Tab(
-                                                            text: 'Timeline',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )),
-                                        ),
-                                      ],
+                                                )),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                screen[currentIndex],
-                                gap(h: height * 0.1),
-                              ],
+                                  screen[currentIndex],
+                                  gap(h: height * 0.1),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

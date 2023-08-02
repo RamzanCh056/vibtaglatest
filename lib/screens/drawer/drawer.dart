@@ -20,7 +20,7 @@ import 'package:vibetag/screens/page/pages.dart';
 import 'package:vibetag/screens/drawer/drawer_item.dart';
 import 'package:vibetag/screens/shop/shop.dart';
 import '../explore/explore.dart';
-import '../playlists/playlist.dart';
+import '../page/playlists/playlist.dart';
 import '../shop/product/my_products.dart';
 import '../../utils/constant.dart';
 
@@ -260,7 +260,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Blogs(),
+                                screen: Blogs(),
                               );
                             },
                             child: DrawerItems(
@@ -322,7 +322,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                         
                           InkWell(
                             onTap: () {
                               pushRoute(
@@ -384,7 +383,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen:  Activities(user_id: loginUserId,),
+                                screen: Activities(
+                                  user_id: loginUserId,
+                                ),
                               );
                             },
                             child: DrawerItems(
@@ -398,7 +399,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             onTap: () {
                               pushRoute(
                                 context: context,
-                                screen: const Explore(
+                                screen: Explore(
+                                  isSearched: false,
                                   search: {},
                                 ),
                               );
@@ -411,23 +413,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
                               isNewNotification: false,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              pushRoute(
-                                context: context,
-                                screen: const Explore(
-                                  search: {},
-                                ),
-                              );
-                            },
-                            child: DrawerItems(
-                              title: 'Popular Posts',
-                              imgUrl: 'assets/images/drawer/popular.png',
-                              notifications: 1,
-                              isNewNotification: false,
-                            ),
-                          ),
-                          
                           InkWell(
                             onTap: () {
                               pushRoute(

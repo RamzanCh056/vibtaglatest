@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:vibetag/screens/home/comment/widget/post_comment_bar.dart';
 import 'package:vibetag/screens/home/post_methods/post_methods.dart';
 import 'package:vibetag/screens/home/widgets/revibe.dart';
-import 'package:vibetag/screens/playlists/playlist/playlist_sheet.dart';
+import 'package:vibetag/screens/page/playlists/playlist/playlist_sheet.dart';
 
 import 'package:vibetag/utils/constant.dart';
 import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';

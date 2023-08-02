@@ -15,11 +15,15 @@ import 'package:vibetag/methods/firebase_helper.dart';
 import 'package:vibetag/notification/notification.dart';
 import 'package:vibetag/provider/post_provider.dart';
 import 'package:vibetag/provider/userProvider.dart';
+import 'package:vibetag/screens/activties/activities.dart';
+import 'package:vibetag/screens/blog/blogs.dart';
 import 'package:vibetag/screens/chat_screens/constants.dart';
-import 'package:vibetag/screens/find%20vibes/find_vibes.dart';
-import 'package:vibetag/screens/groups/group.dart';
-import 'package:vibetag/screens/groups/groups.dart';
-import 'package:vibetag/screens/playlists/playlist.dart';
+import 'package:vibetag/screens/find_friend/filter_screen.dart';
+import 'package:vibetag/screens/groups/group_setting/group_setting_screen.dart';
+import 'package:vibetag/screens/my_articles/my_article_main_screen.dart';
+import 'package:vibetag/screens/page/my_page_screen/browse_event_screen.dart';
+import 'package:vibetag/screens/page/setting/my_page.dart';
+import 'package:vibetag/screens/page/setting/my_page_screen.dart';
 import 'package:vibetag/screens/profile/profile.dart';
 import 'package:vibetag/utils/constant.dart';
 import 'screens/auth/login.dart';
@@ -130,48 +134,49 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => UserProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => PostProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.orange,
-          fontFamily: 'Manrope',
-          scaffoldBackgroundColor: backgroundColor,
-        ),
-        home: FutureBuilder(
-          future: SharedPreferences.getInstance(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('Some Issue has occurred!'),
-              );
-            }
-            if (snapshot.hasData) {
-              SharedPreferences preferences = snapshot.data!;
-              final userId = preferences.getString('userId');
-              // updateToken();
-              if (userId == null) {
-                return const Login();
-              } else {
-                loginUserId = userId;
-                return true ? GroupScreen(group_id: '4') : FrontPage();
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => UserProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => PostProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+            fontFamily: 'Manrope',
+            scaffoldBackgroundColor: backgroundColor,
+          ),
+          home: FutureBuilder(
+            future: SharedPreferences.getInstance(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Some Issue has occurred!'),
+                );
               }
-            }
-            return const Login();
-          },
-        ),
-      ),
-    );
+              if (snapshot.hasData) {
+                SharedPreferences preferences = snapshot.data!;
+                final userId = preferences.getString('userId');
+                // updateToken();
+                if (userId == null) {
+                  return const Login();
+                } else {
+                  loginUserId = userId;
+                  return false
+                      ? Profile(user_id: '${loginUserId}')
+                      : FrontPage();
+                }
+              }
+              return const Login();
+            },
+          ),
+        ));
   }
 }

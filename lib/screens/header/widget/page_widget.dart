@@ -46,6 +46,7 @@ class _PageSearchWidgetState extends State<PageSearchWidget> {
           children: [
             Container(
               width: 50,
+              height: 50,
               child: ClipRRect(
                 borderRadius: borderRadius(50),
                 child: netImage(

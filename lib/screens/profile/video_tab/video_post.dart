@@ -16,7 +16,7 @@ import 'package:vibetag/widgets/bottom_modal_sheet_widget.dart';
 import '../../../utils/constant.dart';
 import '../../groups/group.dart';
 import '../../hast_tag/tred_screen.dart';
-import '../../playlists/playlist/playlist_sheet.dart';
+import '../../page/playlists/playlist/playlist_sheet.dart';
 
 class VideoPost extends StatefulWidget {
   final dynamic post;

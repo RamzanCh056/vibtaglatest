@@ -130,6 +130,7 @@ class _VideoMediaPlayerState extends State<VideoMediaPlayer> {
     if (_controller.value.position.inSeconds > 10 && !isViewAdd) {
       isViewAdd = true;
       addVideoView();
+      
     }
   }
 
